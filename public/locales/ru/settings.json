@@ -1,0 +1,46 @@
+{
+  "header": "Настройки",
+  "profile": {
+    "title": "Редактировать профиль",
+    "header": "Настройки профиля",
+    "changeAvatar": "Изменить аватар {{loading}}",
+    "percentage": "({{percentage}}%)",
+    "nameDescription": "Имя и фамилия отображаются в профиле, но не являются уникальными идентификаторами.",
+    "descriptionDescription": "Короткая информация о вас, которая отображается в вашем профиле."
+  },
+  "devices": {
+    "title": "Устройства",
+    "header": "Устройства",
+    "device": "Устройство",
+    "pc": "Компьютер",
+    "deviceInfo": "{{vendorModel}} на {{os}} {{osVersion}}",
+    "browserInfo": "{{browser}} {{version}}",
+    "bull": "•",
+    "info": "{{ip}} <bull>{{bull}}</bull> {{lastUsed}}",
+    "currentDevice": "Текущее устройство",
+    "unknownDevice": "Неизвестное устройство",
+    "unknownOS": "неизвестной ОС",
+    "unknownBrowser": "Неизвестный браузер",
+    "unknownIP": "Неизвестный IP",
+
+    "logout": {
+      "button": "Завершить сеанс",
+      "loading": "Завершение сеанса..."
+    }
+  },
+  "appearance": {
+    "title": "Оформление",
+    "header": "Оформление",
+    "theme": {
+      "label": "Цветовая тема",
+      "light": "Светлая",
+      "dark": "Темная",
+      "system": "Системная"
+    }
+  },
+  "language": {
+    "title": "Язык",
+    "header": "Язык"
+  },
+  "logout": "Выйти из аккаунта"
+}

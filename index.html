@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+
+    <title>rvchan</title>
+    <script
+      crossorigin="anonymous"
+      src="https://tweakcn.com/live-preview.min.js"
+    ></script>
+    <script>
+      window.addEventListener("vite:preloadError", (event) => {
+        console.error("Preload error:", event.detail);
+        window.location.reload();
+      });
+      window.addEventListener("unhandledrejection", (event) => {
+        if (
+          event.reason?.message?.includes(
+            "Failed to fetch dynamically imported module",
+          )
+        ) {
+          console.log(
+            "Dynamic import failed, reloading the page...",
+            event.reason,
+          );
+          window.location.reload();
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <div id="root" class="relative"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

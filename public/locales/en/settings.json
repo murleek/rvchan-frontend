@@ -1,0 +1,46 @@
+{
+  "header": "Settings",
+  "profile": {
+    "title": "Edit Profile",
+    "header": "Profile Settings",
+    "changeAvatar": "Change avatar {{loading}}",
+    "percentage": "({{percentage}}%)",
+    "nameDescription": "Your first and last name are displayed on your profile but are not unique identifiers.",
+    "descriptionDescription": "A short bio about you, displayed on your profile."
+  },
+  "devices": {
+    "title": "Devices",
+    "header": "Devices",
+    "device": "Device",
+    "pc": "Computer",
+    "deviceInfo": "{{vendorModel}} on {{os}} {{osVersion}}",
+    "browserInfo": "{{browser}} {{version}}",
+    "bull": "•",
+    "info": "{{ip}} <bull>{{bull}}</bull> {{lastUsed}}",
+    "currentDevice": "Current device",
+    "unknownDevice": "Unknown device",
+    "unknownOS": "unknown OS",
+    "unknownBrowser": "Unknown browser",
+    "unknownIP": "Unknown IP",
+
+    "logout": {
+      "button": "End session",
+      "loading": "Ending session..."
+    }
+  },
+  "appearance": {
+    "title": "Appearance",
+    "header": "Appearance",
+    "theme": {
+      "label": "Color theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    }
+  },
+  "language": {
+    "title": "Language",
+    "header": "Language"
+  },
+  "logout": "Log out"
+}

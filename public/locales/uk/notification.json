@@ -1,0 +1,32 @@
+{
+  "header": "Сповіщення",
+  "loading": "Завантаження сповіщень...",
+  "empty": "У вас немає сповіщень",
+  "follow": {
+    "title_known": "{{firstName}} {{lastName}}",
+    "known": "підписався(-лась) на вас",
+    "unknown": "Хтось підписався(-лась) на вас"
+  },
+  "post_mention": {
+    "title_known": "{{firstName}} {{lastName}}",
+    "known": "згадав(-ла) вас у публікації",
+    "unknown": "Хтось згадав(-ла) вас у публікації"
+  },
+  "follow_accepted": {
+    "title_known": "{{firstName}} {{lastName}}",
+    "known": "тепер ваш друг",
+    "unknown": "Хтось став(-ла) вашим другом"
+  },
+  "device": {
+    "new_device": "Новий пристрій {{vendorModel}} на {{os}} {{osVersion}}",
+    "new_pc": "Новий комп'ютер {{vendorModel}} на {{os}} {{osVersion}}",
+    "description": "{{browser}} {{browserVersion}} • {{ip}}",
+    "unknown_device": "невідомий пристрій",
+    "unknown_os": "невідомої ОС",
+    "unknown_browser": "Невідомий браузер",
+    "unknown_ip": "Невідомий IP"
+  },
+  "notification": {
+    "new": "Нове сповіщення"
+  }
+}

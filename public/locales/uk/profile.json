@@ -1,0 +1,29 @@
+{
+  "followers_zero": "Немає підписників",
+  "followers_one": "<b>{{count}}</b> підписник",
+  "followers_few": "<b>{{count}}</b> підписники",
+  "followers_many": "<b>{{count}}</b> підписників",
+
+  "following_zero": "Немає підписок",
+  "following_one": "<b>{{count}}</b> підписка",
+  "following_few": "<b>{{count}}</b> підписки",
+  "following_many": "<b>{{count}}</b> підписок",
+
+  "friends_zero": "Немає друзів",
+  "friends_one": "<b>{{count}}</b> друг",
+  "friends_few": "<b>{{count}}</b> друга",
+  "friends_many": "<b>{{count}}</b> друзів",
+
+  "online": {
+    "now": "онлайн",
+    "last_seen": "був(-ла) {{timeAgo}}",
+    "long": "давно"
+  },
+
+  "follow": "Підписатися",
+  "unfollow": "Відписатися",
+  "remove_friend": "Видалити з друзів",
+  "accept_request": "Прийняти запит",
+
+  "loading": "Завантаження профілю..."
+}

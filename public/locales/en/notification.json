@@ -1,0 +1,32 @@
+{
+  "header": "Notifications",
+  "loading": "Loading notifications...",
+  "empty": "You have no notifications",
+  "follow": {
+    "title_known": "{{firstName}} {{lastName}}",
+    "known": "followed you",
+    "unknown": "Someone followed you"
+  },
+  "post_mention": {
+    "title_known": "{{firstName}} {{lastName}}",
+    "known": "mentioned you in a post",
+    "unknown": "Someone mentioned you in a post"
+  },
+  "follow_accepted": {
+    "title_known": "{{firstName}} {{lastName}}",
+    "known": "is now your friend",
+    "unknown": "Someone became your friend"
+  },
+  "device": {
+    "new_device": "New device {{vendorModel}} on {{os}} {{osVersion}}",
+    "new_pc": "New computer {{vendorModel}} on {{os}} {{osVersion}}",
+    "description": "{{browser}} {{browserVersion}} • {{ip}}",
+    "unknown_device": "unknown device",
+    "unknown_os": "unknown OS",
+    "unknown_browser": "Unknown browser",
+    "unknown_ip": "Unknown IP"
+  },
+  "notification": {
+    "new": "New notification"
+  }
+}

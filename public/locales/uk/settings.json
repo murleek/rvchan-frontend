@@ -1,0 +1,46 @@
+{
+  "header": "Налаштування",
+  "profile": {
+    "title": "Редагувати профіль",
+    "header": "Налаштування профілю",
+    "changeAvatar": "Змінити аватар {{loading}}",
+    "percentage": "({{percentage}}%)",
+    "nameDescription": "Ім'я та прізвище відображаються у профілі, але не є унікальними ідентифікаторами.",
+    "descriptionDescription": "Коротка інформація про вас, яка відображається у вашому профілі."
+  },
+  "devices": {
+    "title": "Пристрої",
+    "header": "Пристрої",
+    "device": "Пристрій",
+    "pc": "Комп'ютер",
+    "deviceInfo": "{{vendorModel}} на {{os}} {{osVersion}}",
+    "browserInfo": "{{browser}} {{version}}",
+    "bull": "•",
+    "info": "{{ip}} <bull>{{bull}}</bull> {{lastUsed}}",
+    "currentDevice": "Поточний пристрій",
+    "unknownDevice": "Невідомий пристрій",
+    "unknownOS": "невідомої ОС",
+    "unknownBrowser": "Невідомий браузер",
+    "unknownIP": "Невідомий IP",
+
+    "logout": {
+      "button": "Завершити сеанс",
+      "loading": "Завершення сеансу..."
+    }
+  },
+  "appearance": {
+    "title": "Оформлення",
+    "header": "Оформлення",
+    "theme": {
+      "label": "Тема",
+      "light": "Світла",
+      "dark": "Темна",
+      "system": "Системна"
+    }
+  },
+  "language": {
+    "title": "Мова",
+    "header": "Мова"
+  },
+  "logout": "Вийти з акаунту"
+}

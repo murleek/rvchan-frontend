@@ -1,0 +1,46 @@
+{
+  "followers_list": {
+    "header": "Подписчики",
+    "empty": {
+      "mine": "У вас нет подписчиков.",
+      "other": "У этого пользователя нет подписчиков."
+    },
+    "loading": "Загрузка подписчиков..."
+  },
+  "following_list": {
+    "header": "Подписки",
+    "empty": {
+      "mine": "Вы не подписаны ни на кого.",
+      "other": "Этот пользователь не подписан ни на кого."
+    },
+    "loading": "Загрузка подписок..."
+  },
+  "followers_zero": "Нет подписчиков",
+  "followers_one": "<b>{{count}}</b> подписчик",
+  "followers_few": "<b>{{count}}</b> подписчика",
+  "followers_many": "<b>{{count}}</b> подписчиков",
+
+  "following_zero": "Нет подписок",
+  "following_one": "<b>{{count}}</b> подписка",
+  "following_few": "<b>{{count}}</b> подписки",
+  "following_many": "<b>{{count}}</b> подписок",
+
+  "friends_zero": "Нет друзей",
+  "friends_one": "<b>{{count}}</b> друг",
+  "friends_few": "<b>{{count}}</b> друга",
+  "friends_many": "<b>{{count}}</b> друзей",
+
+  "online": {
+    "now": "в сети",
+    "last_seen": "был(-а) {{timeAgo}}",
+
+    "long": "давно"
+  },
+
+  "follow": "Подписаться",
+  "unfollow": "Отписаться",
+  "remove_friend": "Удалить из друзей",
+  "accept_request": "Принять запрос",
+
+  "loading": "Загрузка профиля..."
+}

@@ -1,0 +1,13 @@
+{
+  "dropdown": {
+    "profile": "Профіль",
+    "devices": "Пристрої",
+    "settings": "Налаштування",
+    "logout": "Вийти"
+  },
+  "content": {
+    "profile": "Мій профіль",
+    "notifications": "Сповіщення",
+    "search": "Пошук"
+  }
+}

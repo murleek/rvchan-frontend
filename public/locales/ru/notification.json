@@ -1,0 +1,42 @@
+{
+  "header": "Уведомления",
+  "loading": "Загрузка уведомлений...",
+  "empty": "У вас нет уведомлений",
+  "follow": {
+    "title_known": "{{firstName}} {{lastName}}",
+    "known": "подписался(-лась) на вас",
+    "unknown": "Кто-то подписался(-лась) на вас"
+  },
+  "post_mention": {
+    "title_known": "{{firstName}} {{lastName}}",
+    "known": "упомянул(-а) вас в публикации",
+    "unknown": "Кто-то упомянул(-а) вас в публикации"
+  },
+  "post_reply": {
+    "title_known": "{{firstName}} {{lastName}}",
+    "known": "ответил(-а) на вашу публикацию",
+    "unknown": "Кто-то ответил(-а) на вашу публикацию"
+  },
+  "post_reply_to_other": {
+    "title_known": "{{firstName}} {{lastName}}",
+    "known": "ответил(-а) на публикацию, в которой вы участвовали",
+    "unknown": "Кто-то ответил(-а) на публикацию, в которой вы участвовали"
+  },
+  "follow_accepted": {
+    "title_known": "{{firstName}} {{lastName}}",
+    "known": "теперь ваш друг",
+    "unknown": "Кто-то стал(-а) вашим другом"
+  },
+  "device": {
+    "new_device": "Новое устройство {{vendorModel}} на {{os}} {{osVersion}}",
+    "new_pc": "Новый компьютер {{vendorModel}} на {{os}} {{osVersion}}",
+    "description": "{{browser}} {{browserVersion}} • {{ip}}",
+    "unknown_device": "неизвестное устройство",
+    "unknown_os": "неизвестной ОС",
+    "unknown_browser": "Неизвестный браузер",
+    "unknown_ip": "Неизвестный IP"
+  },
+  "notification": {
+    "new": "Новое уведомление"
+  }
+}

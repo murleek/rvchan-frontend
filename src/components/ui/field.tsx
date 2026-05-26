@@ -1,0 +1,323 @@
+import { useMemo, type ComponentProps, type ReactNode } from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+
+import { cn } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { useTranslation } from "react-i18next";
+import Loader from "../Common/Loader";
+import { CircleAlert, CircleCheck } from "lucide-react";
+import { a, useSpring, useTransition } from "@react-spring/web";
+import { useMeasure } from "@uidotdev/usehooks";
+import clsx from "clsx";
+
+function FieldSet({ className, ...props }: ComponentProps<"fieldset">) {
+  return (
+    <fieldset
+      data-slot="field-set"
+      className={cn(
+        "flex flex-col gap-6",
+        "has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+function FieldLegend({
+  className,
+  variant = "legend",
+  ...props
+}: ComponentProps<"legend"> & { variant?: "legend" | "label" }) {
+  return (
+    <legend
+      data-slot="field-legend"
+      data-variant={variant}
+      className={cn(
+        "mb-3 font-medium",
+        "data-[variant=legend]:text-base",
+        "data-[variant=label]:text-sm",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+function FieldGroup({ className, ...props }: ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="field-group"
+      className={cn(
+        "group/field-group @container/field-group flex w-full flex-col gap-6 data-[slot=checkbox-group]:gap-2 *:data-[slot=field-group]:gap-4",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+const fieldVariants = cva(
+  "group/field flex w-full gap-x-3 gap-y-1 data-[invalid=true]:text-destructive",
+  {
+    variants: {
+      orientation: {
+        vertical: ["flex-col [&>*]:w-full [&>.sr-only]:w-auto"],
+        horizontal: [
+          "flex-row items-center",
+          "[&>[data-slot=field-label]]:flex-auto",
+          "has-[>[data-slot=field-content]]:items-start has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px",
+        ],
+        responsive: [
+          "flex-col [&>*]:w-full [&>.sr-only]:w-auto @md/field-group:flex-row @md/field-group:items-center @md/field-group:[&>*]:w-auto",
+          "@md/field-group:[&>[data-slot=field-label]]:flex-auto",
+          "@md/field-group:has-[>[data-slot=field-content]]:items-start @md/field-group:has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px",
+        ],
+      },
+    },
+    defaultVariants: {
+      orientation: "vertical",
+    },
+  },
+);
+
+function Field({
+  className,
+  orientation = "vertical",
+  ...props
+}: ComponentProps<"div"> & VariantProps<typeof fieldVariants>) {
+  return (
+    <div
+      role="group"
+      data-slot="field"
+      data-orientation={orientation}
+      className={cn(fieldVariants({ orientation }), className)}
+      {...props}
+    />
+  );
+}
+
+function FieldContent({ className, ...props }: ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="field-content"
+      className={cn(
+        "group/field-content flex flex-1 flex-col gap-1.5 leading-snug",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+function FieldLabel({ className, ...props }: ComponentProps<typeof Label>) {
+  return (
+    <Label
+      data-slot="field-label"
+      className={cn(
+        "group/field-label peer/field-label flex w-fit gap-2 leading-snug group-data-[disabled=true]/field:opacity-50",
+        "has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col has-[>[data-slot=field]]:rounded-md has-[>[data-slot=field]]:border *:data-[slot=field]:p-4",
+        "has-data-[state=checked]:bg-primary/5 has-data-[state=checked]:border-primary dark:has-data-[state=checked]:bg-primary/10",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+function FieldTitle({ className, ...props }: ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="field-label"
+      className={cn(
+        "flex w-fit items-center gap-2 text-sm leading-snug font-medium group-data-[disabled=true]/field:opacity-50",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+function FieldDescription({ className, ...props }: ComponentProps<"p">) {
+  return (
+    <p
+      data-slot="field-description"
+      className={cn(
+        "text-muted-foreground text-sm leading-normal font-normal group-has-data-[orientation=horizontal]/field:text-balance",
+        "last:mt-0 nth-last-2:-mt-1 [[data-variant=legend]+&]:-mt-1.5",
+        "[&>a:hover]:text-primary [&>a]:underline [&>a]:underline-offset-4",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+function FieldSeparator({
+  children,
+  className,
+  ...props
+}: ComponentProps<"div"> & {
+  children?: ReactNode;
+}) {
+  return (
+    <div
+      data-slot="field-separator"
+      data-content={!!children}
+      className={cn(
+        "relative -my-2 h-5 text-sm group-data-[variant=outline]/field-group:-mb-2",
+        className,
+      )}
+      {...props}
+    >
+      <Separator className="absolute inset-0 top-1/2" />
+      {children && (
+        <span
+          className="bg-background text-muted-foreground relative mx-auto block w-fit px-2"
+          data-slot="field-separator-content"
+        >
+          {children}
+        </span>
+      )}
+    </div>
+  );
+}
+
+const statusVariants = cva("text-sm/4 font-normal flex gap-2", {
+  variants: {
+    status: {
+      error: "text-destructive",
+      valid: "text-green-500",
+      default: "text-muted-foreground",
+    },
+  },
+});
+
+function FieldStatus({
+  className,
+  status,
+  children,
+  iconClassName,
+  ...props
+}: ComponentProps<"div"> &
+  VariantProps<typeof statusVariants> & {
+    iconClassName?: string;
+  }) {
+  const IconLine: ReactNode = useMemo(() => {
+    if (status === "error") {
+      // return <Icon name={"error"} className="text-xl/5!" fill />;
+      return (
+        <CircleAlert
+          strokeWidth={3}
+          className={clsx("size-4", iconClassName)}
+        />
+      );
+    } else if (status === "valid") {
+      // return <Icon name={"check_circle"} className="text-xl/5!" fill />;
+      return (
+        <CircleCheck
+          strokeWidth={3}
+          className={clsx("size-4", iconClassName)}
+        />
+      );
+    }
+    return (
+      <div className={clsx("size-4", iconClassName)}>
+        <Loader strokeWidth={3} className="size-full" />
+      </div>
+    );
+  }, [status, iconClassName]);
+
+  return (
+    <div className={cn(statusVariants({ status }), className)} {...props}>
+      <div>{IconLine}</div>
+      <span>{children}</span>
+    </div>
+  );
+}
+
+function FieldError({
+  children,
+  errors,
+  tParams,
+  ...props
+}: ComponentProps<"div"> & {
+  errors?: Array<{
+    message?: string;
+    status?: "error" | "valid" | "default";
+    key?: string;
+  }>;
+  tParams?: Record<string, any>;
+}) {
+  const [ref, { height }] = useMeasure();
+  const { t } = useTranslation();
+
+  const uniqueErrors = [
+    ...new Map(errors?.map((error) => [error?.message, error])).values(),
+  ];
+
+  const transition = useTransition(uniqueErrors, {
+    keys: (error: (typeof uniqueErrors)[0]) =>
+      error?.key || error?.message || Math.random().toString(),
+    from: { opacity: 0, y: -16, height: "auto" },
+    enter: { opacity: 1, y: 0, height: "auto" },
+    leave: { opacity: 0, y: -16, height: 0 },
+  });
+
+  const heightSpring = useSpring({
+    height: uniqueErrors?.length || children ? (height || 0) + 4 : 0,
+    paddingTop: uniqueErrors?.length ? 4 : 0,
+    config: { tension: 250, friction: 30 },
+  });
+
+  if (children) {
+    return (
+      <a.div
+        role="alert"
+        data-slot="field-error"
+        className={"block overflow-hidden"}
+        style={heightSpring}
+        {...props}
+      >
+        <div ref={ref}>{children}</div>
+      </a.div>
+    );
+  }
+
+  return (
+    <a.div
+      role="alert"
+      data-slot="field-error"
+      className={"block overflow-hidden"}
+      style={heightSpring}
+      {...props}
+    >
+      <div ref={ref}>
+        {transition((style, error) => (
+          <a.div style={style} key={error.key || error.message}>
+            {error?.message && (
+              <FieldStatus status={error.status || "error"} key={error.message}>
+                {t(error.message, tParams)}
+              </FieldStatus>
+            )}
+          </a.div>
+        ))}
+      </div>
+    </a.div>
+  );
+}
+
+export {
+  Field,
+  FieldLabel,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLegend,
+  FieldSeparator,
+  FieldSet,
+  FieldStatus,
+  FieldContent,
+  FieldTitle,
+};

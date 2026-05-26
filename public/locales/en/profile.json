@@ -1,0 +1,29 @@
+{
+  "followers_zero": "No followers",
+  "followers_one": "<b>{{count}}</b> follower",
+  "followers_few": "<b>{{count}}</b> followers",
+  "followers_many": "<b>{{count}}</b> followers",
+
+  "following_zero": "Not following anyone",
+  "following_one": "<b>{{count}}</b> following",
+  "following_few": "<b>{{count}}</b> following",
+  "following_many": "<b>{{count}}</b> following",
+
+  "friends_zero": "No friends",
+  "friends_one": "<b>{{count}}</b> friend",
+  "friends_few": "<b>{{count}}</b> friends",
+  "friends_many": "<b>{{count}}</b> friends",
+
+  "online": {
+    "now": "online",
+    "last_seen": "last seen {{timeAgo}}",
+    "long": "a long time ago"
+  },
+
+  "follow": "Follow",
+  "unfollow": "Unfollow",
+  "remove_friend": "Remove Friend",
+  "accept_request": "Accept Request",
+
+  "loading": "Loading profile..."
+}

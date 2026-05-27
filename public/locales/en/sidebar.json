@@ -1,13 +1,13 @@
 {
-  "dropdown": {
-    "profile": "Profile",
-    "devices": "Devices",
-    "settings": "Settings",
-    "logout": "Log out"
-  },
   "content": {
-    "profile": "My Profile",
     "notifications": "Notifications",
+    "profile": "My Profile",
     "search": "Search"
+  },
+  "dropdown": {
+    "devices": "Devices",
+    "logout": "Log out",
+    "profile": "Profile",
+    "settings": "Settings"
   }
 }

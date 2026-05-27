@@ -1,10 +1,10 @@
 {
-  "title": "Welcome!",
   "description": "Please fill in your information to continue.",
-  "submit": "Continue",
-  "logout": "Log out",
   "error": {
     "FETCH_ERROR": "Network error. Please check your connection and try again.",
     "TIMEOUT_ERROR": "The server is not responding. Please try again later."
-  }
+  },
+  "logout": "Log out",
+  "submit": "Continue",
+  "title": "Welcome!"
 }

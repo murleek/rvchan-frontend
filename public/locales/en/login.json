@@ -1,12 +1,12 @@
 {
-  "title": "Welcome back!",
   "description": "Please sign in to your account to continue.",
-  "submit": "Sign In",
-  "register": "Don't have an account?",
   "error": {
-    "invalid_credentials": "Incorrect username or password.",
-    "failed": "Failed to sign in. Please try again.",
     "FETCH_ERROR": "Network error. Please check your connection and try again.",
-    "TIMEOUT_ERROR": "The server is not responding. Please try again later."
-  }
+    "TIMEOUT_ERROR": "The server is not responding. Please try again later.",
+    "failed": "Failed to sign in. Please try again.",
+    "invalid_credentials": "Incorrect username or password."
+  },
+  "register": "Don't have an account?",
+  "submit": "Sign In",
+  "title": "Welcome back!"
 }

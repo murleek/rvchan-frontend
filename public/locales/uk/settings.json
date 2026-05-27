@@ -1,46 +1,45 @@
 {
-  "header": "Налаштування",
-  "profile": {
-    "title": "Редагувати профіль",
-    "header": "Налаштування профілю",
-    "changeAvatar": "Змінити аватар {{loading}}",
-    "percentage": "({{percentage}}%)",
-    "nameDescription": "Ім'я та прізвище відображаються у профілі, але не є унікальними ідентифікаторами.",
-    "descriptionDescription": "Коротка інформація про вас, яка відображається у вашому профілі."
+  "appearance": {
+    "header": "Оформлення",
+    "theme": {
+      "dark": "Темна",
+      "label": "Тема",
+      "light": "Світла",
+      "system": "Системна"
+    },
+    "title": "Оформлення"
   },
   "devices": {
-    "title": "Пристрої",
-    "header": "Пристрої",
-    "device": "Пристрій",
-    "pc": "Комп'ютер",
-    "deviceInfo": "{{vendorModel}} на {{os}} {{osVersion}}",
     "browserInfo": "{{browser}} {{version}}",
     "bull": "•",
-    "info": "{{ip}} <bull>{{bull}}</bull> {{lastUsed}}",
     "currentDevice": "Поточний пристрій",
-    "unknownDevice": "Невідомий пристрій",
-    "unknownOS": "невідомої ОС",
-    "unknownBrowser": "Невідомий браузер",
-    "unknownIP": "Невідомий IP",
-
+    "device": "Пристрій",
+    "deviceInfo": "{{vendorModel}} на {{os}} {{osVersion}}",
+    "header": "Пристрої",
+    "info": "{{ip}} <bull>{{bull}}</bull> {{lastUsed}}",
     "logout": {
       "button": "Завершити сеанс",
       "loading": "Завершення сеансу..."
-    }
+    },
+    "pc": "Комп'ютер",
+    "title": "Пристрої",
+    "unknownBrowser": "Невідомий браузер",
+    "unknownDevice": "Невідомий пристрій",
+    "unknownIP": "Невідомий IP",
+    "unknownOS": "невідомої ОС"
   },
-  "appearance": {
-    "title": "Оформлення",
-    "header": "Оформлення",
-    "theme": {
-      "label": "Тема",
-      "light": "Світла",
-      "dark": "Темна",
-      "system": "Системна"
-    }
-  },
+  "header": "Налаштування",
   "language": {
-    "title": "Мова",
-    "header": "Мова"
+    "header": "Мова",
+    "title": "Мова"
   },
-  "logout": "Вийти з акаунту"
+  "logout": "Вийти з акаунту",
+  "profile": {
+    "changeAvatar": "Змінити аватар {{loading}}",
+    "descriptionDescription": "Коротка інформація про вас, яка відображається у вашому профілі.",
+    "header": "Налаштування профілю",
+    "nameDescription": "Ім'я та прізвище відображаються у профілі, але не є унікальними ідентифікаторами.",
+    "percentage": "({{percentage}}%)",
+    "title": "Редагувати профіль"
+  }
 }

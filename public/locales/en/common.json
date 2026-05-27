@@ -1,71 +1,15 @@
 {
-  "user": {
-    "search": {
-      "title": "Search",
-      "placeholder": "Find a user...",
-      "loading": "Searching...",
-      "empty": "No users found",
-      "emptyValue": "Enter a username to search"
-    }
-  },
-  "errorBoundary": {
-    "rateLimit": {
-      "title": "Too Many Requests",
-      "message": "It looks like you've exceeded the request limit. Please wait a moment and try again."
-    },
-    "notFound": {
-      "title": "Page Not Found",
-      "message": "The page you are looking for does not exist."
-    },
-    "profile": {
-      "title": "Server Error",
-      "message": "An error occurred while loading your profile.",
-      "unknownError": "Unknown error"
-    },
-    "default": {
-      "title": "Oops! Something went wrong.",
-      "message": "It looks like an error occurred. Please try reloading the page or contact support if the problem persists."
-    },
-    "dynamicImportFailed": {
-      "title": "Loading Error",
-      "message": "An error occurred while loading part of the application. This may be due to a network issue or an update. Please reload the page."
-    },
-    "reload": "Reload"
-  },
-  "loader": {
-    "init": "Loading",
-    "loading": "Loading",
-    "logging_out": "Logging out",
-    "sending": "Sending",
-    "profile": "Loading profile",
-    "page": "Loading page"
-  },
   "account": {
+    "description": {
+      "label": "Bio",
+      "placeholder": "Tell us a little about yourself"
+    },
     "email": {
       "label": "Email",
       "placeholder": "Enter your email",
       "validation": {
-        "required": "Email is required",
-        "invalid": "Please enter a valid email address"
-      }
-    },
-    "password": {
-      "label": "Password",
-      "placeholder": "Enter your password",
-      "validation": {
-        "required": "Password is required",
-        "min": "Password must be at least 6 characters",
-        "max": "Password must be no more than 32 characters"
-      }
-    },
-    "repassword": {
-      "label": "Confirm Password",
-      "placeholder": "Enter your password again",
-      "validation": {
-        "required": "Password confirmation is required",
-        "mismatch": "Passwords do not match",
-        "min": "Password must be at least 6 characters",
-        "max": "Password must be no more than 32 characters"
+        "invalid": "Please enter a valid email address",
+        "required": "Email is required"
       }
     },
     "firstName": {
@@ -75,77 +19,126 @@
         "required": "First name is required"
       }
     },
+    "isPrivate": {
+      "description": "Personal posts from a private profile and replies from others will not be visible to the public. Only followers will be able to see your posts and replies.",
+      "label": "Private Profile"
+    },
     "lastName": {
       "label": "Last Name",
       "placeholder": "Enter your last name"
+    },
+    "password": {
+      "label": "Password",
+      "placeholder": "Enter your password",
+      "validation": {
+        "max": "Password must be no more than 32 characters",
+        "min": "Password must be at least 6 characters",
+        "required": "Password is required"
+      }
+    },
+    "repassword": {
+      "label": "Confirm Password",
+      "placeholder": "Enter your password again",
+      "validation": {
+        "max": "Password must be no more than 32 characters",
+        "min": "Password must be at least 6 characters",
+        "mismatch": "Passwords do not match",
+        "required": "Password confirmation is required"
+      }
     },
     "username": {
       "label": "Username",
       "placeholder": "Enter your username",
       "validation": {
-        "validating": "Checking username...",
-        "valid": "This username is available",
-        "required": "Username is required",
-        "minLength": "Username must be at least {{minLength}} characters",
-        "maxLength": "Username must be no more than {{maxLength}} characters",
-        "unavailable": "This username is not available",
-        "invalidCharacters": "Username can only contain letters, numbers, dots, and underscores",
-        "startWithLetter": "Username must start with a letter",
-        "endWithLetterOrDigit": "Username must end with a letter or digit",
         "consecutiveDotsUnderscores": "Username cannot contain consecutive dots or underscores",
-        "reservedId": "A username with 'id' must contain your id ({{id}})"
+        "endWithLetterOrDigit": "Username must end with a letter or digit",
+        "invalidCharacters": "Username can only contain letters, numbers, dots, and underscores",
+        "maxLength": "Username must be no more than {{maxLength}} characters",
+        "minLength": "Username must be at least {{minLength}} characters",
+        "required": "Username is required",
+        "reservedId": "A username with 'id' must contain your id ({{id}})",
+        "startWithLetter": "Username must start with a letter",
+        "unavailable": "This username is not available",
+        "valid": "This username is available",
+        "validating": "Checking username..."
       }
-    },
-    "description": {
-      "label": "Bio",
-      "placeholder": "Tell us a little about yourself"
-    },
-    "isPrivate": {
-      "label": "Private Profile",
-      "description": "Personal posts from a private profile and replies from others will not be visible to the public. Only followers will be able to see your posts and replies."
     }
   },
   "error": {
     "FETCH_ERROR": "Network error. Please check your connection and try again.",
     "TIMEOUT_ERROR": "The server is not responding. Please try again later."
   },
+  "errorBoundary": {
+    "default": {
+      "message": "It looks like an error occurred. Please try reloading the page or contact support if the problem persists.",
+      "title": "Oops! Something went wrong."
+    },
+    "dynamicImportFailed": {
+      "message": "An error occurred while loading part of the application. This may be due to a network issue or an update. Please reload the page.",
+      "title": "Loading Error"
+    },
+    "notFound": {
+      "message": "The page you are looking for does not exist.",
+      "title": "Page Not Found"
+    },
+    "profile": {
+      "message": "An error occurred while loading your profile.",
+      "title": "Server Error",
+      "unknownError": "Unknown error"
+    },
+    "rateLimit": {
+      "message": "It looks like you've exceeded the request limit. Please wait a moment and try again.",
+      "title": "Too Many Requests"
+    },
+    "reload": "Reload"
+  },
+  "loader": {
+    "init": "Loading",
+    "loading": "Loading",
+    "logging_out": "Logging out",
+    "page": "Loading page",
+    "profile": "Loading profile",
+    "sending": "Sending"
+  },
   "units": {
     "relative": {
-      "short": {
-        "now": "just now",
-        "second_zero": "just now",
-        "second": "{{count}}s",
-        "minute_zero": "just now",
-        "minute": "{{count}}m",
-        "hour": "{{count}}h",
-        "day_zero": "today",
-        "day": "{{count}}d",
-        "week": "{{count}}w",
-        "month": "{{count}}mo",
-        "year": "{{count}}y",
-        "long": "a long time ago"
-      },
       "long": {
-        "now": "just now",
-        "second_zero": "just now",
-        "second_one": "a second ago",
-        "second_other": "{{count}} seconds ago",
-        "minute_zero": "just now",
-        "minute_one": "a minute ago",
-        "minute_other": "{{count}} minutes ago",
-        "hour_one": "an hour ago",
-        "hour_other": "{{count}} hours ago",
-        "day_zero": "today",
         "day_one": "yesterday",
-        "day_other": "{{count}} days ago",
-        "week_one": "a week ago",
-        "week_other": "{{count}} weeks ago",
+        "day_zero": "today",
+        "hour_one": "an hour ago",
+        "long": "a long time ago",
+        "minute_one": "a minute ago",
+        "minute_zero": "just now",
         "month_one": "a month ago",
-        "month_other": "{{count}} months ago",
-        "year_one": "a year ago",
-        "year_other": "{{count}} years ago",
-        "long": "a long time ago"
+        "now": "just now",
+        "second_one": "a second ago",
+        "second_zero": "just now",
+        "week_one": "a week ago",
+        "year_one": "a year ago"
+      },
+      "short": {
+        "day": "{{count}}d",
+        "day_zero": "today",
+        "hour": "{{count}}h",
+        "long": "a long time ago",
+        "minute": "{{count}}m",
+        "minute_zero": "just now",
+        "month": "{{count}}mo",
+        "now": "just now",
+        "second": "{{count}}s",
+        "second_zero": "just now",
+        "week": "{{count}}w",
+        "year": "{{count}}y"
       }
+    }
+  },
+  "user": {
+    "search": {
+      "empty": "No users found",
+      "emptyValue": "Enter a username to search",
+      "loading": "Searching...",
+      "placeholder": "Find a user...",
+      "title": "Search"
     }
   }
 }

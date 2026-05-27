@@ -1,32 +1,42 @@
 {
-  "header": "Notifications",
-  "loading": "Loading notifications...",
-  "empty": "You have no notifications",
-  "follow": {
-    "title_known": "{{firstName}} {{lastName}}",
-    "known": "followed you",
-    "unknown": "Someone followed you"
-  },
-  "post_mention": {
-    "title_known": "{{firstName}} {{lastName}}",
-    "known": "mentioned you in a post",
-    "unknown": "Someone mentioned you in a post"
-  },
-  "follow_accepted": {
-    "title_known": "{{firstName}} {{lastName}}",
-    "known": "is now your friend",
-    "unknown": "Someone became your friend"
-  },
   "device": {
+    "description": "{{browser}} {{browserVersion}} • {{ip}}",
     "new_device": "New device {{vendorModel}} on {{os}} {{osVersion}}",
     "new_pc": "New computer {{vendorModel}} on {{os}} {{osVersion}}",
-    "description": "{{browser}} {{browserVersion}} • {{ip}}",
-    "unknown_device": "unknown device",
-    "unknown_os": "unknown OS",
     "unknown_browser": "Unknown browser",
-    "unknown_ip": "Unknown IP"
+    "unknown_device": "unknown device",
+    "unknown_ip": "Unknown IP",
+    "unknown_os": "unknown OS"
   },
+  "empty": "You have no notifications",
+  "follow": {
+    "known": "followed you",
+    "title_known": "{{firstName}} {{lastName}}",
+    "unknown": "Someone followed you"
+  },
+  "follow_accepted": {
+    "known": "is now your friend",
+    "title_known": "{{firstName}} {{lastName}}",
+    "unknown": "Someone became your friend"
+  },
+  "header": "Notifications",
+  "loading": "Loading notifications...",
   "notification": {
     "new": "New notification"
+  },
+  "post_mention": {
+    "known": "mentioned you in a post",
+    "title_known": "{{firstName}} {{lastName}}",
+    "unknown": "Someone mentioned you in a post"
+  },
+  "post_reply": {
+    "known": "replied to your post",
+    "title_known": "{{firstName}} {{lastName}}",
+    "unknown": "Someone replied to your post"
+  },
+  "post_reply_to_other": {
+    "known": "responded to a post you replied in",
+    "title_known": "{{firstName}} {{lastName}}",
+    "unknown": "Someone replied to a post you took part in"
   }
 }

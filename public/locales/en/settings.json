@@ -1,46 +1,45 @@
 {
-  "header": "Settings",
-  "profile": {
-    "title": "Edit Profile",
-    "header": "Profile Settings",
-    "changeAvatar": "Change avatar {{loading}}",
-    "percentage": "({{percentage}}%)",
-    "nameDescription": "Your first and last name are displayed on your profile but are not unique identifiers.",
-    "descriptionDescription": "A short bio about you, displayed on your profile."
+  "appearance": {
+    "header": "Appearance",
+    "theme": {
+      "dark": "Dark",
+      "label": "Color theme",
+      "light": "Light",
+      "system": "System"
+    },
+    "title": "Appearance"
   },
   "devices": {
-    "title": "Devices",
-    "header": "Devices",
-    "device": "Device",
-    "pc": "Computer",
-    "deviceInfo": "{{vendorModel}} on {{os}} {{osVersion}}",
     "browserInfo": "{{browser}} {{version}}",
     "bull": "•",
-    "info": "{{ip}} <bull>{{bull}}</bull> {{lastUsed}}",
     "currentDevice": "Current device",
-    "unknownDevice": "Unknown device",
-    "unknownOS": "unknown OS",
-    "unknownBrowser": "Unknown browser",
-    "unknownIP": "Unknown IP",
-
+    "device": "Device",
+    "deviceInfo": "{{vendorModel}} on {{os}} {{osVersion}}",
+    "header": "Devices",
+    "info": "{{ip}} <bull>{{bull}}</bull> {{lastUsed}}",
     "logout": {
       "button": "End session",
       "loading": "Ending session..."
-    }
+    },
+    "pc": "Computer",
+    "title": "Devices",
+    "unknownBrowser": "Unknown browser",
+    "unknownDevice": "Unknown device",
+    "unknownIP": "Unknown IP",
+    "unknownOS": "unknown OS"
   },
-  "appearance": {
-    "title": "Appearance",
-    "header": "Appearance",
-    "theme": {
-      "label": "Color theme",
-      "light": "Light",
-      "dark": "Dark",
-      "system": "System"
-    }
-  },
+  "header": "Settings",
   "language": {
-    "title": "Language",
-    "header": "Language"
+    "header": "Language",
+    "title": "Language"
   },
-  "logout": "Log out"
+  "logout": "Log out",
+  "profile": {
+    "changeAvatar": "Change avatar {{loading}}",
+    "descriptionDescription": "A short bio about you, displayed on your profile.",
+    "header": "Profile Settings",
+    "nameDescription": "Your first and last name are displayed on your profile but are not unique identifiers.",
+    "percentage": "({{percentage}}%)",
+    "title": "Edit Profile"
+  }
 }

@@ -1,14 +1,14 @@
 {
-  "title": "Hello there!",
   "description": "Please create an account to continue.",
-  "submit": "Create Account",
-  "login": "Already have an account?",
   "error": {
-    "password_mismatch": "Passwords do not match.",
-    "user_exists": "A user with this email already exists.",
+    "FETCH_ERROR": "Network error. Please check your connection and try again.",
+    "TIMEOUT_ERROR": "The server is not responding. Please try again later.",
     "failed": "Failed to create account. Please try again.",
     "failed_login": "Registration was successful, but sign-in failed. Please try signing in manually.",
-    "FETCH_ERROR": "Network error. Please check your connection and try again.",
-    "TIMEOUT_ERROR": "The server is not responding. Please try again later."
-  }
+    "password_mismatch": "Passwords do not match.",
+    "user_exists": "A user with this email already exists."
+  },
+  "login": "Already have an account?",
+  "submit": "Create Account",
+  "title": "Hello there!"
 }

@@ -1,29 +1,41 @@
 {
-  "followers_zero": "Немає підписників",
-  "followers_one": "<b>{{count}}</b> підписник",
+  "accept_request": "Прийняти запит",
+  "follow": "Підписатися",
   "followers_few": "<b>{{count}}</b> підписники",
+  "followers_list": {
+    "empty": {
+      "mine": "У вас немає підписників.",
+      "other": "Цей користувач не має підписників."
+    },
+    "header": "Підписники",
+    "loading": "Завантаження підписників..."
+  },
   "followers_many": "<b>{{count}}</b> підписників",
-
-  "following_zero": "Немає підписок",
-  "following_one": "<b>{{count}}</b> підписка",
+  "followers_one": "<b>{{count}}</b> підписник",
+  "followers_zero": "Немає підписників",
+  "following": "<b>{{count}}</b> підписник",
   "following_few": "<b>{{count}}</b> підписки",
+  "following_list": {
+    "empty": {
+      "mine": "Ви ні за ким не стежите.",
+      "other": "Цей користувач ні за ким не стежить."
+    },
+    "header": "Підписки",
+    "loading": "Завантаження підписок..."
+  },
   "following_many": "<b>{{count}}</b> підписок",
-
-  "friends_zero": "Немає друзів",
-  "friends_one": "<b>{{count}}</b> друг",
+  "following_one": "<b>{{count}}</b> підписка",
+  "following_zero": "Немає підписок",
   "friends_few": "<b>{{count}}</b> друга",
   "friends_many": "<b>{{count}}</b> друзів",
-
+  "friends_one": "<b>{{count}}</b> друг",
+  "friends_zero": "Немає друзів",
+  "loading": "Завантаження профілю...",
   "online": {
-    "now": "онлайн",
     "last_seen": "був(-ла) {{timeAgo}}",
-    "long": "давно"
+    "long": "давно",
+    "now": "онлайн"
   },
-
-  "follow": "Підписатися",
-  "unfollow": "Відписатися",
   "remove_friend": "Видалити з друзів",
-  "accept_request": "Прийняти запит",
-
-  "loading": "Завантаження профілю..."
+  "unfollow": "Відписатися"
 }

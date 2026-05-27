@@ -1,32 +1,42 @@
 {
-  "header": "Сповіщення",
-  "loading": "Завантаження сповіщень...",
-  "empty": "У вас немає сповіщень",
-  "follow": {
-    "title_known": "{{firstName}} {{lastName}}",
-    "known": "підписався(-лась) на вас",
-    "unknown": "Хтось підписався(-лась) на вас"
-  },
-  "post_mention": {
-    "title_known": "{{firstName}} {{lastName}}",
-    "known": "згадав(-ла) вас у публікації",
-    "unknown": "Хтось згадав(-ла) вас у публікації"
-  },
-  "follow_accepted": {
-    "title_known": "{{firstName}} {{lastName}}",
-    "known": "тепер ваш друг",
-    "unknown": "Хтось став(-ла) вашим другом"
-  },
   "device": {
+    "description": "{{browser}} {{browserVersion}} • {{ip}}",
     "new_device": "Новий пристрій {{vendorModel}} на {{os}} {{osVersion}}",
     "new_pc": "Новий комп'ютер {{vendorModel}} на {{os}} {{osVersion}}",
-    "description": "{{browser}} {{browserVersion}} • {{ip}}",
-    "unknown_device": "невідомий пристрій",
-    "unknown_os": "невідомої ОС",
     "unknown_browser": "Невідомий браузер",
-    "unknown_ip": "Невідомий IP"
+    "unknown_device": "невідомий пристрій",
+    "unknown_ip": "Невідомий IP",
+    "unknown_os": "невідомої ОС"
   },
+  "empty": "У вас немає сповіщень",
+  "follow": {
+    "known": "підписався(-лась) на вас",
+    "title_known": "{{firstName}} {{lastName}}",
+    "unknown": "Хтось підписався(-лась) на вас"
+  },
+  "follow_accepted": {
+    "known": "тепер ваш друг",
+    "title_known": "{{firstName}} {{lastName}}",
+    "unknown": "Хтось став(-ла) вашим другом"
+  },
+  "header": "Сповіщення",
+  "loading": "Завантаження сповіщень...",
   "notification": {
     "new": "Нове сповіщення"
+  },
+  "post_mention": {
+    "known": "згадав(-ла) вас у публікації",
+    "title_known": "{{firstName}} {{lastName}}",
+    "unknown": "Хтось згадав(-ла) вас у публікації"
+  },
+  "post_reply": {
+    "known": "відповів(-ла) на вашу публікацію",
+    "title_known": "{{firstName}} {{lastName}}",
+    "unknown": "Хтось відповів(-ла) на вашу публікацію"
+  },
+  "post_reply_to_other": {
+    "known": "replied to a post you took part in",
+    "title_known": "{{firstName}} {{lastName}}",
+    "unknown": "Хтось відповів(-ла) на публікацію, в якій ви брали участь"
   }
 }

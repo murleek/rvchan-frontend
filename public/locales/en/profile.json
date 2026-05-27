@@ -1,29 +1,40 @@
 {
-  "followers_zero": "No followers",
-  "followers_one": "<b>{{count}}</b> follower",
+  "accept_request": "Accept Request",
+  "follow": "Follow",
   "followers_few": "<b>{{count}}</b> followers",
+  "followers_list": {
+    "empty": {
+      "mine": "You have no followers.",
+      "other": "This user has no followers."
+    },
+    "header": "Followers",
+    "loading": "Loading followers..."
+  },
   "followers_many": "<b>{{count}}</b> followers",
-
-  "following_zero": "Not following anyone",
-  "following_one": "<b>{{count}}</b> following",
+  "followers_one": "<b>{{count}}</b> follower",
+  "followers_zero": "No followers",
   "following_few": "<b>{{count}}</b> following",
+  "following_list": {
+    "empty": {
+      "mine": "You are not following anyone.",
+      "other": "This user is not following anyone."
+    },
+    "header": "Following",
+    "loading": "Loading following..."
+  },
   "following_many": "<b>{{count}}</b> following",
-
-  "friends_zero": "No friends",
-  "friends_one": "<b>{{count}}</b> friend",
+  "following_one": "<b>{{count}}</b> following",
+  "following_zero": "Not following anyone",
   "friends_few": "<b>{{count}}</b> friends",
   "friends_many": "<b>{{count}}</b> friends",
-
+  "friends_one": "<b>{{count}}</b> friend",
+  "friends_zero": "No friends",
+  "loading": "Loading profile...",
   "online": {
-    "now": "online",
     "last_seen": "last seen {{timeAgo}}",
-    "long": "a long time ago"
+    "long": "a long time ago",
+    "now": "online"
   },
-
-  "follow": "Follow",
-  "unfollow": "Unfollow",
   "remove_friend": "Remove Friend",
-  "accept_request": "Accept Request",
-
-  "loading": "Loading profile..."
+  "unfollow": "Unfollow"
 }

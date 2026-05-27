@@ -1,42 +1,42 @@
 {
-  "header": "Уведомления",
-  "loading": "Загрузка уведомлений...",
+  "device": {
+    "description": "{{browser}} {{browserVersion}} • {{ip}}",
+    "new_device": "Новое устройство {{vendorModel}} на {{os}} {{osVersion}}",
+    "new_pc": "Новый компьютер {{vendorModel}} на {{os}} {{osVersion}}",
+    "unknown_browser": "Неизвестный браузер",
+    "unknown_device": "неизвестное устройство",
+    "unknown_ip": "Неизвестный IP",
+    "unknown_os": "неизвестной ОС"
+  },
   "empty": "У вас нет уведомлений",
   "follow": {
-    "title_known": "{{firstName}} {{lastName}}",
     "known": "подписался(-лась) на вас",
+    "title_known": "{{firstName}} {{lastName}}",
     "unknown": "Кто-то подписался(-лась) на вас"
   },
-  "post_mention": {
+  "follow_accepted": {
+    "known": "теперь ваш друг",
     "title_known": "{{firstName}} {{lastName}}",
+    "unknown": "Кто-то стал(-а) вашим другом"
+  },
+  "header": "Уведомления",
+  "loading": "Загрузка уведомлений...",
+  "notification": {
+    "new": "Новое уведомление"
+  },
+  "post_mention": {
     "known": "упомянул(-а) вас в публикации",
+    "title_known": "{{firstName}} {{lastName}}",
     "unknown": "Кто-то упомянул(-а) вас в публикации"
   },
   "post_reply": {
-    "title_known": "{{firstName}} {{lastName}}",
     "known": "ответил(-а) на вашу публикацию",
+    "title_known": "{{firstName}} {{lastName}}",
     "unknown": "Кто-то ответил(-а) на вашу публикацию"
   },
   "post_reply_to_other": {
-    "title_known": "{{firstName}} {{lastName}}",
     "known": "ответил(-а) на публикацию, в которой вы участвовали",
-    "unknown": "Кто-то ответил(-а) на публикацию, в которой вы участвовали"
-  },
-  "follow_accepted": {
     "title_known": "{{firstName}} {{lastName}}",
-    "known": "теперь ваш друг",
-    "unknown": "Кто-то стал(-а) вашим другом"
-  },
-  "device": {
-    "new_device": "Новое устройство {{vendorModel}} на {{os}} {{osVersion}}",
-    "new_pc": "Новый компьютер {{vendorModel}} на {{os}} {{osVersion}}",
-    "description": "{{browser}} {{browserVersion}} • {{ip}}",
-    "unknown_device": "неизвестное устройство",
-    "unknown_os": "неизвестной ОС",
-    "unknown_browser": "Неизвестный браузер",
-    "unknown_ip": "Неизвестный IP"
-  },
-  "notification": {
-    "new": "Новое уведомление"
+    "unknown": "Кто-то ответил(-а) на публикацию, в которой вы участвовали"
   }
 }

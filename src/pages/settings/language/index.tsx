@@ -125,13 +125,6 @@ const SettingsLanguagePage = () => {
               />
             ))}
         </Card>
-        <span className="text-muted-foreground px-4 text-xs">
-          prefered languages:{" "}
-          {detectedLanguage &&
-            (Array.isArray(detectedLanguage)
-              ? detectedLanguage.join(", ")
-              : detectedLanguage)}
-        </span>
       </div>
     </div>
   );

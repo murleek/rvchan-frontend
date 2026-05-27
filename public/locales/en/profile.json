@@ -29,6 +29,10 @@
   "friends_many": "<b>{{count}}</b> friends",
   "friends_one": "<b>{{count}}</b> friend",
   "friends_zero": "No friends",
+  "header": {
+    "my_profile": "My profile",
+    "profile": "Profile"
+  },
   "loading": "Loading profile...",
   "online": {
     "last_seen": "last seen {{timeAgo}}",

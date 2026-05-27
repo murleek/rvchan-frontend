@@ -13,6 +13,7 @@
   },
   "error": "Error loading posts:",
   "header": "Post #{{id}}",
+  "invalidUrl": "Invalid URL",
   "like": {
     "false": "Unlike",
     "true": "Like"

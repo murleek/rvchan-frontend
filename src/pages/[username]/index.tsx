@@ -19,7 +19,10 @@ import useRelativeTime from "@/hooks/useRelativeTime";
 import { PAGES } from "@/constants";
 
 const ProfilePage = () => {
-  const { setTitle, setHideTitle } = useHeader("Профиль", { hideTitle: true });
+  const { t } = useTranslation("profile");
+  const { setTitle, setHideTitle } = useHeader(t("header.profile"), {
+    hideTitle: true,
+  });
   const { username } = useParams();
   const {
     data: loadedProfile,
@@ -30,7 +33,6 @@ const ProfilePage = () => {
   } = useGetUserByUsernameQuery(username!, {
     skip: !username,
   });
-  const { t } = useTranslation("profile");
 
   const time = useRelativeTime(loadedProfile?.lastActiveAt, "long");
 
@@ -52,7 +54,7 @@ const ProfilePage = () => {
   useEffect(() => {
     if (loadedProfile) {
       if (loadedProfile.isMine) {
-        setTitle("Мой профиль");
+        setTitle(t("header.my_profile"));
         setHideTitle(false);
       } else {
         setTitle(`${loadedProfile.firstName} ${loadedProfile.lastName}`);
@@ -72,8 +74,7 @@ const ProfilePage = () => {
       </Card>
     );
 
-  if (error || !loadedProfile)
-    return <ErrorView t="notFound" errorCode="404 Not Found" noReload />;
+  if (error || !loadedProfile) return <ErrorView t="notFound" noReload />;
 
   return (
     <div>
@@ -92,7 +93,6 @@ const ProfilePage = () => {
             <ProfileAvatar
               className="size-24 rounded-full"
               src={loadedProfile.avatar}
-              alt={`${loadedProfile.firstName}'s (@${loadedProfile.username}) avatar`}
             />
             <span
               className={clsx(
@@ -125,7 +125,6 @@ const ProfilePage = () => {
             <Trans
               ns="profile"
               i18nKey="followers"
-              defaults="<b>{{count}}</b> followers"
               values={{ count: loadedProfile.followers ?? 0 }}
               components={{ b: <strong /> }}
             />
@@ -140,7 +139,6 @@ const ProfilePage = () => {
             <Trans
               ns="profile"
               i18nKey="following"
-              defaults="<b>{{count}}</b> following"
               values={{ count: loadedProfile.following ?? 0 }}
               components={{ b: <strong /> }}
             />

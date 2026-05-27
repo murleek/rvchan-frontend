@@ -37,7 +37,7 @@ const PostPage: FC = () => {
   if (!username || !id) {
     return (
       <div className="text-sm text-destructive h-40 px-4 py-6 text-center flex flex-col justify-center items-center">
-        {t("error.invalidId")}
+        {t("error")} {t("invalidUrl")}
       </div>
     );
   }

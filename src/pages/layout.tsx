@@ -95,12 +95,7 @@ const RootLayout: FC = () => {
                     path={PAGES.INIT}
                     element={<Navigate to="/" replace />}
                   />
-                  <Route
-                    path="*"
-                    element={
-                      <ErrorView t="notFound" errorCode="404 Not Found" />
-                    }
-                  />
+                  <Route path="*" element={<ErrorView t="notFound" />} />
                 </Routes>
               </main>
             </Suspense>

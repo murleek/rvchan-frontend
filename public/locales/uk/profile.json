@@ -30,6 +30,10 @@
   "friends_many": "<b>{{count}}</b> друзів",
   "friends_one": "<b>{{count}}</b> друг",
   "friends_zero": "Немає друзів",
+  "header": {
+    "my_profile": "Мій профіль",
+    "profile": "Профіль"
+  },
   "loading": "Завантаження профілю...",
   "online": {
     "last_seen": "був(-ла) {{timeAgo}}",

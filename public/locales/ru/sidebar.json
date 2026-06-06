@@ -1,13 +1,22 @@
 {
   "content": {
+    "home": "Главная",
     "notifications": "Уведомления",
     "profile": "Мой профиль",
-    "search": "Поиск"
+    "search": "Поиск",
+    "reply": "Ответить на пост",
+    "create": "Создать тред"
   },
   "dropdown": {
     "devices": "Устройства",
     "logout": "Выйти",
     "profile": "Профиль",
     "settings": "Настройки"
+  },
+  "navbar": {
+    "home": "Главная",
+    "notifications": "Уведомления",
+    "profile": "Профиль",
+    "search": "Поиск"
   }
 }

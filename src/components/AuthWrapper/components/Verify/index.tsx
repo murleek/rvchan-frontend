@@ -1,98 +1,86 @@
-import { useVerifyMutation } from "@/app/features/auth/auth.api";
-import Loader from "@/components/Common/Loader";
+import * as z from "zod";
+import { Navigate, useLocation } from "react-router";
+import type { AuthError } from "@/hooks/useAuth";
+import useAuth from "@/hooks/useAuth";
+import { useLayoutEffect, useState, type FC } from "react";
+import { PAGES } from "@/constants";
 import PageLoader from "@/components/Common/PageLoader";
-import { Button } from "@/components/ui/button";
+import { useAppForm } from "../../../ui/form";
 import {
   FieldError,
   FieldGroup,
   FieldSet,
   FieldStatus,
-} from "@/components/ui/field";
-import { useAppForm } from "@/components/ui/form";
-import { PAGES } from "@/constants";
-import useAuth from "@/hooks/useAuth";
-import { Plus } from "lucide-react";
-import { useState, type FC } from "react";
+} from "../../../ui/field";
+import { Button } from "../../../ui/button";
 import { useTranslation } from "react-i18next";
-import { Navigate } from "react-router";
-import z from "zod";
+import { LogIn } from "lucide-react";
+import Loader from "@/components/Common/Loader";
 import type { AuthWrapperAction } from "../../types";
 import { CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { useRegisterMutation } from "@/app/features/auth/auth.api";
 
-export const RegisterSchema = z
-  .object({
-    email: z
-      .string()
-      .nonempty({ message: "account.email.validation.required" })
-      .pipe(z.email("account.email.validation.invalid")),
-    password: z
-      .string()
-      .nonempty("account.password.validation.required")
-      .min(6, "account.password.validation.min")
-      .max(32, "account.password.validation.max"),
-    repassword: z
-      .string()
-      .nonempty("account.repassword.validation.required")
-      .min(6, "account.repassword.validation.min")
-      .max(32, "account.repassword.validation.max"),
-  })
-  .refine((data) => data.password === data.repassword, {
-    message: "account.repassword.validation.mismatch",
-    path: ["repassword"],
-  });
+export const VerifySchema = z.object({
+  email: z
+    .string()
+    .nonempty({ message: "account.email.validation.required" })
+    .pipe(z.email("account.email.validation.invalid")),
+  code: z.string().nonempty("account.code.validation.required"),
+});
 
-export type RegisterType = z.infer<typeof RegisterSchema>;
+export type VerifyType = z.infer<typeof VerifySchema>;
 
-type RegisterProps = {
+type VerifyProps = {
   onChangeAction?: (action: AuthWrapperAction, payload?: object) => void;
+  payload?: object;
 };
 
-const Register: FC<RegisterProps> = ({ onChangeAction }) => {
-  const auth = useAuth();
-  const { profile, isLoading } = auth;
-
-  const { t } = useTranslation("register");
+const Verify: FC<VerifyProps> = ({ onChangeAction, payload }) => {
+  const { login, profile, isLoading, isLogoutLoading, isAuthenticated } =
+    useAuth();
+  const { t } = useTranslation("verify");
   const { t: tCommon } = useTranslation();
 
-  const [verify] = useVerifyMutation();
+  const [register] = useRegisterMutation();
 
-  const [error, setError] = useState<string>("");
+  const location = useLocation();
+  const redirectError: AuthError = location.state;
+
+  const [error, setError] = useState<string>(
+    (redirectError && "message" in redirectError && redirectError?.message) ||
+      "",
+  );
 
   const form = useAppForm({
     defaultValues: {
-      email: "",
-      password: "",
-      repassword: "",
-    } as RegisterType,
+      email: payload && "email" in payload ? String(payload.email) : "",
+      code: "",
+    },
     validators: {
-      onSubmit: RegisterSchema,
+      onSubmit: VerifySchema,
     },
     onSubmit: async ({ value }) => {
-      const parsed = RegisterSchema.safeParse(value);
+      const parsed = VerifySchema.safeParse(value);
       if (!parsed.success) return;
 
-      const res = await verify({
+      const res = await register({
         email: parsed.data.email,
-        password: parsed.data.password,
+        code: parsed.data.code,
       });
 
-      if (res.data) {
-        // const isLogged = await login({
-        //   email: parsed.data.email,
-        //   password: parsed.data.password,
-        // });
-
-        // if (isLogged) {
-        //   form.reset();
-        //   onChangeAction?.("init");
-        // } else {
-        //   setError(t("error.failed_login"));
-        // }
-        onChangeAction?.("verify", {
-          ...res.data,
+      if (!res.error) {
+        const isLogged = await login({
           email: parsed.data.email,
-          password: parsed.data.password,
+          password:
+            payload && "password" in payload ? String(payload.password) : "",
         });
+
+        if (isLogged) {
+          form.reset();
+          onChangeAction?.("init");
+        } else {
+          setError(t("error.failed_login"));
+        }
       } else {
         const message =
           res.error &&
@@ -107,14 +95,23 @@ const Register: FC<RegisterProps> = ({ onChangeAction }) => {
     },
   });
 
-  if (isLoading) {
+  useLayoutEffect(() => {
+    if (
+      !isAuthenticated &&
+      (!payload || !("email" in payload) || !("password" in payload))
+    ) {
+      onChangeAction?.("register");
+    }
+  }, [payload, isAuthenticated]);
+
+  if (isLoading || isLogoutLoading || isAuthenticated) {
     return <PageLoader label={tCommon("loader.profile")} className="h-56!" />;
   }
   if (profile) {
     if (profile.state === "INIT") {
       return <PageLoader label={tCommon("loader.profile")} className="h-56!" />;
     }
-    return <Navigate to={PAGES.ROOT} replace />;
+    return <Navigate to={redirectError?.redirect || PAGES.ROOT} replace />;
   }
 
   return (
@@ -125,7 +122,15 @@ const Register: FC<RegisterProps> = ({ onChangeAction }) => {
             {t("title")}
           </h1>
           <p className="text-muted-foreground animated transition-colors text-sm">
-            {t("description")}
+            {t("description", {
+              email: (payload && "email" in payload
+                ? String(payload.email)
+                : ""
+              ).replace(
+                /^(.)(.*)(.@.*)$/,
+                (_, a, b, c) => a + b.replace(/./g, "*") + c,
+              ),
+            })}
           </p>
         </div>
       </CardHeader>
@@ -138,21 +143,14 @@ const Register: FC<RegisterProps> = ({ onChangeAction }) => {
       >
         <CardContent>
           <FieldGroup className="h-full">
-            <FieldSet className="max-xs:flex-1">
+            <FieldSet className="max-xs:flex-1 justify-center">
               <form.AppField
-                name="email"
-                children={(field) => <field.TextField t="account.email" />}
-              />
-              <form.AppField
-                name="password"
+                name="code"
                 children={(field) => (
-                  <field.PasswordField t="account.password" />
-                )}
-              />
-              <form.AppField
-                name="repassword"
-                children={(field) => (
-                  <field.PasswordField t="account.repassword" />
+                  <field.OtpField
+                    t="account.otp"
+                    className="**:justify-center"
+                  />
                 )}
               />
             </FieldSet>
@@ -174,11 +172,11 @@ const Register: FC<RegisterProps> = ({ onChangeAction }) => {
           <Button
             type="button"
             variant={"ghost"}
-            onClick={() => onChangeAction?.("login")}
+            onClick={() => onChangeAction?.("register")}
             className="text-primary"
           >
             {/* <Icon name="add" fill className="text-lg!" /> */}
-            {t("login")}
+            {t("register")}
           </Button>
           <form.Subscribe
             selector={(state) => [state.isSubmitting]}
@@ -192,7 +190,7 @@ const Register: FC<RegisterProps> = ({ onChangeAction }) => {
                 ) : (
                   <>
                     {/* <Icon name="login" fill className="text-lg!" /> */}
-                    <Plus />
+                    <LogIn />
                     {t("submit")}
                   </>
                 )}
@@ -205,4 +203,4 @@ const Register: FC<RegisterProps> = ({ onChangeAction }) => {
   );
 };
 
-export default Register;
+export default Verify;

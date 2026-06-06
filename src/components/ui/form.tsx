@@ -12,6 +12,12 @@ import { Input } from "./input";
 import { useTranslation } from "react-i18next";
 import { Textarea } from "./textarea";
 import { Switch } from "./switch";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "./input-otp";
 
 export const { fieldContext, formContext, useFieldContext } =
   createFormHookContexts();
@@ -19,7 +25,13 @@ export const { fieldContext, formContext, useFieldContext } =
 export const { useAppForm } = createFormHook({
   fieldContext,
   formContext,
-  fieldComponents: { TextField, PasswordField, TextareaField, SwitchField },
+  fieldComponents: {
+    TextField,
+    PasswordField,
+    TextareaField,
+    SwitchField,
+    OtpField,
+  },
   formComponents: {},
 });
 
@@ -217,5 +229,63 @@ function SwitchField(
         </Field>
       </FieldLabel>
     </FieldGroup>
+  );
+}
+
+function OtpField(
+  props: {
+    placeholder?: string;
+    className?: string;
+    hasValid?: boolean;
+    required?: boolean;
+    orientation?: "horizontal" | "vertical";
+  } & (
+    | { t: string; tParams?: Record<string, any>; label?: string | null }
+    | { t: never; tParams: never; label: string | null }
+  ),
+) {
+  const field = useFieldContext<string>();
+  const { t } = useTranslation();
+
+  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+
+  return (
+    <Field className={props.className}>
+      <div className="flex items-center justify-between">
+        {props.label !== null && (
+          <FieldLabel htmlFor={field.name}>
+            {props.t ? (props.label ?? t(props.t + ".label")) : props.label}
+          </FieldLabel>
+        )}
+      </div>
+      <InputOTP
+        maxLength={6}
+        id={field.name}
+        name={field.name}
+        required
+        value={field.state.value}
+        onBlur={field.handleBlur}
+        onChange={(e) => field.handleChange(e)}
+        aria-invalid={isInvalid}
+        placeholder={
+          props.t
+            ? (props.placeholder ?? t(`${props.t}.placeholder`))
+            : props.placeholder
+        }
+        autoComplete="off"
+      >
+        <InputOTPGroup className="*:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-11 *:data-[slot=input-otp-slot]:text-xl">
+          <InputOTPSlot index={0} />
+          <InputOTPSlot index={1} />
+          <InputOTPSlot index={2} />
+        </InputOTPGroup>
+        <InputOTPSeparator className="mx-2" />
+        <InputOTPGroup className="*:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-11 *:data-[slot=input-otp-slot]:text-xl">
+          <InputOTPSlot index={3} />
+          <InputOTPSlot index={4} />
+          <InputOTPSlot index={5} />
+        </InputOTPGroup>
+      </InputOTP>
+    </Field>
   );
 }

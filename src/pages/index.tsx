@@ -15,12 +15,7 @@ const RootPage: FC = () => {
     return <Navigate to={PAGES.LOGIN} replace />;
   }
 
-  return (
-    <Navigate
-      to={PAGES.USER.replace(":username", auth.profile.username)}
-      replace
-    />
-  );
+  return <Navigate to={PAGES.HOME} replace />;
 };
 
 export default RootPage;

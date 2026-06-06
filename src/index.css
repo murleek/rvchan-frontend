@@ -284,7 +284,7 @@
     @apply scrollbar-bg-background md:scrollbar-bg-sidebar;
   }
   body {
-    @apply bg-background md:bg-card has-[#auth]:bg-card md:scrollbar-bg-sidebar text-foreground has-[div[role=dialog]]:bg-black!;
+    @apply bg-background md:bg-card has-[#auth]:bg-card md:scrollbar-bg-sidebar has-[[role=dialog]]:overflow-hidden! mr-0! text-foreground;
     letter-spacing: var(--tracking-normal);
   }
   #root {
@@ -296,4 +296,8 @@
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-color, var(--color-gray-300))
     var(--scrollbar-bg-color, var(--color-white));
+}
+
+body[data-scroll-locked] {
+  margin-right: 0 !important;
 }

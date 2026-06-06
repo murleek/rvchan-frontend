@@ -59,7 +59,7 @@ function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border bg-background p-6 shadow-lg duration-200 outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:max-w-lg",
+          "fixed md:top-[50%] max-md:bottom-0 md:left-[50%] z-50 grid w-full md:max-w-2xl max-md:max-h-[calc(100dvh-4rem)] md:max-h-[calc(50dvh)] md:translate-x-[-50%] md:translate-y-[-50%] gap-4 max-md:rounded-t-4xl md:rounded-4xl bg-background p-6 shadow-lg duration-300 outline-none data-[state=closed]:animate-out data-[state=closed]:max-md:slide-out-to-bottom data-[state=open]:animate-in data-[state=open]:max-md:slide-in-from-bottom data-[state=open]:md:zoom-in-95 data-[state=closed]:md:zoom-out-95 data-[state=open]:md:fade-in-0 data-[state=closed]:md:fade-out-0",
           className,
         )}
         {...props}
@@ -68,9 +68,10 @@ function DialogContent({
         {showCloseButton && (
           <DialogPrimitive.Close
             data-slot="dialog-close"
-            className="absolute top-4 right-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+            className="absolute top-2 right-3 hover:opacity-100 focus:scale-110 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 z-50 p-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 active:brightness-110 backdrop-filter-[brightness()] active:scale-125 animated transition-[background,color,scale,opacity] duration-300 inset-shadow inset-shadow-glow dark:inset-shadow-white/20"
+            onContextMenu={(e) => e.preventDefault()}
           >
-            <XIcon />
+            <XIcon className="size-7 stroke-3" />
             <span className="sr-only">Close</span>
           </DialogPrimitive.Close>
         )}

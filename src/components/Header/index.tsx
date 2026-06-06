@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useMemo } from "react";
 import { a, useTransition } from "@react-spring/web";
 import useAuth from "@/hooks/useAuth";
 import { Check, ChevronLeft, Settings } from "lucide-react";
@@ -10,12 +10,12 @@ import { useLocation, useNavigate } from "react-router";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/app/store";
 import useScrollHidden from "./hooks/useScrollHidden";
+import { onClickRef } from "@/hooks/common/useHeader";
 
 const Header = () => {
-  const { title, hideTitle, isClickable } = useSelector(
+  const { title, hideTitle, isClickable, hasClick } = useSelector(
     (state: RootState) => state.header,
   );
-  const onClickRef = useRef<(() => void) | null>(null);
 
   const { profile } = useAuth();
   const navigate = useNavigate();
@@ -42,7 +42,7 @@ const Header = () => {
     [navigate],
   );
 
-  const handleCheck = useCallback(() => onClickRef.current?.(), []);
+  const handleCheck = () => onClickRef.current?.();
 
   return (
     <header className="gap-3 h-16 flex-none shrink-0 items-center sticky top-0 z-10 md:rounded-t-xl">
@@ -84,12 +84,10 @@ const Header = () => {
         <HeaderButton
           icon={Check}
           onClick={handleCheck}
-          // eslint-disable-next-line react-hooks/refs
-          show={!!onClickRef.current}
+          show={!!hasClick}
           position="right"
           disabled={!isClickable}
           activeColor="fuchsia"
-          aria-label="Сохранить"
         />
       </div>
     </header>

@@ -3,25 +3,29 @@ import InfiniteScroll from "@/components/Common/InfiniteScroll";
 import Loader from "@/components/Common/Loader";
 import Post from "@/components/Common/Post";
 import PostForm from "@/components/Common/PostForm";
+import type { PostFormModalDetails } from "@/components/Common/PostFormModal";
 import PostReply from "@/components/Common/PostReply";
 import { Card } from "@/components/ui/card";
 import { useHeader } from "@/hooks/common/useHeader";
-import { useMemo, type FC } from "react";
+import useModal from "@/hooks/common/useModal";
+import { useEffect, useMemo, type FC } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router";
+import { useLocation, useParams } from "react-router";
 
 const PostPage: FC = () => {
+  const { setPayload, openModal } = useModal<PostFormModalDetails>("post");
   const { username, id } = useParams();
+  const { hash } = useLocation();
   const { t } = useTranslation("posts");
   useHeader(t("header", { id }));
 
   const {
     data: post,
-    isLoading: isUserThreadsLoading,
-    error: userThreadsError,
+    isLoading,
+    error,
     fetchNextPage,
     hasNextPage,
-    isFetching: isFetchingThreads,
+    isFetching,
   } = useGetPostInfiniteQuery(
     { username: username!, threadId: id! },
     { skip: !username || !id },
@@ -33,6 +37,20 @@ const PostPage: FC = () => {
   const replies = useMemo(() => {
     return post?.pages.map((page) => page.replies.data).flat() ?? [];
   }, [post]);
+
+  useEffect(() => {
+    if (!post?.pages[0]) return;
+    setPayload({ reply: post?.pages[0] ?? null, isReplyingToThread: true });
+    return () => {
+      setPayload(null);
+    };
+  }, [post]);
+
+  useEffect(() => {
+    if (hash === "#reply") {
+      openModal();
+    }
+  }, [hash]);
 
   if (!username || !id) {
     return (
@@ -55,22 +73,21 @@ const PostPage: FC = () => {
           .reverse()}
       <div>
         <Card className="w-full p-0 gap-0">
-          {isUserThreadsLoading ? (
+          {isLoading ? (
             <div className="md:px-4 gap-2 h-40 w-full flex flex-col justify-center items-center">
               <Loader className="text-fuchsia-500 size-10!" />
               <span className="text-center text-muted-foreground animated transition-colors block">
                 {t("loading")}
               </span>
             </div>
-          ) : userThreadsError ? (
-            "originalStatus" in userThreadsError &&
-            userThreadsError.originalStatus === 404 ? (
+          ) : error ? (
+            "originalStatus" in error && error.originalStatus === 404 ? (
               <div className="text-sm text-destructive h-40 px-4 py-6 text-center flex flex-col justify-center items-center">
                 {t("error.notFound")}
               </div>
             ) : (
               <div className="text-sm text-destructive h-40 px-4 py-6 text-center flex flex-col justify-center items-center">
-                {t("error")} {String(userThreadsError)}
+                {t("error")} {String(error)}
               </div>
             )
           ) : post?.pages[0] ? (
@@ -78,7 +95,7 @@ const PostPage: FC = () => {
               <Post thread={post.pages[0]} notEntriable />
               {replies.length > 0 && (
                 <InfiniteScroll
-                  isFetching={isFetchingThreads}
+                  isFetching={isFetching}
                   loadMore={handleNextPage}
                   hasMore={!!hasNextPage}
                   className="flex flex-col gap-0"
@@ -96,16 +113,16 @@ const PostPage: FC = () => {
           )}
         </Card>
       </div>
-      {!isUserThreadsLoading && !userThreadsError && replies.length === 0 && (
+      {!isLoading && !error && replies.length === 0 && (
         <p className="text-sm text-muted-foreground h-4 px-4 text-center flex flex-col justify-center items-center">
           {t("empty.replies")}
         </p>
       )}
-      {!isUserThreadsLoading && (
+      {!isLoading && (
         <PostForm
           username={username}
           parentId={id}
-          disabled={!!userThreadsError}
+          disabled={!!error}
           className="sticky bottom-20 md:bottom-5 shadow-lg"
         />
       )}

@@ -10,6 +10,11 @@ export type AuthTokens = {
   refreshToken: string;
 };
 
+export type AuthCode = {
+  email: string;
+  code: string;
+};
+
 export type Profile = {
   id: number;
   email: string;

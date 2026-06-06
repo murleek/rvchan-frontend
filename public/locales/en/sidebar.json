@@ -1,5 +1,6 @@
 {
   "content": {
+    "home": "Home",
     "notifications": "Notifications",
     "profile": "My Profile",
     "search": "Search"
@@ -9,5 +10,11 @@
     "logout": "Log out",
     "profile": "Profile",
     "settings": "Settings"
+  },
+  "navbar": {
+    "home": "Home",
+    "notifications": "Notifications",
+    "profile": "Profile",
+    "search": "Search"
   }
 }

@@ -89,7 +89,6 @@ async function buildToast(
       const { actor } = notification;
       return {
         type: "info",
-        // ✅ Отдельные ключи для title и description
         title: actor
           ? t("follow.title_known", {
               firstName: actor.firstName,
@@ -136,7 +135,6 @@ async function buildToast(
 
       return {
         type: "info",
-        // ✅ Интерполяция через i18n, не конкатенация строк
         title: t(isDesktop ? "device.new_pc" : "device.new_device", {
           vendorModel: vendorModel || t("device.unknown_device"),
           os: device.os || t("device.unknown_os"),
@@ -255,8 +253,8 @@ export const socketMiddleware: Middleware = (store) => {
       auth: { token },
       transports: ["websocket"],
       reconnection: true,
-      reconnectionAttempts: 5,
       reconnectionDelay: 2000,
+      reconnectionDelayMax: 10000,
     });
 
     socket.on("connect", () => {
@@ -381,6 +379,16 @@ export const socketMiddleware: Middleware = (store) => {
                     page.parents?.forEach((parent) => {
                       parent.replyCount += 1;
                     });
+
+                    const pageIndex = page.replies.data.findIndex(
+                      (reply) => reply.id === jobId,
+                    );
+
+                    if (pageIndex !== -1) {
+                      page.replies.data[pageIndex] = data.post;
+                      return;
+                    }
+
                     page.replies.data.forEach((reply, index) => {
                       if (reply.id === jobId) {
                         page.replies.data[index] = data.post;
@@ -406,6 +414,7 @@ export const socketMiddleware: Middleware = (store) => {
               },
             ),
           );
+          dispatch(postsApi.util.invalidateTags(["feed"]));
         }
       },
     );

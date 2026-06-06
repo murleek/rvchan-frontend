@@ -1,11 +1,16 @@
-import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
+import { useCallback, useEffect, useLayoutEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/app/store";
 import {
   setHideTitle,
   setIsClickable,
   setTitle,
+  setHasClick,
 } from "@/app/features/header/header.slice";
+
+export const onClickRef = {
+  current: null as (() => void) | null,
+};
 
 const useHeader = (
   title?: string | null,
@@ -17,10 +22,9 @@ const useHeader = (
 ) => {
   const dispatch = useDispatch();
 
-  const onClickRef = useRef<(() => void) | null>(null);
-
   useLayoutEffect(() => {
     onClickRef.current = onClick ?? null;
+    dispatch(setHasClick(!!onClick));
   });
 
   useEffect(() => {
@@ -28,7 +32,8 @@ const useHeader = (
     dispatch(setTitle(title));
     dispatch(setHideTitle(hideTitle));
     dispatch(setIsClickable(isClickable));
-  }, [dispatch, title, hideTitle, isClickable]);
+    dispatch(setHasClick(!!onClick));
+  }, [dispatch, title, hideTitle, isClickable, onClick]);
 
   return {
     onClickRef,
@@ -42,6 +47,10 @@ const useHeader = (
     ),
     setIsClickable: useCallback(
       (v: boolean) => dispatch(setIsClickable(v)),
+      [dispatch],
+    ),
+    setHasClick: useCallback(
+      (v: boolean) => dispatch(setHasClick(v)),
       [dispatch],
     ),
   };

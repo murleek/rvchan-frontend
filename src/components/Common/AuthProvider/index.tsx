@@ -18,9 +18,11 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   const auth = useAuth();
   const { t } = useTranslation();
   const [action, setAction] = useState<AuthWrapperAction>("login");
+  const [payload, setPayload] = useState<object>();
 
-  const onChangeAction = (action: AuthWrapperAction) => {
+  const onChangeAction = (action: AuthWrapperAction, payload?: object) => {
     setAction(action);
+    setPayload(payload);
   };
 
   useEffect(() => {
@@ -68,6 +70,7 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
             action={action}
             className="bg-black/20"
             onChangeAction={onChangeAction}
+            payload={payload}
           />
         </>
       );
@@ -119,6 +122,7 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
           action={action}
           className="bg-black/20"
           onChangeAction={onChangeAction}
+          payload={payload}
         />
       </>
     );

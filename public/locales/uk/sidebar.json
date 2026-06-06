@@ -1,5 +1,6 @@
 {
   "content": {
+    "home": "Головна",
     "notifications": "Сповіщення",
     "profile": "Мій профіль",
     "search": "Пошук"
@@ -9,5 +10,11 @@
     "logout": "Вийти",
     "profile": "Профіль",
     "settings": "Налаштування"
+  },
+  "navbar": {
+    "home": "Головна",
+    "notifications": "Сповіщення",
+    "profile": "Профіль",
+    "search": "Пошук"
   }
 }

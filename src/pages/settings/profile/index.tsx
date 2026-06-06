@@ -159,6 +159,7 @@ const ProfileSettings = () => {
 
   useHeader("", {
     onClick: useCallback(() => {
+      console.log("test");
       if (!isLoading || !form.state.isSubmitting) {
         form.handleSubmit();
       }

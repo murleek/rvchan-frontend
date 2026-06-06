@@ -1,2 +1,5 @@
-export type AuthWrapperAction = "login" | "register" | "init";
-export type OnChangeActionFn = (action: AuthWrapperAction) => void;
+export type AuthWrapperAction = "login" | "register" | "verify" | "init";
+export type OnChangeActionFn = (
+  action: AuthWrapperAction,
+  payload?: object,
+) => void;

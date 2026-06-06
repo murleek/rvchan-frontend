@@ -13,17 +13,20 @@ import Init from "./components/Init";
 import PageLoader from "../Common/PageLoader";
 import { useTranslation } from "react-i18next";
 import ThemeToggle from "../Common/ThemeToggle";
+import Verify from "./components/Verify";
 
 type AuthWrapperProps = {
   action: AuthWrapperAction;
   className?: string;
   withBg?: boolean;
   onChangeAction?: OnChangeActionFn;
+  payload?: object;
 };
 
 const colors: Record<AuthWrapperAction, string> = {
   login: "bg-cyan-200",
   register: "bg-amber-200",
+  verify: "bg-green-200",
   init: "bg-fuchsia-200",
 };
 
@@ -32,6 +35,7 @@ const AuthWrapper: FC<AuthWrapperProps> = ({
   className,
   withBg,
   onChangeAction,
+  payload,
 }) => {
   const { profile, isLoading, isAuthenticated } = useAuth();
   const [ref, bounds] = useMeasure();
@@ -126,6 +130,8 @@ const AuthWrapper: FC<AuthWrapperProps> = ({
                   <Login onChangeAction={onChangeAction} />
                 ) : item === "register" ? (
                   <Register onChangeAction={onChangeAction} />
+                ) : item === "verify" ? (
+                  <Verify onChangeAction={onChangeAction} payload={payload} />
                 ) : (
                   <Init onChangeAction={onChangeAction} />
                 )}

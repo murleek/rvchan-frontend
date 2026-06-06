@@ -136,11 +136,13 @@ const Post: FC<PostProps> = ({ thread, className, notEntriable }) => {
           <div className="text-[15px] mt-0.75 leading-5.5 whitespace-pre-wrap">
             {renderTextWithEntities(thread.content, thread.entities)}
           </div>
-          <div className="flex gap-1 mt-2 text-sm text-muted-foreground">
+          <div className="flex mt-1 text-sm text-muted-foreground">
             <LikeButton thread={thread} />
-            <button className="flex gap-1 items-center hover:cursor-pointer hover:bg-black/8 animated px-2 py-1 rounded-lg group/button color-muted-foreground hover:color-blue-500!">
-              <MessageCircle className="size-4 animated fill-transparent group-hover/button:fill-current group-active/button:scale-80" />
-              <span className="text-xs font-bold">{thread.replyCount}</span>
+            <button className="flex gap-1 items-center hover:cursor-pointer hover:bg-black/8 animated px-3 py-2 rounded-xl group/button color-muted-foreground hover:color-blue-500!">
+              <MessageCircle className="size-4.5 animated fill-transparent group-hover/button:fill-current group-active/button:scale-80" />
+              <span className="text-xs font-bold tabular-nums">
+                {thread.replyCount}
+              </span>
             </button>
           </div>
         </div>

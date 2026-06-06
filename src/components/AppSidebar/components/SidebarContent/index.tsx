@@ -7,7 +7,14 @@ import {
   SidebarMenuBadge,
 } from "@/components/ui/sidebar";
 
-import { Bell, Search, UserCircle2 } from "lucide-react";
+import {
+  Bell,
+  HomeIcon,
+  Plus,
+  Search,
+  UserCircle2,
+  ReplyIcon,
+} from "lucide-react";
 
 import { PAGES } from "@/constants";
 
@@ -16,6 +23,8 @@ import clsx from "clsx";
 import useAuth from "@/hooks/useAuth";
 import useNav, { type TabKey } from "@/hooks/common/useNav";
 import { useTranslation } from "react-i18next";
+import useModal from "@/hooks/common/useModal";
+import type { PostFormModalDetails } from "@/components/Common/PostFormModal";
 
 const SidebarContent = () => {
   const { profile } = useAuth();
@@ -23,6 +32,7 @@ const SidebarContent = () => {
   const { unseen } = useNotifications();
   const { setOpenMobile, open } = useSidebar();
   const { switchTab, activeTab, clearStack } = useNav();
+  const { openModal, payload } = useModal<PostFormModalDetails>("post");
 
   const handleClick = (tab: TabKey, url: string) => {
     setOpenMobile(false);
@@ -42,19 +52,14 @@ const SidebarContent = () => {
         <SidebarGroup className="my-auto">
           <SidebarMenuItem>
             <SidebarMenuButton
-              tooltip={{ children: <b>{t("content.profile")}</b> }}
-              isActive={activeTab === "profile"}
-              onClick={() =>
-                handleClick(
-                  "profile",
-                  PAGES.USER.replace(":username", profile!.username),
-                )
-              }
+              tooltip={{ children: <b>{t("content.home")}</b> }}
+              isActive={activeTab === "home"}
+              onClick={() => handleClick("home", PAGES.HOME)}
               className="flex items-center gap-2"
             >
               {/* <Icon name="person" opsz={24} /> */}
-              <UserCircle2 />
-              <span>{t("content.profile")}</span>
+              <HomeIcon />
+              <span>{t("content.home")}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem className="relative">
@@ -80,6 +85,44 @@ const SidebarContent = () => {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton
+              tooltip={{
+                children: (
+                  <b>
+                    {t(
+                      payload?.isReplyingToThread
+                        ? "content.reply"
+                        : "content.create",
+                    )}
+                  </b>
+                ),
+              }}
+              onClick={() => openModal()}
+              className="flex items-center gap-2 bg-fuchsia-500 hover:bg-fuchsia-300 text-white hover:text-fuchsia-900 rounded-full!"
+            >
+              {/* <Icon name="person" opsz={24} /> */}
+              <ReplyIcon
+                className={clsx(
+                  "size-6 stroke-3 absolute opacity-0 animated blur-sm",
+                  payload?.isReplyingToThread && "opacity-100 blur-none!",
+                )}
+              />
+              <Plus
+                className={clsx(
+                  "size-6 stroke-3 absolute opacity-0 animated blur-sm",
+                  !payload?.isReplyingToThread && "opacity-100 blur-none!",
+                )}
+              />{" "}
+              <span>
+                {t(
+                  payload?.isReplyingToThread
+                    ? "content.reply"
+                    : "content.create",
+                )}
+              </span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton
               tooltip={{ children: <b>{t("content.search")}</b> }}
               isActive={activeTab === "search"}
               className="flex items-center gap-2"
@@ -88,6 +131,23 @@ const SidebarContent = () => {
               {/* <Icon name="person" opsz={24} /> */}
               <Search />
               <span>{t("content.search")}</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              tooltip={{ children: <b>{t("content.profile")}</b> }}
+              isActive={activeTab === "profile"}
+              onClick={() =>
+                handleClick(
+                  "profile",
+                  PAGES.USER.replace(":username", profile!.username),
+                )
+              }
+              className="flex items-center gap-2"
+            >
+              {/* <Icon name="person" opsz={24} /> */}
+              <UserCircle2 />
+              <span>{t("content.profile")}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarGroup>

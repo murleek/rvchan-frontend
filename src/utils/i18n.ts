@@ -21,7 +21,8 @@ i18n
     defaultNS: "common",
     backend: { loadPath: "/locales/{{lng}}/{{ns}}.json" },
     partialBundledLanguages: true,
-    initAsync: false,
+    initAsync: true,
+    preload: ["en", "uk", "ru"],
     interpolation: { escapeValue: false },
   });
 

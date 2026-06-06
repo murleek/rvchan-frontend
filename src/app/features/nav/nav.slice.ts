@@ -1,7 +1,12 @@
 import type { Profile } from "@/app/types/auth";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-export type TabKey = "profile" | "notifications" | "search";
+export type TabKey = "home" | "profile" | "notifications" | "search";
+export const ModalKey = {
+  POST: "post",
+} as const;
+
+export type ModalKey = (typeof ModalKey)[keyof typeof ModalKey];
 
 export type StackItem = {
   path: string;
@@ -13,10 +18,13 @@ type StackMap = Record<TabKey, StackItem[]>;
 type NavState = {
   activeTab: TabKey;
   stacks: StackMap;
+
+  modals: Record<ModalKey, { isOpen: boolean; payload?: object | null }>;
 };
 
 export const detectTab = (path: string, user: Profile | null): TabKey => {
-  if (path === "/") return "profile";
+  if (path === "/") return "home";
+  if (path.startsWith("/home")) return "home";
   if (path.startsWith("/notifications")) return "notifications";
   if (user && path.startsWith(`/${user.username}`)) return "profile";
   if (path.startsWith("/settings")) return "profile";
@@ -26,6 +34,7 @@ export const detectTab = (path: string, user: Profile | null): TabKey => {
 export const buildRoots = (
   profile: Profile | null,
 ): Record<TabKey, string> => ({
+  home: "/home",
   profile: profile ? `/${profile.username}` : "/404",
   notifications: "/notifications",
   search: "/search",
@@ -37,6 +46,7 @@ export const makeInitialStacks = (
   profile: Profile | null,
 ): { stacks: StackMap; tab: TabKey } => {
   const stacks: StackMap = {
+    home: [{ path: roots.home, scroll: 0 }],
     profile: [{ path: roots.profile, scroll: 0 }],
     notifications: [{ path: roots.notifications, scroll: 0 }],
     search: [{ path: roots.search, scroll: 0 }],
@@ -58,9 +68,13 @@ export const makeInitialStacks = (
 const initialState: NavState = {
   activeTab: "search",
   stacks: {
+    home: [{ path: "/home", scroll: 0 }],
     profile: [{ path: "/404", scroll: 0 }],
     notifications: [{ path: "/notifications", scroll: 0 }],
     search: [{ path: "/search", scroll: 0 }],
+  },
+  modals: {
+    post: { isOpen: false },
   },
 };
 
@@ -128,6 +142,18 @@ export const navSlice = createSlice({
       const { tab, root } = action.payload;
       state.stacks[tab] = [{ path: root, scroll: 0 }];
     },
+
+    setModalState(
+      state,
+      action: PayloadAction<{
+        key: ModalKey;
+        state: { isOpen?: boolean; payload?: object | null };
+      }>,
+    ) {
+      const { key, state: modalState } = action.payload;
+      const old = state.modals[key];
+      state.modals[key] = { ...old, ...modalState };
+    },
   },
 });
 
@@ -138,6 +164,7 @@ export const {
   saveScrollForBack,
   switchTab,
   clearStack,
+  setModalState,
 } = navSlice.actions;
 export const navReducer = navSlice.reducer;
 

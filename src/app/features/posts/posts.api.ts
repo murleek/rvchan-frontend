@@ -8,7 +8,7 @@ type CursorQueryArg = { before?: string; after?: string };
 export const postsApi = createApi({
   reducerPath: "postsApi",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["posts"],
+  tagTypes: ["posts", "feed"],
   endpoints: (builder) => ({
     post: builder.mutation<
       {
@@ -112,11 +112,50 @@ export const postsApi = createApi({
       },
       providesTags: ["posts"],
     }),
+    getFeed: builder.infiniteQuery<
+      CursorPaginated<PublicPost>,
+      void,
+      CursorQueryArg
+    >({
+      infiniteQueryOptions: {
+        initialPageParam: { before: undefined, after: undefined },
+        getPreviousPageParam: (firstPage) => {
+          if (!firstPage.meta.hasPrevPage) {
+            return undefined;
+          }
+          return {
+            before: firstPage.meta.prevCursor,
+          };
+        },
+        getNextPageParam: (lastPage) => {
+          if (!lastPage.meta.hasNextPage) {
+            return undefined;
+          }
+          return {
+            after: lastPage.meta.nextCursor,
+          };
+        },
+      },
+      query: ({ pageParam }) => {
+        const params = new URLSearchParams();
+        if (pageParam) {
+          if (pageParam.before) {
+            params.append("before", pageParam.before);
+          }
+          if (pageParam.after) {
+            params.append("after", pageParam.after);
+          }
+        }
+        return `/posts/feed?${params.toString()}`;
+      },
+      providesTags: ["posts", "feed"],
+    }),
   }),
 });
 
 export const {
   usePostMutation,
   useGetUserThreadsInfiniteQuery,
+  useGetFeedInfiniteQuery,
   useGetPostInfiniteQuery,
 } = postsApi;

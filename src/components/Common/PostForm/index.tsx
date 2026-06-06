@@ -11,6 +11,7 @@ import useAuth from "@/hooks/useAuth";
 import { useAppDispatch } from "@/app/hooks";
 import type { Profile } from "@/app/types/auth";
 import type { PublicPost } from "@/app/types/post";
+import { useTranslation } from "react-i18next";
 
 type PostFormProps = {
   parentId?: string;
@@ -120,6 +121,7 @@ const PostForm: FC<PostFormProps & React.HTMLAttributes<HTMLDivElement>> = ({
   ...rest
 }) => {
   const { profile } = useAuth();
+  const { t } = useTranslation("posts");
   const { addPostToCache, replaceTempIdWithQueueId } = usePosts(
     profile,
     username,
@@ -183,8 +185,11 @@ const PostForm: FC<PostFormProps & React.HTMLAttributes<HTMLDivElement>> = ({
               <field.TextareaField
                 t="content"
                 tws="posts"
+                placeholder={
+                  parentId ? t("placeholder.reply") : t("placeholder.thread")
+                }
                 label={null}
-                className="max-h-32 px-4 min-h-auto resize-none py-2.5  has-[&]:has-focus-visible:ring-0! h-auto"
+                className="max-h-32 px-4 min-h-auto resize-none py-2.5 pr-13 has-[&]:has-focus-visible:ring-0! h-auto"
                 wrapClassName="border-0 ring-0! border-0 shadow-none rounded-none bg-transparent!"
                 hideError
               />
@@ -196,7 +201,7 @@ const PostForm: FC<PostFormProps & React.HTMLAttributes<HTMLDivElement>> = ({
             children={([isSubmitting, isValid]) => (
               <Button
                 type="submit"
-                className="flex-none py-1 pr-12 w-10 h-8 px-2 rounded-full p-1! disabled:pointer-events-none disabled:cursor-pointer disabled:opacity-50 disabled:bg-muted-foreground absolute bottom-1.5 md:bottom-1 right-1"
+                className="flex-none py-1 w-10 h-8 px-2 rounded-full p-1! disabled:pointer-events-none disabled:cursor-pointer disabled:opacity-50 disabled:bg-muted-foreground absolute bottom-1.5 md:bottom-1 right-1"
                 disabled={isSubmitting || !isValid}
               >
                 {isSubmitting ? (

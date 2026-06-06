@@ -13,7 +13,7 @@ const LikeButton: React.FC<{ thread: PublicPost }> = ({ thread }) => {
   return (
     <button
       className={clsx(
-        "flex gap-1 items-center hover:cursor-pointer transition-[background-color,color] hover:bg-black/8 animated px-2 py-1 rounded-lg group/button color-muted-foreground ",
+        "flex gap-1 items-center hover:cursor-pointer transition-[background-color] hover:bg-black/8 animated px-3 py-2 rounded-xl group/button color-muted-foreground ",
         thread.isLiked &&
           "bg-rose-600/12 hover:bg-rose-600/24! text-rose-600 liked",
       )}
@@ -22,11 +22,10 @@ const LikeButton: React.FC<{ thread: PublicPost }> = ({ thread }) => {
         toggleLike();
       }}
     >
-      <Heart
-        className="size-4 animated transition-[transform] fill-transparent group-hover/button:fill-current group-active/button:scale-80 group-[.liked]/button:fill-current"
-        fill={thread.isLiked ? "currentColor" : "none"}
-      />
-      <span className="text-xs font-bold">{thread.likeCount}</span>
+      <Heart className="size-4.5 animated transition-[scale,fill,color] paint-order-[stroke] fill-transparent group-hover/button:fill-current group-active/button:scale-80 group-[.liked]/button:fill-current" />
+      <span className="text-xs font-bold animated transition-[color] tabular-nums">
+        {thread.likeCount}
+      </span>
     </button>
   );
 };

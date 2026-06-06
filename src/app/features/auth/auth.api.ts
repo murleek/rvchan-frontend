@@ -1,6 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { setAccessToken, logout } from "./auth.slice";
-import type { AuthLogin, AuthTokens } from "@/app/types/auth";
+import type { AuthLogin, AuthTokens, AuthCode } from "@/app/types/auth";
 import { STORAGE_KEYS } from "@/constants";
 import { baseQueryWithReauth } from "../../baseQuery";
 
@@ -9,9 +9,19 @@ export const authApi = createApi({
   baseQuery: baseQueryWithReauth,
   tagTypes: ["Devices"],
   endpoints: (builder) => ({
-    register: builder.mutation<{ message: string }, AuthLogin>({
+    register: builder.mutation<{ message: string }, AuthCode>({
       query: (body) => ({
         url: "/auth/register",
+        method: "POST",
+        body,
+      }),
+    }),
+    verify: builder.mutation<
+      { ok: true; codeLength: number; ttl: number },
+      AuthLogin
+    >({
+      query: (body) => ({
+        url: "/auth/verify",
         method: "POST",
         body,
       }),
@@ -58,6 +68,7 @@ export const authApi = createApi({
 
 export const {
   useRegisterMutation,
+  useVerifyMutation,
   useLoginMutation,
   useLogoutMutation,
   useRefreshMutation,

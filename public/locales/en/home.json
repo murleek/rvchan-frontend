@@ -1,0 +1,6 @@
+{
+  "header": "Home",
+  "error": {
+    "notFound": "An error occurred while loading data. Please try again later."
+  }
+}

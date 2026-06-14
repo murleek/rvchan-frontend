@@ -301,3 +301,22 @@
 body[data-scroll-locked] {
   margin-right: 0 !important;
 }
+
+.liquid {
+  /* background: #faf; */
+  border-radius: var(--liquid-radius);
+  backdrop-filter: blur(calc(var(--liquid-blur) * 2)) brightness();
+  transition: 0.3s ease-out;
+  transition-property: filter, scale, width, opacity;
+
+  &:active {
+    filter: brightness(1.1);
+    scale: var(--active-scale, 1);
+  }
+
+  @supports not (hanging-punctuation: first) {
+    backdrop-filter: var(--liquid-filter) blur(var(--liquid-blur))
+      brightness(1.1) saturate(1.5);
+    /* background: #afa; */
+  }
+}

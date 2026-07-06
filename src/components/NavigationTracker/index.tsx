@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useLocation } from "react-router";
+import { useLocation, useNavigationType } from "react-router";
 import useNav from "@/hooks/common/useNav";
 
 const isSameBasePath = (a: string, b: string) => {
@@ -8,7 +8,8 @@ const isSameBasePath = (a: string, b: string) => {
 
 export const NavigationTracker = () => {
   const location = useLocation();
-  const { push, replace } = useNav();
+  const { push, replace, back } = useNav();
+  const navigationType = useNavigationType();
 
   const lastFullPath = useRef<string | null>(null);
 
@@ -21,15 +22,18 @@ export const NavigationTracker = () => {
 
     lastFullPath.current = current;
 
-    // 🔥 если это тот же route, но изменился query → replace
+    if (navigationType === "POP" && prev !== null) {
+      back();
+      return;
+    }
+
     if (prev && isSameBasePath(prev, current)) {
       replace(current, window.scrollY);
       return;
     }
 
-    // 🚀 иначе это новая страница
     push(current, window.scrollY);
-  }, [location.pathname, location.search, push, replace]);
+  }, [location.pathname, location.search, navigationType, back, push, replace]);
 
   return null;
 };

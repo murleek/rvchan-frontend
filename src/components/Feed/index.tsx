@@ -43,12 +43,8 @@ const Feed = () => {
         hasMore={!!hasNextPage}
         className="flex flex-col gap-0"
       >
-        {threads.map((thread) => (
-          <Post
-            key={thread.id}
-            thread={thread}
-            notEntriable={!thread.createdAt}
-          />
+        {threads.map((thread, i) => (
+          <Post key={i} thread={thread} notEntriable={!thread.createdAt} />
         ))}
       </InfiniteScroll>
     </Card>

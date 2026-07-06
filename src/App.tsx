@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router";
-import { lazy } from "react";
+import { lazy, useEffect } from "react";
 import { Provider } from "react-redux";
 import { store } from "./app/store";
 import { PAGES } from "./constants";
@@ -15,6 +15,34 @@ const AuthProvider = lazy(() => import("@/components/Common/AuthProvider"));
 const RootLayout = lazy(() => import("@/pages/layout"));
 
 const App = () => {
+  useEffect(() => {
+    // Only target iOS devices (Safari specific issue)
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (!isIOS) return;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 1) {
+        const touch = e.touches[0];
+        const edgeThreshold = window.innerWidth * 0.1; // 10% from edges
+
+        // Check if the touch starts near the left or right edge
+        if (
+          touch.clientX < edgeThreshold ||
+          touch.clientX > window.innerWidth - edgeThreshold
+        ) {
+          e.preventDefault();
+        }
+      }
+    };
+
+    // 'passive: false' is mandatory to allow e.preventDefault()
+    window.addEventListener("touchstart", handleTouchStart, { passive: false });
+
+    return () => {
+      window.removeEventListener("touchstart", handleTouchStart);
+    };
+  }, []);
+
   return (
     <Provider store={store}>
       <TooltipProvider>

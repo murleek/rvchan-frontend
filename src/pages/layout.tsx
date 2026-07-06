@@ -24,6 +24,7 @@ import FollowersPage from "./[username]/followers";
 import FollowingPage from "./[username]/following";
 import HomePage from "./home";
 import PostFormModal from "@/components/Common/PostFormModal";
+import AppearanceSettingsPage from "./settings/appearance";
 
 const RootLayout: FC = () => {
   const { connected } = useWebSocket();
@@ -81,7 +82,7 @@ const RootLayout: FC = () => {
                 />
                 <Route
                   path={PAGES.SETTINGS_APPEARANCE}
-                  element={<div>Appearance settings coming soon!</div>}
+                  element={<AppearanceSettingsPage />}
                 />
                 <Route
                   path={PAGES.SETTINGS_LANGUAGE}

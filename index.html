@@ -17,6 +17,10 @@
       src="https://tweakcn.com/live-preview.min.js"
     ></script>
     <script>
+      window.onbeforeunload = function () {
+        return "Your work will be lost.";
+      };
+
       window.addEventListener("vite:preloadError", (event) => {
         console.error("Preload error:", event.detail);
         window.location.reload();

@@ -5,7 +5,7 @@ import useRelativeTime from "@/hooks/useRelativeTime";
 import { MessageCircle } from "lucide-react";
 import clsx from "clsx";
 import Loader from "../Loader";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import { PAGES } from "@/constants";
 import LikeButton from "./components/LikeButton";
@@ -75,6 +75,7 @@ function renderTextWithEntities(content: string, entities?: TextEntity[]) {
 
 const Post: FC<PostProps> = ({ thread, className, notEntriable }) => {
   const { t } = useTranslation("posts");
+  const navigate = useNavigate();
   const time = useRelativeTime(
     thread.createdAt || new Date().toString(),
     "long",
@@ -100,8 +101,10 @@ const Post: FC<PostProps> = ({ thread, className, notEntriable }) => {
             : !notEntriable && "hover:bg-black/8 cursor-pointer",
         )}
       >
-        <Link
-          to={PAGES.USER.replaceAll(":username", thread.user.username)}
+        <div
+          onClick={() =>
+            navigate(PAGES.USER.replaceAll(":username", thread.user.username))
+          }
           className="flex w-full gap-3 p-1 hover:bg-black/8 rounded-sm animated"
         >
           <ProfileAvatar
@@ -131,7 +134,7 @@ const Post: FC<PostProps> = ({ thread, className, notEntriable }) => {
               </span>
             </div>
           </div>
-        </Link>
+        </div>
         <div className=" px-1 pb-1 w-full">
           <div className="text-[15px] mt-0.75 leading-5.5 whitespace-pre-wrap">
             {renderTextWithEntities(thread.content, thread.entities)}

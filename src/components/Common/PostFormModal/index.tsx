@@ -13,6 +13,7 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import ProfileAvatar from "../ProfileAvatar";
 import { Card } from "@/components/ui/card";
@@ -173,7 +174,10 @@ const PostFormModal: FC<PostFormModalProps> = ({ onSubmit }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={() => closeModal()}>
-      <DialogContent className="p-0 gap-0 overflow-hidden max-md:h-full">
+      <DialogContent
+        className="p-0 gap-0 overflow-hidden max-md:h-full"
+        aria-describedby={undefined}
+      >
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -184,9 +188,11 @@ const PostFormModal: FC<PostFormModalProps> = ({ onSubmit }) => {
           <div className="md:rounded-t-xl backdrop-blur-xs mask-b-from-40% mask-b-to-100% absolute left-0 top-0 bottom-0 pointer-events-none z-1 w-full h-20" />
           <div className="md:rounded-t-xl mask-b-from-10% mask-b-to-80% bg-background/80 absolute left-0 top-0 bottom-0 pointer-events-none z-1 w-full h-20 animated transition-colors" />
           <DialogHeader className="p-5 py-4 absolute top-0 left-0 w-full z-10">
-            <span className="text-lg font-bold ">
-              {payload?.reply ? "Ответ на публикацию" : "Новая публикация"}
-            </span>
+            <DialogTitle>
+              <span className="text-lg font-bold ">
+                {payload?.reply ? "Ответ на публикацию" : "Новая публикация"}
+              </span>
+            </DialogTitle>
           </DialogHeader>
           <div className="w-full flex flex-col gap-2 p-5 pt-16 flex-1">
             {payload?.reply && (

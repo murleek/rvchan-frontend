@@ -123,8 +123,10 @@ const PostReply: FC<PostReplyProps & HTMLAttributes<HTMLDivElement>> = ({
         {...props}
       >
         <div className="flex justify-end w-13">
-          <Link
-            to={PAGES.USER.replaceAll(":username", thread.user.username)}
+          <div
+            onClick={() =>
+              navigate(PAGES.USER.replaceAll(":username", thread.user.username))
+            }
             className={`rounded-full p-1 hover:bg-black/8 animated`}
           >
             <ProfileAvatar
@@ -132,7 +134,7 @@ const PostReply: FC<PostReplyProps & HTMLAttributes<HTMLDivElement>> = ({
               src={thread.user.avatar}
               alt={`${thread.user.firstName}'s (@${thread.user.username}) avatar`}
             />
-          </Link>
+          </div>
         </div>
         <div className="flex flex-col flex-1 p-2 pl-0">
           <div

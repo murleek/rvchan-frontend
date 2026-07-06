@@ -18,6 +18,7 @@ type StackMap = Record<TabKey, StackItem[]>;
 type NavState = {
   activeTab: TabKey;
   stacks: StackMap;
+  scrollY: number;
 
   modals: Record<ModalKey, { isOpen: boolean; payload?: object | null }>;
 };
@@ -76,6 +77,7 @@ const initialState: NavState = {
   modals: {
     post: { isOpen: false },
   },
+  scrollY: 0,
 };
 
 export const navSlice = createSlice({
@@ -87,21 +89,34 @@ export const navSlice = createSlice({
       state.activeTab = action.payload.tab;
     },
 
-    pushPage(state, action: PayloadAction<{ path: string; scrollY: number }>) {
-      const { path, scrollY } = action.payload;
-      const stack = state.stacks[state.activeTab];
-      if (stack.at(-1)?.path === path) return;
-      stack.push({ path, scroll: scrollY });
+    setScrollY(state, action: PayloadAction<{ tab: TabKey; scrollY: number }>) {
+      const { scrollY } = action.payload;
+      console.log("setScrollY", { tab: state.activeTab, scrollY });
+      state.scrollY = scrollY;
     },
 
-    replacePage(
-      state,
-      action: PayloadAction<{ path: string; scrollY: number }>,
-    ) {
-      const { path, scrollY } = action.payload;
+    pushPage(state, action: PayloadAction<{ path: string }>) {
+      const { path } = action.payload;
       const stack = state.stacks[state.activeTab];
-      if (stack.at(-1)?.path === path) return;
-      stack.splice(-1, 1, { path, scroll: scrollY });
+      const lastItem = stack.at(-1);
+      if (lastItem) {
+        if (lastItem.path === path) return;
+        lastItem.scroll = state.scrollY;
+      }
+      state.scrollY = 0;
+      stack.push({ path, scroll: 0 });
+    },
+
+    replacePage(state, action: PayloadAction<{ path: string }>) {
+      const { path } = action.payload;
+      const stack = state.stacks[state.activeTab];
+      const lastItem = stack.at(-1);
+      if (lastItem) {
+        if (lastItem.path === path) return;
+        lastItem.scroll = state.scrollY;
+      }
+      state.scrollY = 0;
+      stack.splice(-1, 1, { path, scroll: 0 });
     },
 
     saveScrollForBack(state) {
@@ -109,6 +124,7 @@ export const navSlice = createSlice({
       const roots = buildRoots(null);
       if (stack.length > 1) {
         stack.splice(0, stack.length, ...stack.slice(0, -1));
+        state.scrollY = stack.at(-1)?.scroll ?? 0;
       } else {
         state.stacks[state.activeTab] = [
           { path: roots[state.activeTab], scroll: 0 },
@@ -136,6 +152,7 @@ export const navSlice = createSlice({
       }
 
       state.activeTab = tab;
+      state.scrollY = state.stacks[tab].at(-1)?.scroll ?? 0;
     },
 
     clearStack(state, action: PayloadAction<{ tab: TabKey; root: string }>) {
@@ -163,9 +180,11 @@ export const {
   replacePage,
   saveScrollForBack,
   switchTab,
+  setScrollY,
   clearStack,
   setModalState,
 } = navSlice.actions;
+
 export const navReducer = navSlice.reducer;
 
 export const selectActiveTab = (state: { nav: NavState }) =>
@@ -175,3 +194,4 @@ export const selectActiveStack = (state: { nav: NavState }) =>
 export const selectCanGoBack = (state: { nav: NavState }) =>
   state.nav.stacks[state.nav.activeTab].length > 1;
 export const selectStacks = (state: { nav: NavState }) => state.nav.stacks;
+export const selectScrollY = (state: { nav: NavState }) => state.nav.scrollY;

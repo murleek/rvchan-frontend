@@ -47,7 +47,7 @@ const Header = () => {
   return (
     <header className="gap-3 h-16 flex-none shrink-0 items-center sticky top-0 z-10 md:rounded-t-xl">
       <div className="md:rounded-t-xl backdrop-blur-xs mask-b-from-40% mask-b-to-100% absolute left-0 top-0 bottom-0 pointer-events-none z-1 w-full h-20" />
-      <div className="md:rounded-t-xl mask-b-from-10% mask-b-to-80% bg-background absolute left-0 top-0 bottom-0 pointer-events-none z-1 w-full h-20 animated transition-colors" />
+      <div className="md:rounded-t-xl mask-b-from-10% mask-b-to-80% bg-background absolute left-0 top-0 bottom-0 pointer-events-none z-1 w-full h-8 animated transition-colors" />
       <div className="px-4 max-w-2xl w-full mx-auto h-full relative flex items-center gap-2 z-2">
         <HeaderButton
           icon={ChevronLeft}

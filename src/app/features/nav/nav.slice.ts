@@ -95,7 +95,7 @@ export const navSlice = createSlice({
       state.scrollY = scrollY;
     },
 
-    pushPage(state, action: PayloadAction<{ path: string }>) {
+    pushPage(state, action: PayloadAction<{ path: string; scrollY?: number }>) {
       const { path } = action.payload;
       const stack = state.stacks[state.activeTab];
       const lastItem = stack.at(-1);
@@ -107,7 +107,10 @@ export const navSlice = createSlice({
       stack.push({ path, scroll: 0 });
     },
 
-    replacePage(state, action: PayloadAction<{ path: string }>) {
+    replacePage(
+      state,
+      action: PayloadAction<{ path: string; scrollY?: number }>,
+    ) {
       const { path } = action.payload;
       const stack = state.stacks[state.activeTab];
       const lastItem = stack.at(-1);

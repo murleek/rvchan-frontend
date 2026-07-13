@@ -41,7 +41,7 @@ const ProfileSettings = () => {
   const [editProfile, { isLoading }] = useEditProfileMutation();
   const [uploadAvatar] = useUploadAvatarMutation();
 
-  const [loadPercentage, setLoadPercentage] = useState<number | null>(null);
+  // const [loadPercentage, setLoadPercentage] = useState<number | null>(null);
 
   const avatarRef = useRef<HTMLInputElement>(null);
 
@@ -62,10 +62,10 @@ const ProfileSettings = () => {
 
     await uploadAvatar({
       data: formData,
-      onProgress: (p) => {
-        requestAnimationFrame(() => {
-          setLoadPercentage(p);
-        });
+      onProgress: (/* p */) => {
+        // requestAnimationFrame(() => {
+        //   setLoadPercentage(p);
+        // });
       },
     });
 
@@ -73,7 +73,7 @@ const ProfileSettings = () => {
 
     setImage(null);
 
-    setLoadPercentage(null);
+    // setLoadPercentage(null);
   };
 
   const { t: tCommon } = useTranslation("common");

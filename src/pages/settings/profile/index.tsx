@@ -203,9 +203,12 @@ const ProfileSettings = () => {
               />
               <Image />{" "}
               {t("profile.changeAvatar", {
-                loading:
-                  loadPercentage !== null &&
-                  t("percentage", { percentage: Math.round(loadPercentage) }),
+                loading: "",
+                // loadPercentage !== null
+                //   ? t("percentage", {
+                //       percentage: Math.round(loadPercentage),
+                //     })
+                //   : "",
               })}
             </Button>
             {/* <pre>{JSON.stringify(uploadError, null, 2)}</pre> */}

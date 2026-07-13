@@ -18,7 +18,7 @@ const Feed = () => {
 
   if (isLoading) {
     return (
-      <Card className="md:px-4 gap-2 h-40 justify-center items-center">
+      <Card className="md:px-4 gap-2 h-40 gap-4 justify-center items-center">
         <Loader className="text-fuchsia-500 size-10!" />
         <span className="text-center text-muted-foreground animated transition-colors block">
           {t("loading")}
@@ -29,9 +29,20 @@ const Feed = () => {
 
   if (error) {
     return (
-      <div className="text-sm text-destructive h-40 px-4 py-6 text-center flex flex-col justify-center items-center">
-        {t("error")} {String(error)}
-      </div>
+      <Card className="md:px-4 gap-2 h-40 justify-center items-center">
+        <div className="text-sm text-destructive px-4 py-6 text-center flex flex-col justify-center items-center">
+          {t("error")} {String(error)}
+        </div>
+      </Card>
+    );
+  }
+
+  if (threads.length === 0) {
+    return (
+      <Card className="w-full mb-4 p-0 gap-4 h-40 px-4 py-6 text-muted-foreground justify-center items-center">
+        <span className="text-4xl font-serif">{t("shrug")}</span>
+        <span className="text-sm">{t("noPosts")}</span>
+      </Card>
     );
   }
 

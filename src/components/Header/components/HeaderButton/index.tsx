@@ -58,11 +58,6 @@ const HeaderButton = ({
 
   const positionClasses = position === "left" ? "left-4" : "right-4";
 
-  const activeBg =
-    activeColor === "fuchsia"
-      ? "bg-fuchsia-500 inset-shadow-fuchsia-300 text-white active:bg-fuchsia-500 hover:bg-fuchsia-400"
-      : "hover:bg-gray-100 dark:hover:bg-zinc-800";
-
   return t(
     (style, item) =>
       item && (
@@ -87,9 +82,12 @@ const HeaderButton = ({
               "size-12 rounded-full flex items-center justify-center",
               " md:border cursor-pointer",
               " dark:inset-shadow-white/20 inset-shadow-glow",
-              "ease-in-out duration-300 transition-[background,color,box-shadow] will-change-[filter]",
+              "animated transition-[background,color,box-shadow,border] will-change-[filter,background,color,box-shadow]",
               "disabled:cursor-default disabled:bg-muted! disabled:text-muted-foreground!",
-              activeBg,
+              activeColor === "fuchsia" &&
+                "bg-fuchsia-500 inset-shadow-fuchsia-300 text-white active:bg-fuchsia-500 hover:bg-fuchsia-400",
+              activeColor === "gray" &&
+                "bg-card hover:bg-gray-100 dark:hover:bg-zinc-800",
               className,
             )}
             disabled={disabled}

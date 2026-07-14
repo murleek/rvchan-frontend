@@ -41,10 +41,10 @@ const RootLayout: FC = () => {
       )}
       <Toaster />
       <AppSidebar />
-      <SidebarInset className="md:animated shadow-none! bg-transparent! md:py-2 md:pr-2 min-h-dvh-safe">
+      <SidebarInset className="md:animated transition-[padding] shadow-none! bg-transparent! md:py-2 md:pr-2 min-h-dvh-safe">
         <Card
           className={clsx(
-            "p-0 animated relative origin-bottom h-full gap-0 shadow-none max-md:border-none bg-background max-md:rounded-none max-md:pb-16",
+            "p-0 animated transition-[background,border] relative origin-bottom h-full gap-0 shadow-none max-md:border-none bg-background max-md:rounded-none max-md:pb-16",
             // isMobile &&
             //   openMobile &&
             "group-has-[[role=dialog]]/body:max-md:opacity-100 group-has-[[role=dialog]]/body:max-md:contrast-70 group-has-[[role=dialog]]/body:max-md:saturate-80",

@@ -111,18 +111,32 @@
   "units": {
     "relative": {
       "long": {
-        "day_one": "yesterday",
-        "day_zero": "today",
-        "hour_one": "an hour ago",
-        "long": "a long time ago",
-        "minute_one": "a minute ago",
-        "minute_zero": "just now",
-        "month_one": "a month ago",
         "now": "just now",
-        "second_one": "a second ago",
         "second_zero": "just now",
+        "second_one": "a second ago",
+        "second_other": "{{count}} seconds ago",
+
+        "minute_zero": "just now",
+        "minute_one": "a minute ago",
+        "minute_other": "{{count}} minutes ago",
+
+        "hour_one": "an hour ago",
+        "hour_other": "{{count}} hours ago",
+
+        "day_zero": "today",
+        "day_one": "yesterday",
+        "day_other": "{{count}} days ago",
+
         "week_one": "a week ago",
-        "year_one": "a year ago"
+        "week_other": "{{count}} weeks ago",
+
+        "month_one": "a month ago",
+        "month_other": "{{count}} months ago",
+
+        "year_one": "a year ago",
+        "year_other": "{{count}} years ago",
+
+        "long": "a long time ago"
       },
       "short": {
         "day": "{{count}}d",

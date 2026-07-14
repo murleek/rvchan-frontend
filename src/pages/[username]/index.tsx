@@ -154,7 +154,11 @@ const ProfilePage = () => {
         {!loadedProfile.isMine && (
           <div className="flex flex-1 gap-4">
             <Button
-              variant={loadedProfile.isFollowing ? "secondary" : "default"}
+              variant={
+                loadedProfile.isFollowed || loadedProfile.isFollowing
+                  ? "secondary"
+                  : "default"
+              }
               onClick={handleFollow}
               disabled={isFollowing || isUnfollowing || isFetching}
               className="flex-1 cursor-pointer"

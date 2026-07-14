@@ -5,9 +5,13 @@
       "dark": "Темна",
       "label": "Тема",
       "light": "Світла",
-      "system": "Системна"
+      "system": "Слідувати системній темі"
     },
-    "title": "Оформлення"
+    "title": "Оформлення",
+    "demo": {
+      "content": "що тут відбувається????",
+      "firstName": "аліса"
+    }
   },
   "devices": {
     "browserInfo": "{{browser}} {{version}}",

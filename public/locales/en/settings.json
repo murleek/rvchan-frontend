@@ -5,9 +5,13 @@
       "dark": "Dark",
       "label": "Color theme",
       "light": "Light",
-      "system": "System"
+      "system": "Follow system theme"
     },
-    "title": "Appearance"
+    "title": "Appearance",
+    "demo": {
+      "content": "what's going on here????",
+      "firstName": "alisa"
+    }
   },
   "devices": {
     "browserInfo": "{{browser}} {{version}}",

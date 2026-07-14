@@ -3,7 +3,9 @@
     "home": "Головна",
     "notifications": "Сповіщення",
     "profile": "Мій профіль",
-    "search": "Пошук"
+    "search": "Пошук",
+    "create": "Створити тред",
+    "reply": "Відповісти на пост"
   },
   "dropdown": {
     "devices": "Пристрої",

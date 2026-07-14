@@ -3,7 +3,9 @@
     "home": "Home",
     "notifications": "Notifications",
     "profile": "My Profile",
-    "search": "Search"
+    "search": "Search",
+    "create": "Create a thread",
+    "reply": "Reply to post"
   },
   "dropdown": {
     "devices": "Devices",

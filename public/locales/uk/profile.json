@@ -13,7 +13,6 @@
   "followers_many": "<b>{{count}}</b> підписників",
   "followers_one": "<b>{{count}}</b> підписник",
   "followers_zero": "Немає підписників",
-  "following": "<b>{{count}}</b> підписник",
   "following_few": "<b>{{count}}</b> підписки",
   "following_list": {
     "empty": {

@@ -20,5 +20,9 @@
   },
   "loading": "Loading posts...",
   "posting": "Posting...",
-  "reply": "Reply"
+  "reply": "Reply",
+  "placeholder": {
+    "thread": "Start a new thread...",
+    "reply": "Reply to this post..."
+  }
 }

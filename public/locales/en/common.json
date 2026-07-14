@@ -62,11 +62,19 @@
         "valid": "This username is available",
         "validating": "Checking username..."
       }
+    },
+    "otp": {
+      "label": "Verification code",
+      "placeholder": "Enter verification code",
+      "validation": {
+        "required": "Confirmation code is required"
+      }
     }
   },
   "error": {
     "FETCH_ERROR": "Network error. Please check your connection and try again.",
-    "TIMEOUT_ERROR": "The server is not responding. Please try again later."
+    "TIMEOUT_ERROR": "The server is not responding. Please try again later.",
+    "otp_invalid": "Invalid verification code"
   },
   "errorBoundary": {
     "default": {

@@ -6,7 +6,7 @@ import type {
   User,
   UserAgent,
 } from "@/app/types/auth";
-import { axiosBaseQuery, baseQueryWithReauth } from "../../baseQuery";
+import { baseQueryWithReauth } from "../../baseQuery";
 
 export const userApi = createApi({
   reducerPath: "userApi",
@@ -95,31 +95,43 @@ export const userApi = createApi({
       }),
       invalidatesTags: ["User"],
     }),
-  }),
-});
-
-export const userUploadApi = createApi({
-  reducerPath: "userUploadApi",
-  baseQuery: axiosBaseQuery,
-  tagTypes: ["User"],
-  endpoints: (builder) => ({
-    uploadAvatar: builder.mutation<
-      { id: string; hash: string },
-      {
-        data: FormData;
-        onProgress: (progressEvent: number) => void;
-      }
-    >({
-      query: ({ data, onProgress }) => ({
+    uploadAvatar: builder.mutation<{ id: string; hash: string }, FormData>({
+      query: (data) => ({
         url: "/user/avatar/upload",
         method: "POST",
-        data,
-        onUploadProgress: onProgress,
+        body: data,
+        headers: {
+          "Content-Type": "multipart/form-data;",
+        },
+        formData: true,
       }),
       invalidatesTags: ["User"],
     }),
   }),
 });
+
+// export const userUploadApi = createApi({
+//   reducerPath: "userUploadApi",
+//   baseQuery: axiosBaseQuery,
+//   tagTypes: ["User"],
+//   endpoints: (builder) => ({
+//     uploadAvatar: builder.mutation<
+//       { id: string; hash: string },
+//       {
+//         data: FormData;
+//         onProgress: (progressEvent: number) => void;
+//       }
+//     >({
+//       query: ({ data, onProgress }) => ({
+//         url: "/user/avatar/upload",
+//         method: "POST",
+//         data,
+//         onUploadProgress: onProgress,
+//       }),
+//       invalidatesTags: ["User"],
+//     }),
+//   }),
+// });
 
 export const {
   useMeQuery,
@@ -130,6 +142,7 @@ export const {
   useGetUserByUsernameQuery,
   useSearchUsersQuery,
   useEditProfileMutation,
+  useUploadAvatarMutation,
 } = userApi;
 
-export const { useUploadAvatarMutation } = userUploadApi;
+// export const { useUploadAvatarMutation } = userUploadApi;

@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./features/auth/auth.slice";
 import { authApi } from "./features/auth/auth.api";
-import { userApi, userUploadApi } from "./features/user/user.api";
+import { userApi } from "./features/user/user.api";
 import { relationshipApi } from "./features/relationship/relationship.api";
 import { mediaApi } from "./features/media/media.api";
 import { socketMiddleware } from "./ws/socket.middleware";
@@ -24,7 +24,6 @@ export const store = configureStore({
     [authApi.reducerPath]: authApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
     [postsApi.reducerPath]: postsApi.reducer,
-    [userUploadApi.reducerPath]: userUploadApi.reducer,
     [relationshipApi.reducerPath]: relationshipApi.reducer,
     [mediaApi.reducerPath]: mediaApi.reducer,
     [reactionApi.reducerPath]: reactionApi.reducer,
@@ -34,7 +33,6 @@ export const store = configureStore({
       authApi.middleware,
       userApi.middleware,
       postsApi.middleware,
-      userUploadApi.middleware,
       relationshipApi.middleware,
       notificationsApi.middleware,
       mediaApi.middleware,

@@ -39,7 +39,8 @@
   },
   "logout": "Log out",
   "profile": {
-    "changeAvatar": "Change avatar {{loading}}",
+    "avatarLoading": "Uploading... {{loading}}",
+    "changeAvatar": "Change avatar",
     "descriptionDescription": "A short bio about you, displayed on your profile.",
     "header": "Profile Settings",
     "nameDescription": "Your first and last name are displayed on your profile but are not unique identifiers.",

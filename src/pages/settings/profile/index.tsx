@@ -38,8 +38,9 @@ const BaseEditProfileSchema = z.object({
 const ProfileSettings = () => {
   const { profile, updateProfile } = useAuth();
   const [checkUsername] = useLazyCheckUsernameQuery();
-  const [editProfile, { isLoading }] = useEditProfileMutation();
+  const [editProfile] = useEditProfileMutation();
   const [uploadAvatar] = useUploadAvatarMutation();
+  const [isImageUploading, setIsImageUploading] = useState(false);
 
   // const [loadPercentage, setLoadPercentage] = useState<number | null>(null);
 
@@ -60,18 +61,13 @@ const ProfileSettings = () => {
     const formData = new FormData();
     formData.append("avatar", image);
 
-    await uploadAvatar({
-      data: formData,
-      onProgress: (/* p */) => {
-        // requestAnimationFrame(() => {
-        //   setLoadPercentage(p);
-        // });
-      },
-    });
+    setIsImageUploading(true);
+    await uploadAvatar(formData).unwrap();
 
     await updateProfile();
 
     setImage(null);
+    setIsImageUploading(false);
 
     // setLoadPercentage(null);
   };
@@ -160,11 +156,11 @@ const ProfileSettings = () => {
   useHeader("", {
     onClick: useCallback(() => {
       console.log("test");
-      if (!isLoading || !form.state.isSubmitting) {
+      if (!isImageUploading || !form.state.isSubmitting) {
         form.handleSubmit();
       }
-    }, [isLoading, form]),
-    isClickable: !isLoading || !form.state.isSubmitting,
+    }, [isImageUploading, form]),
+    isClickable: !isImageUploading || !form.state.isSubmitting,
   });
 
   return (
@@ -193,6 +189,7 @@ const ProfileSettings = () => {
               variant="ghost"
               className="text-primary relative top-0"
               onClick={() => avatarRef.current?.click()}
+              disabled={isImageUploading || form.state.isSubmitting}
             >
               <Input
                 ref={avatarRef}
@@ -202,14 +199,16 @@ const ProfileSettings = () => {
                 onChange={handleLoadAvatar}
               />
               <Image />{" "}
-              {t("profile.changeAvatar", {
-                loading: "",
-                // loadPercentage !== null
-                //   ? t("percentage", {
-                //       percentage: Math.round(loadPercentage),
-                //     })
-                //   : "",
-              })}
+              {isImageUploading
+                ? t("profile.avatarLoading", {
+                    loading: "",
+                    // loadPercentage !== null
+                    //   ? t("percentage", {
+                    //       percentage: Math.round(loadPercentage),
+                    //     })
+                    //   : "",
+                  })
+                : t("profile.changeAvatar")}
             </Button>
             {/* <pre>{JSON.stringify(uploadError, null, 2)}</pre> */}
           </div>

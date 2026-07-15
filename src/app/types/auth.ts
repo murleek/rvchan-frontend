@@ -24,7 +24,7 @@ export type Profile = {
   username: string;
   isPrivate: boolean;
   state: UserState;
-  avatar?: Record<number, string> | null;
+  avatar?: string;
 };
 
 export type User = Profile & {
@@ -41,7 +41,7 @@ export type ShortProfile = {
   username: string;
   firstName: string;
   lastName: string | null;
-  avatar?: Record<number, string> | null;
+  avatar?: string;
 };
 
 export interface UserAgent {

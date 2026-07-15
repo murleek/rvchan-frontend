@@ -8,209 +8,32 @@ import {
   updateNotification,
 } from "../features/notification/notifications.slice";
 import { notificationsApi } from "../features/notification/notifications.api";
-import {
-  NotificationType,
-  type Notification,
-  type ParsedUserAgent,
-} from "../types/notification";
-import {
-  addToast,
-  type Toast,
-  type ToastIcon,
-} from "../features/toasts/toasts.slice";
-import i18n from "@/utils/i18n";
-import { postsApi } from "../features/posts/posts.api";
+import { type Notification } from "../types/notification";
+import { addToast } from "../features/toasts/toasts.slice";
 import { userApi } from "../features/user/user.api";
 import type { AppDispatch, RootState } from "../store";
-import type { PublicPost } from "../types/post";
+import {
+  actions,
+  PING_INTERVAL_MS,
+  isSocketAction,
+  type SocketAction,
+} from "./socket.types";
+import { buildToast } from "./socket.toasts";
+import { handlePostCreated, type PostCreatedData } from "./socket.handlers";
 
-// ---------------------------------------------------------------------------
-// Типизированные события
-// ---------------------------------------------------------------------------
-
-export type SocketEvent = "notification:seen" | "ping";
-
-// Actions
-const actions = {
-  SOCKET_CONNECT: "socket/connect",
-  SOCKET_DISCONNECT: "socket/disconnect",
-  SOCKET_EMIT: "socket/emit",
-} as const;
-const PING_INTERVAL_MS = 30_000;
-
-export const socketConnect = (token: string) => ({
-  type: actions.SOCKET_CONNECT,
-  payload: token,
-});
-
-export const socketDisconnect = () => ({
-  type: actions.SOCKET_DISCONNECT,
-});
-
-export const socketEmit = (event: SocketEvent, data?: unknown) => ({
-  type: actions.SOCKET_EMIT,
-  payload: { event, data },
-});
-
-type SocketAction =
-  | ReturnType<typeof socketConnect>
-  | ReturnType<typeof socketDisconnect>
-  | ReturnType<typeof socketEmit>;
+// Re-export for convenience (used by other modules importing from this path)
+export {
+  socketConnect,
+  socketDisconnect,
+  socketEmit,
+  type SocketEvent,
+} from "./socket.types";
 
 // ---------------------------------------------------------------------------
 // Middleware
 // ---------------------------------------------------------------------------
 
 const WS_URL = import.meta.env.VITE_WS_URL ?? "http://localhost:3000";
-
-function isSocketAction(action: unknown): action is SocketAction {
-  return (
-    typeof action === "object" &&
-    action !== null &&
-    "type" in action &&
-    Object.values(actions).includes(
-      (action as { type: SocketAction["type"] }).type,
-    )
-  );
-}
-
-async function buildToast(
-  notification: Notification,
-): Promise<Omit<Toast, "id">> {
-  if (!i18n.hasLoadedNamespace("notification")) {
-    await i18n.loadNamespaces("notification");
-  }
-
-  const t = (key: string, options?: Record<string, unknown>) =>
-    i18n.t(key, { ns: "notification", ...options });
-
-  switch (notification.type) {
-    case NotificationType.FOLLOW: {
-      const { actor } = notification;
-      return {
-        type: "info",
-        title: actor
-          ? t("follow.title_known", {
-              firstName: actor.firstName,
-              lastName: actor.lastName,
-            })
-          : t("follow.unknown"),
-        description: actor ? t("follow.known") : undefined,
-        icon: {
-          type: "image",
-          cdn: actor?.avatar ?? "",
-        } satisfies ToastIcon,
-      };
-    }
-
-    case NotificationType.FOLLOW_ACCEPTED: {
-      const { actor } = notification;
-      return {
-        type: "info",
-        title: actor
-          ? t("follow_accepted.title_known", {
-              firstName: actor.firstName,
-              lastName: actor.lastName,
-            })
-          : t("follow_accepted.unknown"),
-        description: actor ? t("follow_accepted.known") : undefined,
-        icon: {
-          type: "image",
-          cdn: actor?.avatar ?? "",
-        } satisfies ToastIcon,
-      };
-    }
-
-    case NotificationType.NEW_DEVICE: {
-      const { device, ip } = notification.payload as {
-        device: ParsedUserAgent;
-        ip: string;
-      };
-
-      const vendorModel = [device.deviceVendor, device.deviceModel]
-        .filter(Boolean)
-        .join(" ");
-
-      const isDesktop = device.deviceType === "desktop";
-
-      return {
-        type: "info",
-        title: t(isDesktop ? "device.new_pc" : "device.new_device", {
-          vendorModel: vendorModel || t("device.unknown_device"),
-          os: device.os || t("device.unknown_os"),
-          osVersion: device.osVersion ?? "",
-        }),
-        description: t("device.description", {
-          browser: device.browser || t("device.unknown_browser"),
-          browserVersion: device.browserVersion ?? "",
-          ip: ip || t("device.unknown_ip"),
-        }),
-        icon: {
-          type: "icon",
-          name: "smartphone",
-          className: "text-blue-700",
-        } satisfies ToastIcon,
-      };
-    }
-
-    case NotificationType.POST_MENTION: {
-      const { actor } = notification;
-      return {
-        type: "info",
-        title: actor
-          ? t("post_mention.title_known", {
-              firstName: actor.firstName,
-              lastName: actor.lastName,
-            })
-          : t("post_mention.unknown"),
-        description: actor ? t("post_mention.known") : undefined,
-        icon: {
-          type: "image",
-          cdn: actor?.avatar ?? "",
-        } satisfies ToastIcon,
-      };
-    }
-
-    case NotificationType.POST_REPLY: {
-      const { actor } = notification;
-      return {
-        type: "info",
-        title: actor
-          ? t("post_reply.title_known", {
-              firstName: actor.firstName,
-              lastName: actor.lastName,
-            })
-          : t("post_reply.unknown"),
-        description: actor ? t("post_reply.known") : undefined,
-        icon: {
-          type: "image",
-          cdn: actor?.avatar ?? "",
-        } satisfies ToastIcon,
-      };
-    }
-
-    case NotificationType.POST_REPLY_TO_OTHER: {
-      const { actor } = notification;
-      return {
-        type: "info",
-        title: actor
-          ? t("post_reply_to_other.title_known", {
-              firstName: actor.firstName,
-              lastName: actor.lastName,
-            })
-          : t("post_reply_to_other.unknown"),
-        description: actor ? t("post_reply_to_other.known") : undefined,
-        icon: {
-          type: "image",
-          cdn: actor?.avatar ?? "",
-        } satisfies ToastIcon,
-      };
-    }
-
-    default:
-      return { type: "info", title: t("notification.new") };
-  }
-}
 
 export const socketMiddleware: Middleware = (store) => {
   let socket: Socket | null = null;
@@ -288,7 +111,6 @@ export const socketMiddleware: Middleware = (store) => {
       async (data: { notification: Notification; unseen: number }) => {
         dispatch(addNotification(data.notification));
         dispatch(setCounters({ unseen: data.unseen }));
-        // dispatch(notificationsApi.util.invalidateTags(["Notifications"]));
         dispatch(
           notificationsApi.util.updateQueryData(
             "getNotifications",
@@ -320,7 +142,7 @@ export const socketMiddleware: Middleware = (store) => {
           undefined,
           (draft) => {
             if (draft) {
-              draft.pages.map((page) => {
+              draft.pages.forEach((page) => {
                 page.unseen = data.unseen;
               });
             }
@@ -329,95 +151,9 @@ export const socketMiddleware: Middleware = (store) => {
       );
     });
 
-    socket.on(
-      "post:created",
-      (data: {
-        post: PublicPost & { parent: { username: string; id: string } };
-        jobId: string;
-      }) => {
-        const jobId = `job:${data.jobId}`;
-
-        console.log(data.post);
-
-        const updatePages = (pages: { data: PublicPost[] }[]) => {
-          const pageIndex = pages.findIndex((page) =>
-            page.data.some((post) => post.id === jobId),
-          );
-
-          if (pageIndex === -1) {
-            pages[0]?.data.unshift(data.post);
-            return;
-          }
-
-          const postIndex = pages[pageIndex].data.findIndex(
-            (post) => post.id === jobId,
-          );
-
-          if (postIndex !== -1) {
-            pages[pageIndex].data[postIndex] = data.post;
-          } else {
-            pages[pageIndex].data.unshift(data.post);
-          }
-        };
-
-        if (data.post.parent) {
-          console.log("Updating getPost cache for", {
-            username: data.post.parent.username,
-            threadId: String(data.post.parent.id),
-          });
-          dispatch(
-            postsApi.util.updateQueryData(
-              "getPost",
-              {
-                username: data.post.parent.username,
-                threadId: String(data.post.parent.id),
-              },
-              (draft) => {
-                try {
-                  draft.pages?.forEach((page) => {
-                    page.replyCount += 1;
-                    page.parents?.forEach((parent) => {
-                      parent.replyCount += 1;
-                    });
-
-                    const pageIndex = page.replies.data.findIndex(
-                      (reply) => reply.id === jobId,
-                    );
-
-                    if (pageIndex !== -1) {
-                      page.replies.data[pageIndex] = data.post;
-                      return;
-                    }
-
-                    page.replies.data.forEach((reply, index) => {
-                      if (reply.id === jobId) {
-                        page.replies.data[index] = data.post;
-                      }
-                    });
-                  });
-                } catch (error) {
-                  console.error("Error updating getPost cache:", error);
-                }
-              },
-            ),
-          );
-        } else {
-          dispatch(
-            postsApi.util.updateQueryData(
-              "getUserThreads",
-              { username: data.post.user.username },
-              (draft) => {
-                const pages = draft?.pages;
-                console.log("getUserThreads", pages);
-                if (!pages) return;
-                updatePages(pages);
-              },
-            ),
-          );
-          dispatch(postsApi.util.invalidateTags(["feed"]));
-        }
-      },
-    );
+    socket.on("post:created", (data: PostCreatedData) => {
+      handlePostCreated(dispatch, data);
+    });
   }
 
   function detach() {
@@ -446,7 +182,11 @@ export const socketMiddleware: Middleware = (store) => {
 
         case actions.SOCKET_EMIT:
           if (socket?.connected) {
-            socket.emit(action.payload.event, action.payload.data);
+            try {
+              socket.emit(action.payload.event, action.payload.data);
+            } catch (err) {
+              console.error("[socket] emit error:", err);
+            }
           }
           break;
       }

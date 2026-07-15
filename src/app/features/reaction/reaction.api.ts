@@ -3,6 +3,32 @@ import { baseQueryWithReauth } from "../../baseQuery";
 import { postsApi } from "../posts/posts.api";
 import type { RootState } from "@/app/store";
 
+const toggleLike = (item: { isLiked: boolean; likeCount: number }): void => {
+  item.isLiked = !item.isLiked;
+  item.likeCount += item.isLiked ? 1 : -1;
+};
+
+function* extractItems(
+  page: unknown,
+): Generator<{ id: string; isLiked: boolean; likeCount: number }> {
+  const p = page as {
+    data?: { id: string; isLiked: boolean; likeCount: number }[];
+    id?: string;
+    isLiked?: boolean;
+    likeCount?: number;
+    replies?: { data: { id: string; isLiked: boolean; likeCount: number }[] };
+    parents?: { id: string; isLiked: boolean; likeCount: number }[];
+  };
+
+  if (p.data) {
+    yield* p.data;
+  } else {
+    yield p as { id: string; isLiked: boolean; likeCount: number };
+    yield* p.replies?.data ?? [];
+    yield* p.parents ?? [];
+  }
+}
+
 export const reactionApi = createApi({
   reducerPath: "reactionApi",
   baseQuery: baseQueryWithReauth,
@@ -17,72 +43,37 @@ export const reactionApi = createApi({
       }),
       async onQueryStarted({ postId }, { dispatch, getState, queryFulfilled }) {
         const store = getState() as RootState;
-        const allPosts = postsApi.util.selectInvalidatedBy(store, ["posts"]);
+        const entries = postsApi.util.selectInvalidatedBy(store, ["posts"]);
 
-        const results: object[] = [];
+        const undos: (() => void)[] = [];
 
-        allPosts.forEach((entry) => {
-          if (!entry) return;
+        for (const entry of entries) {
+          if (!entry) continue;
+
           const { originalArgs, endpointName } = entry;
-          if (endpointName === "getPost") {
-            results.push(
-              dispatch(
-                postsApi.util.updateQueryData(
-                  "getPost",
-                  originalArgs,
-                  (draft) => {
-                    draft.pages.forEach((page) => {
-                      if (page.id === postId) {
-                        page.isLiked = !page.isLiked;
-                        page.likeCount += page.isLiked ? 1 : -1;
-                      }
-                      page.replies.data.forEach((reply) => {
-                        if (reply.id === postId) {
-                          reply.isLiked = !reply.isLiked;
-                          reply.likeCount += reply.isLiked ? 1 : -1;
-                        }
-                      });
-                      page.parents?.forEach((parent) => {
-                        if (parent.id === postId) {
-                          parent.isLiked = !parent.isLiked;
-                          parent.likeCount += parent.isLiked ? 1 : -1;
-                        }
-                      });
-                    });
-                  },
-                ),
-              ),
-            );
-          } else if (endpointName === "getUserThreads") {
-            results.push(
-              dispatch(
-                postsApi.util.updateQueryData(
-                  "getUserThreads",
-                  originalArgs,
-                  (draft) => {
-                    draft.pages.forEach((page) => {
-                      page.data.forEach((thread) => {
-                        if (thread.id === postId) {
-                          thread.isLiked = !thread.isLiked;
-                          thread.likeCount += thread.isLiked ? 1 : -1;
-                        }
-                      });
-                    });
-                  },
-                ),
-              ),
-            );
-          }
-        });
+          const isValidEndpoint =
+            endpointName === "getPost" ||
+            endpointName === "getUserThreads" ||
+            endpointName === "getFeed";
+          if (!isValidEndpoint) continue;
 
-        queryFulfilled.catch(() => {
-          results.forEach(
-            (result) =>
-              "undo" in result &&
-              typeof result.undo === "function" &&
-              result.undo(),
+          const { undo } = dispatch(
+            postsApi.util.updateQueryData(
+              endpointName,
+              originalArgs,
+              (draft) => {
+                for (const page of draft.pages) {
+                  for (const item of extractItems(page)) {
+                    if (item.id === postId) toggleLike(item);
+                  }
+                }
+              },
+            ),
           );
-        });
+          undos.push(undo);
+        }
+
+        queryFulfilled.catch(() => undos.forEach((undo) => undo()));
       },
     }),
   }),

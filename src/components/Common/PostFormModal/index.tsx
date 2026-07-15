@@ -1,12 +1,10 @@
-import { postsApi, usePostMutation } from "@/app/features/posts/posts.api";
+import { usePostMutation } from "@/app/features/posts/posts.api";
 import { useAppForm } from "@/components/ui/form";
 import z from "zod";
 import Loader from "../Loader";
 import type { FC } from "react";
 import { Button } from "@/components/ui/button";
 import useAuth from "@/hooks/useAuth";
-import { useAppDispatch } from "@/app/hooks";
-import type { Profile } from "@/app/types/auth";
 import type { PublicPost } from "@/app/types/post";
 import {
   Dialog,
@@ -19,6 +17,7 @@ import ProfileAvatar from "../ProfileAvatar";
 import { Card } from "@/components/ui/card";
 import PostReply from "../PostReply";
 import useModal from "@/hooks/common/useModal";
+import { usePostCacheUpdater } from "@/hooks/usePostCacheUpdater";
 
 type PostFormModalProps = {
   username: string;
@@ -32,89 +31,6 @@ const PostFormModalSchema = z.object({
       "Content cannot be empty or whitespace",
     ),
 });
-const usePosts = (profile: Profile | null, username: string) => {
-  const dispatch = useAppDispatch();
-
-  const makeTempId = () => `temp-id-${Date.now()}`;
-  const makeQueueId = (queueId: string) => `job:${queueId}`;
-
-  const buildPost = (
-    content: string,
-    parentId: string | null,
-    id: string,
-  ): PublicPost => ({
-    id,
-    user: profile!,
-    content: content.trim(),
-    parentId,
-    replyCount: 0,
-    likeCount: 0,
-    createdAt: null,
-    isLiked: false,
-  });
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const getDataList = (draft: any, parentId?: string) => {
-    if (parentId) return draft?.pages?.[0]?.replies?.data;
-    return draft?.pages?.[0]?.data;
-  };
-
-  // ── unified cache operations ───────────────────────────────────────────
-  const addPostToCache = (
-    post: z.infer<typeof PostFormModalSchema>,
-    parentId?: string,
-  ) => {
-    if (!profile) return;
-
-    const tempId = makeTempId();
-    const queryArgs = parentId
-      ? { username: username, threadId: parentId }
-      : { username: username };
-    const endpoint = parentId ? "getPost" : "getUserThreads";
-
-    dispatch(
-      postsApi.util.updateQueryData(endpoint, queryArgs, (draft) => {
-        getDataList(draft, parentId)?.unshift(
-          buildPost(post.content, parentId ?? null, tempId),
-        );
-      }),
-    );
-
-    return tempId;
-  };
-
-  const replaceTempIdWithQueueId = (
-    post: z.infer<typeof PostFormModalSchema>,
-    tempId: string,
-    queueId: string,
-    parentId?: string,
-  ) => {
-    if (!profile) return;
-
-    const queryArgs = parentId
-      ? { username: username, threadId: parentId }
-      : { username: username };
-    const endpoint = parentId ? "getPost" : "getUserThreads";
-
-    dispatch(
-      postsApi.util.updateQueryData(endpoint, queryArgs, (draft) => {
-        const data: PublicPost[] = getDataList(draft, parentId);
-        if (!data) return;
-
-        const index = data.findIndex((obj) => obj.id === tempId);
-        if (index !== -1) {
-          data[index].id = makeQueueId(queueId);
-        } else {
-          data.unshift(
-            buildPost(post.content, parentId ?? null, makeQueueId(queueId)),
-          );
-        }
-      }),
-    );
-  };
-
-  return { addPostToCache, replaceTempIdWithQueueId };
-};
 
 export type PostFormModalDetails = {
   isReplyingToThread?: boolean;
@@ -126,8 +42,7 @@ const PostFormModal: FC<PostFormModalProps> = ({ onSubmit }) => {
   const { isOpen, payload, closeModal } =
     useModal<PostFormModalDetails>("post");
   const { profile } = useAuth();
-  const { addPostToCache, replaceTempIdWithQueueId } = usePosts(
-    profile,
+  const { addPostToCache, replaceTempIdWithQueueId } = usePostCacheUpdater(
     payload?.reply ? payload.reply.user.username : "",
   );
 
@@ -148,7 +63,7 @@ const PostFormModal: FC<PostFormModalProps> = ({ onSubmit }) => {
 
       const parentId = payload?.reply ? String(payload?.reply?.id) : undefined;
 
-      const id = addPostToCache(parsed.data, parentId);
+      const id = addPostToCache(parsed.data.content, parentId);
 
       await onSubmit?.(parsed.data.content, parentId);
 
@@ -159,7 +74,7 @@ const PostFormModal: FC<PostFormModalProps> = ({ onSubmit }) => {
       if (!postResponse.data) return;
 
       replaceTempIdWithQueueId(
-        parsed.data,
+        parsed.data.content,
         id!,
         postResponse.data.jobId,
         parentId,
@@ -254,22 +169,6 @@ const PostFormModal: FC<PostFormModalProps> = ({ onSubmit }) => {
                     <>Опубликовать</>
                   )}
                 </Button>
-
-                // <Button
-                //   disabled={isLoading}
-                //   className="rounded-full h-10 font-black text-md"
-                //   variant="destructive"
-                //   onClick={() => logoutDevice(device.id)}
-                // >
-                //   {isLoading ? (
-                //     <>
-                //       <Loader className={"size-4!"} />
-                //       {t("devices.logout.loading")}
-                //     </>
-                //   ) : (
-                //     t("devices.logout.button")
-                //   )}
-                // </Button>
               )}
             />
           </DialogFooter>

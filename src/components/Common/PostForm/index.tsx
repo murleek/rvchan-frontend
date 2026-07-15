@@ -1,4 +1,4 @@
-import { postsApi, usePostMutation } from "@/app/features/posts/posts.api";
+import { usePostMutation } from "@/app/features/posts/posts.api";
 import { useAppForm } from "@/components/ui/form";
 import { ArrowUp } from "lucide-react";
 import z from "zod";
@@ -8,10 +8,8 @@ import type { FC } from "react";
 import { Button } from "@/components/ui/button";
 import clsx from "clsx";
 import useAuth from "@/hooks/useAuth";
-import { useAppDispatch } from "@/app/hooks";
-import type { Profile } from "@/app/types/auth";
-import type { PublicPost } from "@/app/types/post";
 import { useTranslation } from "react-i18next";
+import { usePostCacheUpdater } from "@/hooks/usePostCacheUpdater";
 
 type PostFormProps = {
   parentId?: string;
@@ -28,89 +26,6 @@ const PostFormSchema = z.object({
       "Content cannot be empty or whitespace",
     ),
 });
-const usePosts = (profile: Profile | null, username: string) => {
-  const dispatch = useAppDispatch();
-
-  const makeTempId = () => `temp-id-${Date.now()}`;
-  const makeQueueId = (queueId: string) => `job:${queueId}`;
-
-  const buildPost = (
-    content: string,
-    parentId: string | null,
-    id: string,
-  ): PublicPost => ({
-    id,
-    user: profile!,
-    content: content.trim(),
-    parentId,
-    replyCount: 0,
-    likeCount: 0,
-    createdAt: null,
-    isLiked: false,
-  });
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const getDataList = (draft: any, parentId?: string) => {
-    if (parentId) return draft?.pages?.[0]?.replies?.data;
-    return draft?.pages?.[0]?.data;
-  };
-
-  // ── unified cache operations ───────────────────────────────────────────
-  const addPostToCache = (
-    post: z.infer<typeof PostFormSchema>,
-    parentId?: string,
-  ) => {
-    if (!profile) return;
-
-    const tempId = makeTempId();
-    const queryArgs = parentId
-      ? { username: username, threadId: parentId }
-      : { username: username };
-    const endpoint = parentId ? "getPost" : "getUserThreads";
-
-    dispatch(
-      postsApi.util.updateQueryData(endpoint, queryArgs, (draft) => {
-        getDataList(draft, parentId)?.unshift(
-          buildPost(post.content, parentId ?? null, tempId),
-        );
-      }),
-    );
-
-    return tempId;
-  };
-
-  const replaceTempIdWithQueueId = (
-    post: z.infer<typeof PostFormSchema>,
-    tempId: string,
-    queueId: string,
-    parentId?: string,
-  ) => {
-    if (!profile) return;
-
-    const queryArgs = parentId
-      ? { username: username, threadId: parentId }
-      : { username: username };
-    const endpoint = parentId ? "getPost" : "getUserThreads";
-
-    dispatch(
-      postsApi.util.updateQueryData(endpoint, queryArgs, (draft) => {
-        const data: PublicPost[] = getDataList(draft, parentId);
-        if (!data) return;
-
-        const index = data.findIndex((obj) => obj.id === tempId);
-        if (index !== -1) {
-          data[index].id = makeQueueId(queueId);
-        } else {
-          data.unshift(
-            buildPost(post.content, parentId ?? null, makeQueueId(queueId)),
-          );
-        }
-      }),
-    );
-  };
-
-  return { addPostToCache, replaceTempIdWithQueueId };
-};
 
 const PostForm: FC<PostFormProps & React.HTMLAttributes<HTMLDivElement>> = ({
   parentId,
@@ -122,10 +37,8 @@ const PostForm: FC<PostFormProps & React.HTMLAttributes<HTMLDivElement>> = ({
 }) => {
   const { profile } = useAuth();
   const { t } = useTranslation("posts");
-  const { addPostToCache, replaceTempIdWithQueueId } = usePosts(
-    profile,
-    username,
-  );
+  const { addPostToCache, replaceTempIdWithQueueId } =
+    usePostCacheUpdater(username);
   const [post] = usePostMutation();
   const form = useAppForm({
     defaultValues: {
@@ -142,7 +55,7 @@ const PostForm: FC<PostFormProps & React.HTMLAttributes<HTMLDivElement>> = ({
         return;
 
       console.log(parentId);
-      const id = addPostToCache(parsed.data, parentId);
+      const id = addPostToCache(parsed.data.content, parentId);
 
       await onSubmit?.(parsed.data.content, parentId);
 
@@ -153,7 +66,7 @@ const PostForm: FC<PostFormProps & React.HTMLAttributes<HTMLDivElement>> = ({
       if (!postResponse.data) return;
 
       replaceTempIdWithQueueId(
-        parsed.data,
+        parsed.data.content,
         id!,
         postResponse.data.jobId,
         parentId,

@@ -72,6 +72,54 @@ export function handlePostCreated(
         },
       ),
     );
+
+    data.post.parents?.forEach((ancestor) => {
+      dispatch(
+        postsApi.util.updateQueryData(
+          "getPost",
+          {
+            username: ancestor.user.username,
+            threadId: String(ancestor.id),
+          },
+          (draft) => {
+            try {
+              draft.pages?.forEach((page) => {
+                page.replyCount += 1;
+                page.parents?.forEach((parent) => {
+                  parent.replyCount += 1;
+                });
+              });
+            } catch (error) {
+              console.error("Error updating ancestor getPost cache:", error);
+            }
+          },
+        ),
+      );
+
+      dispatch(
+        postsApi.util.updateQueryData(
+          "getUserThreads",
+          { username: ancestor.user.username },
+          (draft) => {
+            try {
+              draft?.pages?.forEach((page) => {
+                const thread = page.data.find(
+                  (post) => post.id === ancestor.id,
+                );
+                if (thread) {
+                  thread.replyCount += 1;
+                }
+              });
+            } catch (error) {
+              console.error(
+                "Error updating ancestor getUserThreads cache:",
+                error,
+              );
+            }
+          },
+        ),
+      );
+    });
   } else {
     dispatch(
       postsApi.util.updateQueryData(

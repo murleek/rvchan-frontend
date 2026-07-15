@@ -1,6 +1,5 @@
 import * as z from "zod";
 import { Navigate, useLocation } from "react-router";
-import type { AuthError } from "@/hooks/useAuth";
 import useAuth from "@/hooks/useAuth";
 import { useState, type FC } from "react";
 import { PAGES } from "@/constants";
@@ -18,6 +17,7 @@ import { LogIn } from "lucide-react";
 import Loader from "@/components/Common/Loader";
 import type { AuthWrapperAction } from "../../types";
 import { CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import type { AuthError } from "@/providers/AuthProvider";
 
 export const LoginSchema = z.object({
   email: z

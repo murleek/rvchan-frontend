@@ -1,6 +1,5 @@
 import * as z from "zod";
 import { Navigate, useLocation } from "react-router";
-import type { AuthError } from "@/hooks/useAuth";
 import useAuth from "@/hooks/useAuth";
 import { useLayoutEffect, useState, type FC } from "react";
 import { PAGES } from "@/constants";
@@ -19,6 +18,7 @@ import Loader from "@/components/Common/Loader";
 import type { AuthWrapperAction } from "../../types";
 import { CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { useRegisterMutation } from "@/app/features/auth/auth.api";
+import type { AuthError } from "@/providers/AuthProvider";
 
 export const VerifySchema = z.object({
   email: z

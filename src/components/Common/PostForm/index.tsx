@@ -15,6 +15,7 @@ type PostFormProps = {
   username: string;
   onSubmit?: (content: string, parentId?: string) => Promise<void>;
   disabled?: boolean;
+  formClassName?: string;
 };
 
 const PostFormSchema = z.object({

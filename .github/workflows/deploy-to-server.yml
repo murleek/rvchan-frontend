@@ -69,7 +69,8 @@ jobs:
             <b>👤✅ rvchan frontend deployment successful</b>
 
             <b>Author:</b> ${{ github.event.head_commit.author.name }}
-            <b>Message:</b> ${{ github.event.head_commit.message }}
+            <b>Message:</b> 
+            <blockquote expandable>${{ github.event.head_commit.message }}</blockquote>
 
             <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View logs</a>
 

@@ -61,7 +61,7 @@ const PostPage: FC = () => {
   }
 
   return (
-    <div className="w-full flex gap-4 flex-col h-full">
+    <div className="w-full flex gap-4 flex-col h-full justify-between">
       {/* {(post?.pages[0]?.parents?.length || 0) > 0 &&
         post?.pages[0]?.parents
           ?.map((p) => (
@@ -96,20 +96,17 @@ const PostPage: FC = () => {
                 <div>
                   {post?.pages[0]?.parents
                     ?.map((p) => (
-                      <div className="relative group/parentPost" key={p.id}>
-                        <PostReply key={p.id} thread={p} />
-                        <div className="w-0.5 h-[calc(100%-2rem)] bg-border absolute left-8.75 top-8 rounded-full group-hover/parentPost:bg-transparent group-last-of-type/postreply:hidden animated transition-colors" />
-                      </div>
+                      <PostReply key={p.id} thread={p} parent noUnderline />
+                      // <div className="w-0.5 h-[calc(100%-2rem)] bg-border absolute left-8.75 top-8 rounded-full group-hover/parentPost:bg-transparent group-last-of-type/postreply:hidden animated transition-colors" />
                     ))
                     .reverse()}
                 </div>
               )}
               <Post
                 thread={post.pages[0]}
-                className="relative w-[calc(100%+1rem)] -left-3 border bg-white group-first/post:mt-0 group-first/post:-top-0.5"
+                // className="relative w-[calc(100%+1rem)] -left-3 border bg-white rounded-3xl! group-first/post:mt-0 group-first/post:m-0"
                 // parentClassName="first:mt-0"
                 notEntriable
-                noUnderline
               />
               {replies.length > 0 && (
                 <InfiniteScroll
@@ -119,7 +116,7 @@ const PostPage: FC = () => {
                   className="flex flex-col gap-0"
                 >
                   {replies.map((reply) => (
-                    <PostReply key={reply.id} thread={reply} noLine />
+                    <PostReply key={reply.id} thread={reply} />
                   ))}
                 </InfiniteScroll>
               )}

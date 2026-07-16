@@ -15,6 +15,7 @@ type PostProps = {
   className?: string;
   notEntriable?: boolean;
   noUnderline?: boolean;
+  forceUnderline?: boolean;
 };
 
 function renderTextWithEntities(content: string, entities?: TextEntity[]) {
@@ -79,6 +80,7 @@ const Post: FC<PostProps> = ({
   className,
   notEntriable,
   noUnderline,
+  forceUnderline,
 }) => {
   const { t } = useTranslation("posts");
   const navigate = useNavigate();
@@ -111,7 +113,7 @@ const Post: FC<PostProps> = ({
           onClick={() =>
             navigate(PAGES.USER.replaceAll(":username", thread.user.username))
           }
-          className="flex w-full gap-3 p-1 hover:bg-black/8 rounded-sm animated"
+          className="cursor-pointer flex w-full gap-3 p-1 hover:bg-black/8 rounded-sm animated"
         >
           <ProfileAvatar
             className="size-10 rounded-full"
@@ -145,7 +147,7 @@ const Post: FC<PostProps> = ({
           <div className="text-[15px] mt-0.75 leading-5.5 whitespace-pre-wrap">
             {renderTextWithEntities(thread.content, thread.entities)}
           </div>
-          <div className="flex mt-1 text-sm text-muted-foreground">
+          <div className="flex mt-1 text-sm text-muted-foreground gap-1">
             <LikeButton thread={thread} />
             <button className="flex gap-1 items-center hover:cursor-pointer hover:bg-black/8 animated px-3 py-2 rounded-xl group/button color-muted-foreground hover:color-blue-500!">
               <MessageCircle className="size-4.5 animated fill-transparent group-hover/button:fill-current group-active/button:scale-80" />
@@ -157,7 +159,20 @@ const Post: FC<PostProps> = ({
         </div>
       </div>
       {!noUnderline && (
-        <hr className="border-border group-last-of-type/post:hidden" />
+        // <div
+        //   className={clsx(
+        //     "h-0.5 w-full bg-border px-2 box-border",
+        //     !forceUnderline && "group-last-of-type/post:hidden",
+        //   )}
+        // />
+        <div
+          className={clsx(
+            "px-2",
+            !forceUnderline && "group-last-of-type/post:hidden",
+          )}
+        >
+          <div className="h-px w-full bg-border box-border rounded-full" />
+        </div>
       )}
     </Component>
   );

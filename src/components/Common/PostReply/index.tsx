@@ -15,7 +15,8 @@ type PostReplyProps = {
   cardClassName?: string;
   noLink?: boolean;
   noActions?: boolean;
-  noLine?: boolean;
+  parent?: boolean;
+  noUnderline?: boolean;
 };
 
 function renderTextWithEntities(content: string, entities?: TextEntity[]) {
@@ -82,7 +83,8 @@ const PostReply: FC<PostReplyProps & HTMLAttributes<HTMLDivElement>> = ({
   cardClassName,
   noLink,
   noActions,
-  noLine,
+  parent,
+  noUnderline,
   ...props
 }) => {
   const time = useRelativeTime(thread.createdAt || new Date().toString());
@@ -102,21 +104,21 @@ const PostReply: FC<PostReplyProps & HTMLAttributes<HTMLDivElement>> = ({
         }
       : ({ className } as { to: never; className?: string });
 
-  const reply = () => {
-    if (!thread.createdAt) return;
-    navigate(
-      PAGES.POST.replaceAll(":username", thread.user.username).replaceAll(
-        ":id",
-        String(thread.id),
-      ) + "#reply",
-    );
-  };
+  // const reply = () => {
+  //   if (!thread.createdAt) return;
+  //   navigate(
+  //     PAGES.POST.replaceAll(":username", thread.user.username).replaceAll(
+  //       ":id",
+  //       String(thread.id),
+  //     ) + "#reply",
+  //   );
+  // };
 
   return (
     <Component {...compProps}>
       <div
         className={clsx(
-          `px-1 not-first:border-t animated flex items-start gap-2 rounded-lg relative m-1`,
+          `p-1 not-first:border-t animated flex items-start gap-3 rounded-lg relative m-1`,
           !thread.createdAt
             ? "opacity-50 animate-pulse"
             : !noLink && "hover:bg-black/8 cursor-pointer",
@@ -124,21 +126,25 @@ const PostReply: FC<PostReplyProps & HTMLAttributes<HTMLDivElement>> = ({
         )}
         {...props}
       >
-        <div className="flex justify-end w-11">
+        <div className="flex justify-end w-9">
           <div
             onClick={() =>
+              !noLink &&
               navigate(PAGES.USER.replaceAll(":username", thread.user.username))
             }
-            className={`rounded-full p-1 hover:bg-black/8 animated`}
+            className={clsx(
+              "rounded-full p-1",
+              !noLink && "hover:bg-black/8 cursor-pointer animated",
+            )}
           >
             <ProfileAvatar
-              className="size-6 rounded-full"
+              className="size-7 rounded-full"
               src={thread.user.avatar}
               alt={`${thread.user.firstName}'s (@${thread.user.username}) avatar`}
             />
           </div>
         </div>
-        <div className="flex flex-col flex-1 p-2 pl-0">
+        <div className="flex flex-col flex-1 p-1 pl-0">
           <div
             className={clsx(
               "flex gap-2 w-full ",
@@ -156,14 +162,14 @@ const PostReply: FC<PostReplyProps & HTMLAttributes<HTMLDivElement>> = ({
             {renderTextWithEntities(thread.content, thread.entities)}
           </div>
           {!noActions && (
-            <div className="flex mt-0.5 text-sm text-muted-foreground relative -left-3">
+            <div className="flex mt-0.5 text-sm text-muted-foreground relative -left-3 gap-1">
               <LikeButton thread={thread} />
               <button
                 className="flex gap-1 items-center hover:cursor-pointer hover:bg-black/8 animated px-3 py-2 rounded-xl group/button color-muted-foreground hover:color-blue-500!"
-                onClick={(e) => {
-                  e.preventDefault();
-                  reply();
-                }}
+                // onClick={(e) => {
+                //   e.preventDefault();
+                //   reply();
+                // }}
               >
                 <MessageCircle className="size-4.5 animated fill-transparent group-hover/button:fill-current group-active/button:scale-80" />
                 <span className="text-xs font-bold tabular-nums">
@@ -173,10 +179,15 @@ const PostReply: FC<PostReplyProps & HTMLAttributes<HTMLDivElement>> = ({
             </div>
           )}
         </div>
-        {!noLine && (
-          <div className="w-0.5 h-[calc(100%-2rem)] bg-border absolute left-7.75 top-8 rounded-full group-hover/postreply:bg-transparent group-last-of-type/postreply:hidden animated transition-colors" />
+        {parent && (
+          <div className="w-0.5 h-[calc(100%-3rem)] bg-border absolute left-4.75 top-12 rounded-full group-hover/postreply:bg-transparent animated transition-colors" />
         )}
       </div>
+      {!noUnderline && (
+        <div className="group-last-of-type/postreply:hidden px-2">
+          <div className="h-px w-full bg-border box-border rounded-full" />
+        </div>
+      )}
     </Component>
   );
 };

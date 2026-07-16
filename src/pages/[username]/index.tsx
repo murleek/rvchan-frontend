@@ -76,7 +76,7 @@ const ProfilePage = () => {
   if (error || !loadedProfile) return <ErrorView t="notFound" noReload />;
 
   return (
-    <div>
+    <div className={loadedProfile.isMine ? "pb-12" : ""}>
       <Card className="w-full mb-4 p-6 gap-4">
         <div className="flex items-center justify-between">
           <div className="">

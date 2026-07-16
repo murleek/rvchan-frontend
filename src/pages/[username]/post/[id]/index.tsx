@@ -8,6 +8,7 @@ import PostReply from "@/components/Common/PostReply";
 import { Card } from "@/components/ui/card";
 import { useHeader } from "@/hooks/common/useHeader";
 import useModal from "@/hooks/common/useModal";
+import clsx from "clsx";
 import { useEffect, useMemo, type FC } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useParams } from "react-router";
@@ -61,7 +62,11 @@ const PostPage: FC = () => {
   }
 
   return (
-    <div className="w-full flex gap-4 flex-col h-full justify-between">
+    <div
+      className={clsx(
+        "w-full flex gap-4 flex-col h-full justify-between pb-18",
+      )}
+    >
       <div>
         <Card className="w-full p-0 gap-0 group/posts">
           {isLoading ? (

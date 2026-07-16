@@ -56,7 +56,7 @@ const Feed = () => {
   if (!profile) return null;
 
   return (
-    <Card className="w-full mb-4 p-0 gap-4">
+    <Card className="w-full mb-4 p-0 gap-0">
       <div className="m-2 mb-0 group/postform max-md:hidden">
         <PostForm
           className="relative bg-background! mb-2 **:pointer-events-none cursor-pointer"

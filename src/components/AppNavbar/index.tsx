@@ -224,26 +224,28 @@ const AppNavbar = () => {
   if (!profile) return null;
 
   return (
-    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:hidden z-50 flex flex-col items-center gap-2 max-w-158 px-5 pointer-events-none">
-      <a.div
-        className={clsx(
-          "w-full pointer-events-auto backdrop-blur-sm backdrop-saturate-70 backdrop-grayscale-80 bg-card/80 rounded-[29px]",
-          !isPostFormShown && "pointer-events-none",
-        )}
-        style={postFormStyle}
-      >
-        <PostForm
-          className="relative w-full bg-transparent"
-          formClassName="scrollbar-bg-white"
-          username={
-            payload?.reply ? payload.reply.user.username : profile.username
-          }
-          parentId={payload?.reply ? String(payload.reply.id) : undefined}
-        />
-      </a.div>
+    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:hidden z-50 flex flex-col items-center gap-2 pointer-events-none">
+      <div className="px-5 w-full max-w-2xl">
+        <a.div
+          className={clsx(
+            "w-full pointer-events-auto backdrop-blur-sm backdrop-saturate-70 backdrop-grayscale-80 bg-card/80 rounded-[29px]",
+            !isPostFormShown && "pointer-events-none",
+          )}
+          style={postFormStyle}
+        >
+          <PostForm
+            className="relative w-full bg-transparent"
+            formClassName="scrollbar-bg-white"
+            username={
+              payload?.reply ? payload.reply.user.username : profile.username
+            }
+            parentId={payload?.reply ? String(payload.reply.id) : undefined}
+          />
+        </a.div>
+      </div>
       <a.nav
         className={clsx(
-          "w-full md:hidden z-50 pointer-events-none pb-2 px-3 flex items-center justify-center gap-2",
+          "w-full md:hidden z-50 pointer-events-none pb-2 px-2 flex items-center justify-center gap-2",
         )}
         style={navStyle}
       >

@@ -110,28 +110,15 @@ const PostFormModal: FC<PostFormModalProps> = ({ onSubmit }) => {
             </DialogTitle>
           </DialogHeader>
           <div className="w-full flex flex-col gap-2 p-5 pt-16 flex-1">
-            {/* {payload?.reply && (
-              <div className="relative [zoom:90%] px-6">
-                <PostReply
-                  thread={payload.reply}
-                  cardClassName="bg-card md:border py-2"
-                  noLink
-                  noActions
-                  noUnderline
-                />
-                <div className="absolute left-1/2 -translate-x-1/2 bg-card md:bg-border top-[calc(100%-4px)] h-3.25 w-1" />
-              </div>
-            )} */}
             <Card className="p-2 px-3 w-full gap-0">
               {payload?.reply && (
                 <div className="relative">
                   <PostReply
                     thread={payload.reply}
-                    cardClassName="m-0! mb-3! pl-0.5! gap-3.5!"
+                    cardClassName="relative m-0! mb-3! pl-0! -left-1.5 gap-3.25!"
                     noLink
                     noActions
                     noUnderline
-                    // parent
                   />
                   <div className="w-0.5 h-[calc(100%-2.5rem)] bg-border absolute left-4.75 top-10 rounded-full group-hover/postreply:bg-transparent animated transition-colors" />
                 </div>

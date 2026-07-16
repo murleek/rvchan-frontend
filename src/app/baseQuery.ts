@@ -1,6 +1,4 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { RootState } from "@/app/store";
-import { setAccessToken, logout } from "./features/auth/auth.slice";
 import type { AuthTokens } from "@/app/types/auth";
 import { STORAGE_KEYS } from "@/constants";
 import type { BaseQueryFn } from "@reduxjs/toolkit/query";
@@ -9,10 +7,31 @@ import type { AxiosRequestConfig, AxiosError, AxiosProgressEvent } from "axios";
 
 let refreshPromise: Promise<string | null> | null = null;
 
+const getAccessToken = () => localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+
+const emitAuthChange = () => {
+  window.dispatchEvent(new CustomEvent("auth-storage-changed"));
+};
+
+const clearAuth = (redirect?: boolean) => {
+  localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+  localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+  emitAuthChange();
+  if (redirect) {
+    window.location.href = "/login";
+  }
+};
+
+const setTokens = (tokens: AuthTokens) => {
+  localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, tokens.accessToken);
+  localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, tokens.refreshToken);
+  emitAuthChange();
+};
+
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL,
-  prepareHeaders: (headers, { getState }) => {
-    const token = (getState() as RootState).auth.accessToken;
+  prepareHeaders: (headers) => {
+    const token = getAccessToken();
     if (token) headers.set("authorization", `Bearer ${token}`);
     return headers;
   },
@@ -23,7 +42,7 @@ export const baseQueryWithReauth: typeof rawBaseQuery = async (
   api,
   extraOptions,
 ) => {
-  let result = await rawBaseQuery(args, api, extraOptions);
+  const result = await rawBaseQuery(args, api, extraOptions);
 
   if (result.error?.status === 429) {
     return result;
@@ -36,7 +55,7 @@ export const baseQueryWithReauth: typeof rawBaseQuery = async (
   const refreshToken = localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
 
   if (!refreshToken) {
-    api.dispatch(logout());
+    clearAuth();
     return result;
   }
 
@@ -55,14 +74,11 @@ export const baseQueryWithReauth: typeof rawBaseQuery = async (
 
       if (refreshResult.data) {
         const tokens = refreshResult.data as AuthTokens;
-
-        api.dispatch(setAccessToken(tokens.accessToken));
-        localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, tokens.refreshToken);
-
+        setTokens(tokens);
         return tokens.accessToken;
       }
 
-      api.dispatch(logout(true));
+      clearAuth(true);
       return null;
     })().finally(() => {
       refreshPromise = null;

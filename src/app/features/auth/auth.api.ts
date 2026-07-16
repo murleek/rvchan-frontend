@@ -1,8 +1,11 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { setAccessToken, logout } from "./auth.slice";
 import type { AuthLogin, AuthTokens, AuthCode } from "@/app/types/auth";
 import { STORAGE_KEYS } from "@/constants";
 import { baseQueryWithReauth } from "../../baseQuery";
+
+const emitAuthChange = () => {
+  window.dispatchEvent(new CustomEvent("auth-storage-changed"));
+};
 
 export const authApi = createApi({
   reducerPath: "authApi",
@@ -32,10 +35,11 @@ export const authApi = createApi({
         method: "POST",
         body,
       }),
-      async onQueryStarted(_, { queryFulfilled, dispatch }) {
+      async onQueryStarted(_, { queryFulfilled }) {
         const { data } = await queryFulfilled;
-        dispatch(setAccessToken(data.accessToken));
+        localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, data.accessToken);
         localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, data.refreshToken);
+        emitAuthChange();
       },
     }),
     refresh: builder.mutation<AuthTokens, void>({
@@ -46,10 +50,11 @@ export const authApi = createApi({
           refreshToken: localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN),
         },
       }),
-      async onQueryStarted(_, { queryFulfilled, dispatch }) {
+      async onQueryStarted(_, { queryFulfilled }) {
         const { data } = await queryFulfilled;
-        dispatch(setAccessToken(data.accessToken));
+        localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, data.accessToken);
         localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, data.refreshToken);
+        emitAuthChange();
       },
     }),
 
@@ -58,9 +63,14 @@ export const authApi = createApi({
         url: "/auth/logout",
         method: "POST",
       }),
-      async onQueryStarted(isReload, { queryFulfilled, dispatch }) {
+      async onQueryStarted(isReload, { queryFulfilled }) {
         await queryFulfilled;
-        dispatch(logout(isReload ?? true));
+        localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+        localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+        emitAuthChange();
+        if (isReload ?? true) {
+          window.location.href = "/login";
+        }
       },
     }),
   }),

@@ -1,5 +1,4 @@
 import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "./features/auth/auth.slice";
 import { authApi } from "./features/auth/auth.api";
 import { userApi } from "./features/user/user.api";
 import { relationshipApi } from "./features/relationship/relationship.api";
@@ -15,7 +14,6 @@ import { reactionApi } from "./features/reaction/reaction.api";
 
 export const store = configureStore({
   reducer: {
-    auth: authReducer,
     notifications: notificationsReducer,
     toasts: toastsReducer,
     nav: navReducer,

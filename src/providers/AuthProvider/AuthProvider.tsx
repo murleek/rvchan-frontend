@@ -1,11 +1,19 @@
-import { useCallback, useMemo, type FC, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type FC,
+  type ReactNode,
+} from "react";
+import { useAppDispatch } from "@/app/hooks";
 import {
   useLoginMutation,
   useLogoutMutation,
   useRefreshMutation,
 } from "@/app/features/auth/auth.api";
 import { useMeQuery, userApi } from "@/app/features/user/user.api";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { STORAGE_KEYS } from "@/constants";
 import { AuthContext, type AuthContextValue } from "./AuthContext";
 import type { AuthLogin, Profile } from "@/app/types/auth";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
@@ -15,11 +23,34 @@ type AuthProviderProps = {
   children?: ReactNode;
 };
 
+const getAccessToken = () => localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+
 export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   const dispatch = useAppDispatch();
-  const { accessToken, isAuthenticated } = useAppSelector(
-    (state) => state.auth,
+  const [accessToken, setAccessTokenState] = useState<string | null>(
+    getAccessToken,
   );
+
+  // Синхронизация с localStorage через кастомное событие
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setAccessTokenState(getAccessToken());
+    };
+
+    window.addEventListener("auth-storage-changed", handleStorageChange);
+    // На случай, если токен изменился в другой вкладке
+    window.addEventListener("storage", (e) => {
+      if (e.key === STORAGE_KEYS.AUTH_TOKEN) {
+        handleStorageChange();
+      }
+    });
+
+    return () => {
+      window.removeEventListener("auth-storage-changed", handleStorageChange);
+    };
+  }, []);
+
+  const isAuthenticated = Boolean(accessToken);
 
   const jwtPayload = useMemo(
     () =>

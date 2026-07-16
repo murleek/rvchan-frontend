@@ -107,7 +107,7 @@ const Post: FC<PostProps> = ({
           !thread.createdAt
             ? "opacity-50 animate-pulse"
             : !notEntriable &&
-                "active:scale-[106%] active:bg-white active:ring-border cursor-pointer",
+                "active:scale-[106%] active:bg-card active:ring-border cursor-pointer",
         )}
       >
         <div

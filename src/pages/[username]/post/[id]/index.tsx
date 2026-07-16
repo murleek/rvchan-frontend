@@ -8,6 +8,7 @@ import PostReply from "@/components/Common/PostReply";
 import { Card } from "@/components/ui/card";
 import { useHeader } from "@/hooks/common/useHeader";
 import useModal from "@/hooks/common/useModal";
+import profile from "@/pages/settings/profile";
 import { useEffect, useMemo, type FC } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useParams } from "react-router";
@@ -62,15 +63,6 @@ const PostPage: FC = () => {
 
   return (
     <div className="w-full flex gap-4 flex-col h-full justify-between">
-      {/* {(post?.pages[0]?.parents?.length || 0) > 0 &&
-        post?.pages[0]?.parents
-          ?.map((p) => (
-            <Card key={p.id} className="p-0 gap-0 relative zoom-75">
-              <PostReply key={p.id} thread={p} />
-              <div className="absolute left-1/2 -translate-x-1/2 bg-border top-[calc(100%+1px)] h-4 w-0.5" />
-            </Card>
-          ))
-          .reverse()} */}
       <div>
         <Card className="w-full p-0 gap-0 group/posts">
           {isLoading ? (
@@ -97,18 +89,24 @@ const PostPage: FC = () => {
                   {post?.pages[0]?.parents
                     ?.map((p) => (
                       <PostReply key={p.id} thread={p} parent noUnderline />
-                      // <div className="w-0.5 h-[calc(100%-2rem)] bg-border absolute left-8.75 top-8 rounded-full group-hover/parentPost:bg-transparent group-last-of-type/postreply:hidden animated transition-colors" />
                     ))
                     .reverse()}
                 </div>
               )}
-              <Post
-                thread={post.pages[0]}
-                // className="relative w-[calc(100%+1rem)] -left-3 border bg-white rounded-3xl! group-first/post:mt-0 group-first/post:m-0"
-                // parentClassName="first:mt-0"
-                notEntriable
-                forceUnderline
-              />
+              <Post thread={post.pages[0]} notEntriable forceUnderline />
+              <div className="m-2 mb-0 group/postform max-md:hidden">
+                {!isLoading && (
+                  <PostForm
+                    username={username}
+                    parentId={id}
+                    disabled={!!error}
+                    className="mb-2"
+                  />
+                )}
+                <div className="group-last-of-type/postform:hidden">
+                  <div className="h-px w-full bg-border box-border rounded-full" />
+                </div>
+              </div>
               {replies.length > 0 && (
                 <InfiniteScroll
                   isFetching={isFetching}
@@ -135,14 +133,6 @@ const PostPage: FC = () => {
           )}
         </Card>
       </div>
-      {!isLoading && (
-        <PostForm
-          username={username}
-          parentId={id}
-          disabled={!!error}
-          className="sticky bottom-20 md:bottom-5 shadow-lg"
-        />
-      )}
     </div>
   );
 };

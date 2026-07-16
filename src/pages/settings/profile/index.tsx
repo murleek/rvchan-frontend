@@ -194,7 +194,7 @@ const ProfileSettings = () => {
               <Input
                 ref={avatarRef}
                 type="file"
-                className="bg-white opacity-0 h-full w-full absolute pointer-events-none"
+                className="bg-card opacity-0 h-full w-full absolute pointer-events-none"
                 placeholder="tests"
                 onChange={handleLoadAvatar}
               />

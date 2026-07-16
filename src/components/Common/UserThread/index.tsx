@@ -6,6 +6,7 @@ import type { User } from "@/app/types/auth";
 import { useGetUserThreadsInfiniteQuery } from "@/app/features/posts/posts.api";
 import Loader from "../Loader";
 import { useTranslation } from "react-i18next";
+import PostForm from "../PostForm";
 
 type UserThreadProps = {
   profile: User;
@@ -34,6 +35,17 @@ const UserThread: FC<UserThreadProps> = ({ profile }) => {
 
   return (
     <Card className="w-full mb-4 p-0 gap-4">
+      {profile.isMine && (
+        <div className="m-2 mb-0 group/postform max-md:hidden">
+          <PostForm
+            className="relative bg-background! mb-2"
+            username={profile.username}
+          />
+          <div className="group-last-of-type/postform:hidden px-2">
+            <div className="h-px w-full bg-border box-border rounded-full" />
+          </div>
+        </div>
+      )}
       {isUserThreadsLoading ? (
         <div className="md:px-4 gap-2 h-40 w-full flex flex-col justify-center items-center">
           <Loader className="text-fuchsia-500 size-10!" />

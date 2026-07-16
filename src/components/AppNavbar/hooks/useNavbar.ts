@@ -4,12 +4,13 @@ import useNavbarStyle from "./useNavbarStyle";
 import useButtonStyle from "./useButtonStyle";
 import useNavCardStyle from "./useNavCardStyle";
 import useNavButtonTextStyle from "./useNavButtonTextStyle";
+import usePostFormStyle from "./usePostFormStyle";
 
 const THRESHOLD = 0.4;
 const SEGMENT = 200;
 const CONFIG = config.stiff;
 
-const useNavbar = () => {
+const useNavbar = ({ isPostFormShown }: { isPostFormShown: boolean }) => {
   const lastY = useRef(0);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -21,6 +22,10 @@ const useNavbar = () => {
     useNavCardStyle(CONFIG);
   const { style: navButtonTextStyle, setStyle: setNavButtonTextStyle } =
     useNavButtonTextStyle(CONFIG);
+  const { style: postFormStyle, setStyle: setPostFormStyle } = usePostFormStyle(
+    CONFIG,
+    isPostFormShown,
+  );
 
   const setStyles = useCallback(
     (progress: number) => {
@@ -29,8 +34,15 @@ const useNavbar = () => {
       setButtonStyle(progress);
       setNavCardStyle(progress);
       setNavButtonTextStyle(progress);
+      setPostFormStyle(progress);
     },
-    [setNavStyle, setButtonStyle, setNavCardStyle, setNavButtonTextStyle],
+    [
+      setNavStyle,
+      setButtonStyle,
+      setNavCardStyle,
+      setNavButtonTextStyle,
+      setPostFormStyle,
+    ],
   );
 
   useEffect(() => {
@@ -115,6 +127,7 @@ const useNavbar = () => {
     buttonStyle,
     navCardStyle,
     navButtonTextStyle,
+    postFormStyle,
     resetScrollProgress,
   };
 };

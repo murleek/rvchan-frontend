@@ -20,6 +20,7 @@ import ProfileAvatar from "@/components/Common/ProfileAvatar";
 import { Link } from "react-router";
 import { PAGES } from "@/constants";
 import { useTranslation } from "react-i18next";
+import ThemeToggle from "@/components/Common/ThemeToggle";
 
 const SidebarFooter = () => {
   const { t } = useTranslation("sidebar");
@@ -79,6 +80,7 @@ const SidebarFooter = () => {
                       @{profile.username}
                     </span>
                   </div>
+                  <ThemeToggle className="ml-auto flex-none" />
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />

@@ -132,7 +132,7 @@ const PostReply: FC<PostReplyProps & HTMLAttributes<HTMLDivElement>> = ({
           !thread.createdAt
             ? "opacity-50 animate-pulse"
             : !noLink &&
-                "active:scale-[106%] active:bg-white active:py-2 active:my-0 active:ring-border cursor-pointer",
+                "active:scale-[106%] active:bg-card active:py-2 active:my-0 active:ring-border cursor-pointer",
           cardClassName,
         )}
         {...props}

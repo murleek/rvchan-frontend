@@ -13,7 +13,6 @@ import clsx from "clsx";
 import { useEffect } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { Link, useParams } from "react-router";
-import PostForm from "@/components/Common/PostForm";
 import UserThread from "@/components/Common/UserThread";
 import useRelativeTime from "@/hooks/useRelativeTime";
 import { PAGES } from "@/constants";
@@ -178,12 +177,6 @@ const ProfilePage = () => {
       </Card>
 
       <UserThread profile={loadedProfile} />
-      {loadedProfile.isMine && (
-        <PostForm
-          className="sticky bottom-20 md:bottom-5 shadow-lg"
-          username={loadedProfile.username}
-        />
-      )}
     </div>
   );
 };

@@ -61,7 +61,7 @@ const useNavbar = ({
     const finalizeProgress = (progress: number) => {
       const fixedProgress = progress >= THRESHOLD ? 1 : 0;
       lastY.current = window.scrollY - (fixedProgress === 1 ? SEGMENT : 0);
-      // if (scrollProgress === 0 || scrollProgress === 1) return;
+      if (scrollProgress === 0 || scrollProgress === 1) return;
       setStyles(fixedProgress);
     };
 
@@ -73,14 +73,10 @@ const useNavbar = ({
 
         if (timerRef.current) clearTimeout(timerRef.current);
 
-        if (offset >= SEGMENT && scrollProgress !== 0 && scrollProgress !== 1) {
+        if (offset >= SEGMENT && scrollProgress < 1) {
           setStyles(1);
           lastY.current = window.scrollY - SEGMENT;
-        } else if (
-          offset <= 0 &&
-          scrollProgress !== 1 &&
-          scrollProgress !== 0
-        ) {
+        } else if (offset <= 0 && scrollProgress > 0) {
           setStyles(0);
           lastY.current = window.scrollY;
         } else {
@@ -128,7 +124,7 @@ const useNavbar = ({
       window.removeEventListener("touchend", handleTouchEnd);
       window.removeEventListener("touchcancel", handleTouchEnd);
     };
-  }, [setStyles]);
+  }, [setStyles, scrollProgress]);
 
   const resetScrollProgress = () => {
     setStyles(0);

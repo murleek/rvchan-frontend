@@ -1,31 +1,16 @@
-import { useSpring, type SpringConfig } from "@react-spring/web";
-import { useCallback, useState } from "react";
+import { useSpringValue, type SpringConfig } from "@react-spring/web";
 
 const useNavButtonTextStyle = (config: SpringConfig) => {
-  const [rawStyle, setRawStyle] = useState<{
-    fontSize: number;
-    opacity: number;
-  }>({
-    fontSize: 12,
-    opacity: 1,
-  });
-  // const [isDragging, setIsDragging] = useState(false);
+  const fontSize = useSpringValue(12, { config });
+  const opacity = useSpringValue(1, { config });
 
-  const style = useSpring({
-    fontSize: rawStyle.fontSize,
-    opacity: rawStyle.opacity,
-    config: config,
-  });
-
-  const setStyle = useCallback((progress: number) => {
-    setRawStyle({
-      fontSize: 12 * (1 - progress),
-      opacity: 1 - progress,
-    });
-  }, []);
+  const setStyle = (progress: number) => {
+    fontSize.start(12 * (1 - progress));
+    opacity.start(1 - progress);
+  };
 
   return {
-    style,
+    style: { fontSize, opacity },
     setStyle,
   };
 };

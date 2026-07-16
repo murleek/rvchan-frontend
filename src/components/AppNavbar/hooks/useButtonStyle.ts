@@ -1,31 +1,16 @@
-import { useSpring, type SpringConfig } from "@react-spring/web";
-import { useCallback, useState } from "react";
+import { useSpringValue, type SpringConfig } from "@react-spring/web";
 
 const useButtonStyle = (config: SpringConfig) => {
-  const [rawStyle, setRawStyle] = useState<{
-    x: number;
-    scale: number;
-  }>({
-    x: 0,
-    scale: 1,
-  });
-  // const [isDragging, setIsDragging] = useState(false);
+  const x = useSpringValue(0, { config });
+  const scale = useSpringValue(1, { config });
 
-  const style = useSpring({
-    x: rawStyle.x,
-    scale: rawStyle.scale,
-    config: config,
-  });
-
-  const setStyle = useCallback((progress: number) => {
-    setRawStyle({
-      x: progress * -35,
-      scale: 1 - progress * 0.25,
-    });
-  }, []);
+  const setStyle = (progress: number) => {
+    x.start(progress * -35);
+    scale.start(1 - progress * 0.25);
+  };
 
   return {
-    style,
+    style: { x, scale },
     setStyle,
   };
 };

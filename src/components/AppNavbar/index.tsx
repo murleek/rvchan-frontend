@@ -10,20 +10,13 @@ import useNav, { type TabKey } from "@/hooks/common/useNav";
 import useAuth from "@/hooks/useAuth";
 import { PAGES } from "@/constants";
 import { Card } from "../ui/card";
-import {
-  memo,
-  useLayoutEffect,
-  useRef,
-  useMemo,
-  useCallback,
-  useState,
-} from "react";
+import { memo, useLayoutEffect, useRef, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import useModal from "@/hooks/common/useModal";
 import type { PostFormModalDetails } from "../Common/PostFormModal";
 import clsx from "clsx";
 import useNotifications from "@/hooks/common/useNotifications";
-import { a, SpringValue, useSpring, config } from "@react-spring/web";
+import { a, SpringValue, config, useSpringValue } from "@react-spring/web";
 import useNavbar from "./hooks/useNavbar";
 import PostForm from "../Common/PostForm";
 import { useLocation } from "react-router";
@@ -110,18 +103,21 @@ const AppNavbar = () => {
     {} as Record<TabKey, HTMLButtonElement>,
   );
 
-  const [indicatorStyle, setIndicatorStyle] = useState({
-    left: 0,
-    width: 0,
-    immediate: false,
-  });
+  // const [indicatorStyle, setIndicatorStyle] = useState({
+  //   left: 0,
+  //   width: 0,
+  //   immediate: false,
+  // });
 
-  const indicatorSpring = useSpring({
-    left: indicatorStyle.left,
-    width: indicatorStyle.width,
-    config: config.stiff,
-    immediate: indicatorStyle.immediate,
-  });
+  // const indicatorSpring = useSpring({
+  //   left: indicatorStyle.left,
+  //   width: indicatorStyle.width,
+  //   config: config.stiff,
+  //   immediate: indicatorStyle.immediate,
+  // });
+
+  const left = useSpringValue(0, { config: config.stiff });
+  const width = useSpringValue(0, { config: config.stiff });
 
   const {
     scrollProgress,
@@ -202,17 +198,23 @@ const AppNavbar = () => {
         const styles = {
           left: relativeLeft - 6 * (1 - scrollProgress),
           width: relativeWidth - 2 + 12 * (1 - scrollProgress),
-          immediate: force ?? false,
         };
 
-        if (
-          styles.left === indicatorStyle.left &&
-          styles.width === indicatorStyle.width
-        ) {
-          return;
+        if (force) {
+          left.set(styles.left);
+          width.set(styles.width);
+        } else {
+          left.start(styles.left);
+          width.start(styles.width);
         }
+        // if (
+        //   styles.left === indicatorStyle.left &&
+        //   styles.width === indicatorStyle.width
+        // ) {
+        //   return;
+        // }
 
-        setIndicatorStyle(styles);
+        // setIndicatorStyle(styles);
         // if (force) {
         //   api.start({
         //     left: relativeLeft - 6 * (1 - scrollProgress),
@@ -222,7 +224,7 @@ const AppNavbar = () => {
         // }
       });
     },
-    [activeTab, scrollProgress, indicatorStyle],
+    [activeTab, scrollProgress, left, width],
   );
 
   useLayoutEffect(() => {
@@ -287,8 +289,8 @@ const AppNavbar = () => {
           <a.div
             className="absolute top-1/2 -translate-y-1/2 h-[calc(100%-6px)] rounded-full bg-black/5 dark:bg-white/10"
             style={{
-              left: indicatorSpring.left,
-              width: indicatorSpring.width,
+              left,
+              width,
             }}
           />
         </AnimatedCard>

@@ -4,9 +4,12 @@ import InfiniteScroll from "../Common/InfiniteScroll";
 import Post from "../Common/Post";
 import { useTranslation } from "react-i18next";
 import Loader from "../Common/Loader";
+import PostForm from "../Common/PostForm";
+import useAuth from "@/hooks/useAuth";
 
 const Feed = () => {
   const { t } = useTranslation("home");
+  const { profile } = useAuth();
   const { data, isLoading, error, fetchNextPage, hasNextPage, isFetching } =
     useGetFeedInfiniteQuery();
 
@@ -18,7 +21,7 @@ const Feed = () => {
 
   if (isLoading) {
     return (
-      <Card className="md:px-4 gap-2 h-40 gap-4 justify-center items-center">
+      <Card className="md:px-4 h-40 gap-4 justify-center items-center">
         <Loader className="text-fuchsia-500 size-10!" />
         <span className="text-center text-muted-foreground animated transition-colors block">
           {t("loading")}
@@ -46,8 +49,19 @@ const Feed = () => {
     );
   }
 
+  if (!profile) return null;
+
   return (
     <Card className="w-full mb-4 p-0 gap-4">
+      <div className="m-2 mb-0 group/postform max-md:hidden">
+        <PostForm
+          className="relative bg-background! mb-2"
+          username={profile.username}
+        />
+        <div className="group-last-of-type/postform:hidden px-2">
+          <div className="h-px w-full bg-border box-border rounded-full" />
+        </div>
+      </div>
       <InfiniteScroll
         isFetching={isFetching}
         loadMore={handleNextPage}

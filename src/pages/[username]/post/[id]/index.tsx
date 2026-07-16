@@ -8,7 +8,6 @@ import PostReply from "@/components/Common/PostReply";
 import { Card } from "@/components/ui/card";
 import { useHeader } from "@/hooks/common/useHeader";
 import useModal from "@/hooks/common/useModal";
-import profile from "@/pages/settings/profile";
 import { useEffect, useMemo, type FC } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useParams } from "react-router";

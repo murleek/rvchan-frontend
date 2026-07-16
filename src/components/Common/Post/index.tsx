@@ -102,11 +102,12 @@ const Post: FC<PostProps> = ({
     <Component className={clsx("group/post")} {...props}>
       <div
         className={clsx(
-          "p-2 not-first:border-t animated flex items-start flex-col gap-1 rounded-lg m-1",
+          "p-2 not-first:border-t animated flex items-start flex-col gap-1 rounded-lg m-1 relative z-1 ring-1 ring-transparent",
           className,
           !thread.createdAt
             ? "opacity-50 animate-pulse"
-            : !notEntriable && "hover:bg-black/8 cursor-pointer",
+            : !notEntriable &&
+                "active:scale-[106%] active:bg-white active:ring-border cursor-pointer",
         )}
       >
         <div

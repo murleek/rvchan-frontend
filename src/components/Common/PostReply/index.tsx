@@ -87,6 +87,8 @@ const PostReply: FC<PostReplyProps & HTMLAttributes<HTMLDivElement>> = ({
   noUnderline,
   ...props
 }) => {
+  className = clsx("group/postreply relative", className);
+
   const time = useRelativeTime(thread.createdAt || new Date().toString());
   const navigate = useNavigate();
 
@@ -100,9 +102,12 @@ const PostReply: FC<PostReplyProps & HTMLAttributes<HTMLDivElement>> = ({
             ":username",
             thread.user.username,
           ).replaceAll(":id", String(thread.id)),
-          className: clsx("group/postreply", className),
+          className,
         }
-      : ({ className } as { to: never; className?: string });
+      : ({ className } as {
+          to: never;
+          className?: string;
+        });
 
   // const reply = () => {
   //   if (!thread.createdAt) return;
@@ -115,18 +120,24 @@ const PostReply: FC<PostReplyProps & HTMLAttributes<HTMLDivElement>> = ({
   // };
 
   return (
-    <Component {...compProps}>
+    <Component
+      {...compProps}
+      onContextMenu={(e) => {
+        e.preventDefault();
+      }}
+    >
       <div
         className={clsx(
-          `p-1 not-first:border-t animated flex items-start gap-3 rounded-lg relative m-1`,
+          `p-1 not-first:border-t animated transition-[scale,padding,margin,bottom,box-shadow,background] flex items-start gap-3 rounded-lg relative m-1 z-1 ring-1 ring-transparent`,
           !thread.createdAt
             ? "opacity-50 animate-pulse"
-            : !noLink && "hover:bg-black/8 cursor-pointer",
+            : !noLink &&
+                "active:scale-[106%] active:bg-white active:py-2 active:my-0 active:ring-border cursor-pointer",
           cardClassName,
         )}
         {...props}
       >
-        <div className="flex justify-end w-9">
+        <div className="flex justify-end w-11">
           <div
             onClick={() =>
               !noLink &&
@@ -179,10 +190,10 @@ const PostReply: FC<PostReplyProps & HTMLAttributes<HTMLDivElement>> = ({
             </div>
           )}
         </div>
-        {parent && (
-          <div className="w-0.5 h-[calc(100%-3rem)] bg-border absolute left-4.75 top-12 rounded-full group-hover/postreply:bg-transparent animated transition-colors" />
-        )}
       </div>
+      {parent && (
+        <div className="w-0.5 h-[calc(100%-2.5rem)] bg-border absolute left-8.5 top-12 rounded-full " />
+      )}
       {!noUnderline && (
         <div className="group-last-of-type/postreply:hidden px-2">
           <div className="h-px w-full bg-border box-border rounded-full" />

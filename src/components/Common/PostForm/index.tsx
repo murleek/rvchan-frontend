@@ -79,7 +79,10 @@ const PostForm: FC<PostFormProps & React.HTMLAttributes<HTMLDivElement>> = ({
   if (!profile) return null;
 
   return (
-    <Card className={clsx("w-full p-0 inset-shadow-glow", className)} {...rest}>
+    <Card
+      className={clsx("w-full p-0 inset-shadow-glow z-10", className)}
+      {...rest}
+    >
       {disabled ? (
         <div className="flex items-center justify-center h-10 text-sm font-bold text-muted-foreground">
           Публикация недоступна.

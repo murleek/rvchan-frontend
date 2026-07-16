@@ -107,6 +107,7 @@ const PostPage: FC = () => {
                 // className="relative w-[calc(100%+1rem)] -left-3 border bg-white rounded-3xl! group-first/post:mt-0 group-first/post:m-0"
                 // parentClassName="first:mt-0"
                 notEntriable
+                forceUnderline
               />
               {replies.length > 0 && (
                 <InfiniteScroll
@@ -126,13 +127,14 @@ const PostPage: FC = () => {
               {t("empty.other")}
             </p>
           )}
+          {!isLoading && !error && replies.length === 0 && (
+            <div className="text-sm text-muted-foreground px-4 py-8 text-center flex flex-col justify-center gap-3 items-center">
+              <span className="text-4xl font-serif">{t("shrug")}</span>
+              <span className="text-sm">{t("noPosts")}</span>
+            </div>
+          )}
         </Card>
       </div>
-      {!isLoading && !error && replies.length === 0 && (
-        <p className="text-sm text-muted-foreground h-4 px-4 text-center flex flex-col justify-center items-center">
-          {t("empty.replies")}
-        </p>
-      )}
       {!isLoading && (
         <PostForm
           username={username}

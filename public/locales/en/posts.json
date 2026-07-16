@@ -24,5 +24,7 @@
   "placeholder": {
     "thread": "Start a new thread...",
     "reply": "Reply to this post..."
-  }
+  },
+  "shrug": "¯\\_(ツ)_/¯",
+  "noPosts": "No posts found, try creating one!"
 }

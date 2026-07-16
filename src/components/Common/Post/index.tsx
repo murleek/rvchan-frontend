@@ -77,7 +77,6 @@ function renderTextWithEntities(content: string, entities?: TextEntity[]) {
 const Post: FC<PostProps> = ({
   thread,
   className,
-  parentClassName,
   notEntriable,
   noUnderline,
 }) => {

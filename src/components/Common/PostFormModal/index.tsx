@@ -114,9 +114,10 @@ const PostFormModal: FC<PostFormModalProps> = ({ onSubmit }) => {
               <div className="relative [zoom:90%] px-6">
                 <PostReply
                   thread={payload.reply}
-                  cardClassName="bg-card md:border"
+                  cardClassName="bg-card md:border py-2"
                   noLink
                   noActions
+                  noLine
                 />
                 <div className="absolute left-1/2 -translate-x-1/2 bg-card md:bg-border top-[calc(100%-4px)] h-3.25 w-1" />
               </div>

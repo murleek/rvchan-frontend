@@ -62,7 +62,7 @@ const PostPage: FC = () => {
 
   return (
     <div className="w-full flex gap-4 flex-col h-full">
-      {(post?.pages[0]?.parents?.length || 0) > 0 &&
+      {/* {(post?.pages[0]?.parents?.length || 0) > 0 &&
         post?.pages[0]?.parents
           ?.map((p) => (
             <Card key={p.id} className="p-0 gap-0 relative zoom-75">
@@ -70,9 +70,9 @@ const PostPage: FC = () => {
               <div className="absolute left-1/2 -translate-x-1/2 bg-border top-[calc(100%+1px)] h-4 w-0.5" />
             </Card>
           ))
-          .reverse()}
+          .reverse()} */}
       <div>
-        <Card className="w-full p-0 gap-0">
+        <Card className="w-full p-0 gap-0 group/posts">
           {isLoading ? (
             <div className="md:px-4 gap-2 h-40 w-full flex flex-col justify-center items-center">
               <Loader className="text-fuchsia-500 size-10!" />
@@ -92,7 +92,25 @@ const PostPage: FC = () => {
             )
           ) : post?.pages[0] ? (
             <>
-              <Post thread={post.pages[0]} notEntriable />
+              {(post?.pages[0]?.parents?.length || 0) > 0 && (
+                <div>
+                  {post?.pages[0]?.parents
+                    ?.map((p) => (
+                      <div className="relative group/parentPost" key={p.id}>
+                        <PostReply key={p.id} thread={p} />
+                        <div className="w-0.5 h-[calc(100%-2rem)] bg-border absolute left-8.75 top-8 rounded-full group-hover/parentPost:bg-transparent group-last-of-type/postreply:hidden animated transition-colors" />
+                      </div>
+                    ))
+                    .reverse()}
+                </div>
+              )}
+              <Post
+                thread={post.pages[0]}
+                className="relative w-[calc(100%+1rem)] -left-3 border bg-white group-first/post:mt-0 group-first/post:-top-0.5"
+                // parentClassName="first:mt-0"
+                notEntriable
+                noUnderline
+              />
               {replies.length > 0 && (
                 <InfiniteScroll
                   isFetching={isFetching}
@@ -101,7 +119,7 @@ const PostPage: FC = () => {
                   className="flex flex-col gap-0"
                 >
                   {replies.map((reply) => (
-                    <PostReply key={reply.id} thread={reply} />
+                    <PostReply key={reply.id} thread={reply} noLine />
                   ))}
                 </InfiniteScroll>
               )}

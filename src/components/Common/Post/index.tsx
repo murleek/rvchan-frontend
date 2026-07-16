@@ -14,6 +14,7 @@ type PostProps = {
   thread: PublicPost;
   className?: string;
   notEntriable?: boolean;
+  noUnderline?: boolean;
 };
 
 function renderTextWithEntities(content: string, entities?: TextEntity[]) {
@@ -73,7 +74,13 @@ function renderTextWithEntities(content: string, entities?: TextEntity[]) {
   return result;
 }
 
-const Post: FC<PostProps> = ({ thread, className, notEntriable }) => {
+const Post: FC<PostProps> = ({
+  thread,
+  className,
+  parentClassName,
+  notEntriable,
+  noUnderline,
+}) => {
   const { t } = useTranslation("posts");
   const navigate = useNavigate();
   const time = useRelativeTime(
@@ -91,7 +98,7 @@ const Post: FC<PostProps> = ({ thread, className, notEntriable }) => {
       }
     : ({} as { to: never });
   return (
-    <Component {...props}>
+    <Component className={clsx("group/post", parentClassName)} {...props}>
       <div
         className={clsx(
           "p-2 not-first:border-t animated flex items-start flex-col gap-1 rounded-lg m-1",
@@ -150,6 +157,9 @@ const Post: FC<PostProps> = ({ thread, className, notEntriable }) => {
           </div>
         </div>
       </div>
+      {!noUnderline && (
+        <hr className="border-border group-last-of-type/post:hidden" />
+      )}
     </Component>
   );
 };

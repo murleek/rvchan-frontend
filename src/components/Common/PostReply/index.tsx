@@ -15,6 +15,7 @@ type PostReplyProps = {
   cardClassName?: string;
   noLink?: boolean;
   noActions?: boolean;
+  noLine?: boolean;
 };
 
 function renderTextWithEntities(content: string, entities?: TextEntity[]) {
@@ -81,6 +82,7 @@ const PostReply: FC<PostReplyProps & HTMLAttributes<HTMLDivElement>> = ({
   cardClassName,
   noLink,
   noActions,
+  noLine,
   ...props
 }) => {
   const time = useRelativeTime(thread.createdAt || new Date().toString());
@@ -96,7 +98,7 @@ const PostReply: FC<PostReplyProps & HTMLAttributes<HTMLDivElement>> = ({
             ":username",
             thread.user.username,
           ).replaceAll(":id", String(thread.id)),
-          className,
+          className: clsx("group/postreply", className),
         }
       : ({ className } as { to: never; className?: string });
 
@@ -114,7 +116,7 @@ const PostReply: FC<PostReplyProps & HTMLAttributes<HTMLDivElement>> = ({
     <Component {...compProps}>
       <div
         className={clsx(
-          `p-1 not-first:border-t animated flex items-start relative gap-2 rounded-lg m-1`,
+          `px-1 not-first:border-t animated flex items-start gap-2 rounded-lg relative m-1`,
           !thread.createdAt
             ? "opacity-50 animate-pulse"
             : !noLink && "hover:bg-black/8 cursor-pointer",
@@ -122,7 +124,7 @@ const PostReply: FC<PostReplyProps & HTMLAttributes<HTMLDivElement>> = ({
         )}
         {...props}
       >
-        <div className="flex justify-end w-13">
+        <div className="flex justify-end w-11">
           <div
             onClick={() =>
               navigate(PAGES.USER.replaceAll(":username", thread.user.username))
@@ -171,6 +173,9 @@ const PostReply: FC<PostReplyProps & HTMLAttributes<HTMLDivElement>> = ({
             </div>
           )}
         </div>
+        {!noLine && (
+          <div className="w-0.5 h-[calc(100%-2rem)] bg-border absolute left-7.75 top-8 rounded-full group-hover/postreply:bg-transparent group-last-of-type/postreply:hidden animated transition-colors" />
+        )}
       </div>
     </Component>
   );

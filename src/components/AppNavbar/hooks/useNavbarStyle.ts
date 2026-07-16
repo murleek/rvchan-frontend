@@ -18,7 +18,7 @@ const useNavbarScrollProgress = (
     y: rawStyle.y,
     scale: rawStyle.scale,
     config: config,
-    onRest: () => {
+    onChange: () => {
       onNavBarStateChange();
     },
   });

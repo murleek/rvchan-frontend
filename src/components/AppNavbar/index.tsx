@@ -110,12 +110,17 @@ const AppNavbar = () => {
     {} as Record<TabKey, HTMLButtonElement>,
   );
 
-  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
+  const [indicatorStyle, setIndicatorStyle] = useState({
+    left: 0,
+    width: 0,
+    immediate: false,
+  });
 
   const indicatorSpring = useSpring({
     left: indicatorStyle.left,
     width: indicatorStyle.width,
     config: config.stiff,
+    immediate: indicatorStyle.immediate,
   });
 
   const {
@@ -128,7 +133,7 @@ const AppNavbar = () => {
     postFormStyle,
   } = useNavbar({
     isPostFormShown,
-    onNavBarStateChange: () => updateIndicator(),
+    onNavBarStateChange: () => updateIndicator(true),
   });
 
   const triggers = useMemo<Trigger[]>(
@@ -185,41 +190,54 @@ const AppNavbar = () => {
         const container = activeButton.parentElement;
         const cardRect = container.getBoundingClientRect();
         const btnRect = activeButton.getBoundingClientRect();
-        // const btnRect = {
-        //   left: activeButton.offsetLeft,
-        //   width: activeButton.offsetWidth,
-        // };
 
-        setIndicatorStyle({
-          left: btnRect.left - cardRect.left - 6 * (1 - scrollProgress),
-          width: btnRect.width + 10,
-        });
-        if (force) {
-          indicatorSpring.left.set(
-            btnRect.left - cardRect.left - 6 * (1 - scrollProgress),
-          );
-          indicatorSpring.width.set(btnRect.width + 10);
+        // The nav has a scale transform: scale = 1 - scrollProgress * 0.15
+        // getBoundingClientRect() returns visual (post-transform) coordinates,
+        // but CSS `left` is in the card's local (pre-transform) space.
+        // We need to divide by scale to convert visual coords to local coords.
+        const scale = 1 - scrollProgress * 0.15;
+        const relativeLeft = (btnRect.left - cardRect.left) / scale;
+        const relativeWidth = btnRect.width / scale;
+
+        const styles = {
+          left: relativeLeft - 6 * (1 - scrollProgress),
+          width: relativeWidth - 2 + 12 * (1 - scrollProgress),
+          immediate: force ?? false,
+        };
+
+        if (
+          styles.left === indicatorStyle.left &&
+          styles.width === indicatorStyle.width
+        ) {
+          return;
         }
 
-        console.log("updateIndicator", 6 * (1 - scrollProgress));
+        setIndicatorStyle(styles);
+        // if (force) {
+        //   api.start({
+        //     left: relativeLeft - 6 * (1 - scrollProgress),
+        //     width: relativeWidth - 2 + 12 * (1 - scrollProgress),
+        //     immediate: true,
+        //   });
+        // }
       });
     },
-    [activeTab, indicatorSpring, scrollProgress],
+    [activeTab, scrollProgress, indicatorStyle],
   );
 
   useLayoutEffect(() => {
     const func = () => updateIndicator();
 
-    func();
+    updateIndicator();
 
     window.addEventListener("resize", func);
-    window.addEventListener("orientationchange", func);
-    window.addEventListener("scroll", func);
+    // window.addEventListener("orientationchange", func);
+    // window.addEventListener("scroll", func);
 
     return () => {
       window.removeEventListener("resize", func);
-      window.removeEventListener("orientationchange", func);
-      window.removeEventListener("scroll", func);
+      // window.removeEventListener("orientationchange", func);
+      // window.removeEventListener("scroll", func);
     };
   }, [updateIndicator]);
 

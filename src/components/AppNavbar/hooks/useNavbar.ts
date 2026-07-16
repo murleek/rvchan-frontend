@@ -7,7 +7,7 @@ import useNavButtonTextStyle from "./useNavButtonTextStyle";
 import usePostFormStyle from "./usePostFormStyle";
 
 const THRESHOLD = 0.4;
-const SEGMENT = 200;
+const SEGMENT = 100;
 const CONFIG = config.stiff;
 
 const useNavbar = ({
@@ -60,10 +60,9 @@ const useNavbar = ({
 
     const finalizeProgress = (progress: number) => {
       const fixedProgress = progress >= THRESHOLD ? 1 : 0;
-
-      setStyles(fixedProgress);
-
       lastY.current = window.scrollY - (fixedProgress === 1 ? SEGMENT : 0);
+      // if (scrollProgress === 0 || scrollProgress === 1) return;
+      setStyles(fixedProgress);
     };
 
     const handleScroll = () => {
@@ -74,16 +73,22 @@ const useNavbar = ({
 
         if (timerRef.current) clearTimeout(timerRef.current);
 
-        if (offset >= SEGMENT) {
+        if (offset >= SEGMENT && scrollProgress !== 0 && scrollProgress !== 1) {
           setStyles(1);
           lastY.current = window.scrollY - SEGMENT;
-        } else if (offset <= 0) {
+        } else if (
+          offset <= 0 &&
+          scrollProgress !== 1 &&
+          scrollProgress !== 0
+        ) {
           setStyles(0);
           lastY.current = window.scrollY;
         } else {
           const progress = offset / SEGMENT;
 
-          setStyles(progress);
+          if (progress > 0 && progress < 1) {
+            setStyles(progress);
+          }
 
           if (!isDragging) {
             timerRef.current = setTimeout(() => {

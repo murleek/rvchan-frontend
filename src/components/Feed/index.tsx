@@ -6,6 +6,8 @@ import { useTranslation } from "react-i18next";
 import Loader from "../Common/Loader";
 import PostForm from "../Common/PostForm";
 import useAuth from "@/hooks/useAuth";
+import type { PostFormModalDetails } from "../Common/PostFormModal";
+import useModal from "@/hooks/common/useModal";
 
 const Feed = () => {
   const { t } = useTranslation("home");
@@ -14,6 +16,8 @@ const Feed = () => {
     useGetFeedInfiniteQuery();
 
   const threads = data?.pages.flatMap((page) => page.data) ?? [];
+
+  const { openModal } = useModal<PostFormModalDetails>("post");
 
   const handleNextPage = async () => {
     await fetchNextPage();
@@ -55,8 +59,12 @@ const Feed = () => {
     <Card className="w-full mb-4 p-0 gap-4">
       <div className="m-2 mb-0 group/postform max-md:hidden">
         <PostForm
-          className="relative bg-background! mb-2"
+          className="relative bg-background! mb-2 **:pointer-events-none cursor-pointer"
           username={profile.username}
+          onClick={(e) => {
+            e.stopPropagation();
+            openModal();
+          }}
         />
         <div className="group-last-of-type/postform:hidden px-2">
           <div className="h-px w-full bg-border box-border rounded-full" />

@@ -31,6 +31,7 @@ const PostForm: FC<PostFormProps & React.HTMLAttributes<HTMLDivElement>> = ({
   username,
   onSubmit,
   className,
+  formClassName,
   disabled,
   ...rest
 }) => {
@@ -107,8 +108,11 @@ const PostForm: FC<PostFormProps & React.HTMLAttributes<HTMLDivElement>> = ({
                   parentId ? t("placeholder.reply") : t("placeholder.thread")
                 }
                 label={null}
-                className="max-h-32 px-5 min-h-auto resize-none py-4 pr-15 has-[&]:has-focus-visible:ring-0! h-auto bg-transparent!"
-                wrapClassName="border-0 ring-0! border-0 shadow-none rounded-none bg-transparent!"
+                className={clsx(
+                  "max-h-48 px-5 min-h-auto resize-none py-4 pr-15 has-[&]:has-focus-visible:ring-0! h-auto bg-transparent! [clip-path:inset(0_round_28px)]",
+                  formClassName,
+                )}
+                wrapClassName=" ring-0! border-0 shadow-none rounded-none bg-transparent!"
                 hideError
               />
             )}
@@ -119,7 +123,7 @@ const PostForm: FC<PostFormProps & React.HTMLAttributes<HTMLDivElement>> = ({
             children={([isSubmitting, isValid]) => (
               <Button
                 type="submit"
-                className="flex-none py-1 w-11 h-11 px-2 rounded-full p-1! disabled:pointer-events-none disabled:cursor-pointer disabled:opacity-50 disabled:bg-muted-foreground absolute bottom-1.5 md:bottom-1 right-1"
+                className="flex-none py-1 w-10 h-10 px-2 rounded-full p-1! disabled:pointer-events-none disabled:cursor-pointer disabled:opacity-50 disabled:bg-muted-foreground absolute bottom-2 md:bottom-1.5 right-1.5"
                 disabled={isSubmitting || !isValid}
               >
                 {isSubmitting ? (

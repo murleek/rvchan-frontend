@@ -224,7 +224,7 @@ const AppNavbar = () => {
   if (!profile) return null;
 
   return (
-    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:hidden z-50 flex flex-col items-center gap-2 max-w-158 pointer-events-none">
+    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:hidden z-50 flex flex-col items-center gap-2 max-w-158 px-5 pointer-events-none">
       <a.div
         className={clsx(
           "w-full pointer-events-auto backdrop-blur-sm backdrop-saturate-70 backdrop-grayscale-80 bg-card/80 rounded-[29px]",
@@ -234,6 +234,7 @@ const AppNavbar = () => {
       >
         <PostForm
           className="relative w-full bg-transparent"
+          formClassName="scrollbar-bg-white"
           username={
             payload?.reply ? payload.reply.user.username : profile.username
           }

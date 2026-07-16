@@ -9,7 +9,7 @@ function Textarea({
   return (
     <div
       className={cn(
-        "has-focus-visible:border-ring has-focus-visible:ring-ring/50 has-aria-invalid:ring-destructive/20 has-focus-visible:ring-[3px] rounded-md dark:has-aria-invalid:ring-destructive/40 transition-[color,box-shadow,border] overflow-hidden shadow-xs has-aria-invalid:border-destructive border border-input",
+        "has-focus-visible:border-ring has-focus-visible:ring-ring/50 has-aria-invalid:ring-destructive/20 has-focus-visible:ring-[3px] rounded-md dark:has-aria-invalid:ring-destructive/40 transition-[color,box-shadow,border] overflow-hidden! shadow-xs has-aria-invalid:border-destructive border border-input",
         wrapClassName,
       )}
     >

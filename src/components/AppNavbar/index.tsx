@@ -18,14 +18,12 @@ import {
   useCallback,
   useState,
 } from "react";
-
-import { useDebounce } from "@uidotdev/usehooks";
 import { useTranslation } from "react-i18next";
 import useModal from "@/hooks/common/useModal";
 import type { PostFormModalDetails } from "../Common/PostFormModal";
 import clsx from "clsx";
 import useNotifications from "@/hooks/common/useNotifications";
-import { a, SpringValue } from "@react-spring/web";
+import { a, SpringValue, useSpring, config } from "@react-spring/web";
 import useNavbar from "./hooks/useNavbar";
 import PostForm from "../Common/PostForm";
 import { useLocation } from "react-router";
@@ -98,17 +96,6 @@ const AppNavbar = () => {
     ];
     if (location.pathname.startsWith("/")) {
       return shownPaths.some((path) => {
-        const primitiveCheck = location.pathname.startsWith(path);
-        const regexCheck =
-          path.includes("*") &&
-          new RegExp(`^${path.replace("*", ".*")}`).test(location.pathname);
-
-        console.group(path, "check");
-        console.log(location.pathname, path);
-        console.log("primitive check:", primitiveCheck);
-        console.log("regex check:", regexCheck);
-        console.log("final result:", primitiveCheck || regexCheck);
-        console.groupEnd();
         return (
           location.pathname.startsWith(path) ||
           (path.includes("*") &&
@@ -119,19 +106,29 @@ const AppNavbar = () => {
     return false;
   }, [location.pathname, profile?.username]);
 
-  // const [scrollProgress, setScrollProgress] = useState({
-  //   transform: `translateY(${0}px) scale(${1})`,
-  //   progress: 0,
-  // });
-
   const buttonsRef = useRef<Record<TabKey, HTMLButtonElement>>(
     {} as Record<TabKey, HTMLButtonElement>,
   );
 
-  const [indicatorStyle, setIndicatorStyle] = useState({
-    left: 0,
-    width: 0,
-    bottom: 0,
+  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
+
+  const indicatorSpring = useSpring({
+    left: indicatorStyle.left,
+    width: indicatorStyle.width,
+    config: config.stiff,
+  });
+
+  const {
+    scrollProgress,
+    resetScrollProgress,
+    navStyle,
+    buttonStyle,
+    navCardStyle,
+    navButtonTextStyle,
+    postFormStyle,
+  } = useNavbar({
+    isPostFormShown,
+    onNavBarStateChange: () => updateIndicator(),
   });
 
   const triggers = useMemo<Trigger[]>(
@@ -164,16 +161,6 @@ const AppNavbar = () => {
     [profile?.username, t],
   );
 
-  const {
-    scrollProgress,
-    resetScrollProgress,
-    navStyle,
-    buttonStyle,
-    navCardStyle,
-    navButtonTextStyle,
-    postFormStyle,
-  } = useNavbar({ isPostFormShown });
-
   const handleClick = useCallback(
     (tab: TabKey, url: string) => {
       if (scrollProgress > 0) {
@@ -189,37 +176,52 @@ const AppNavbar = () => {
     [activeTab, clearStack, switchTab, resetScrollProgress, scrollProgress],
   );
 
-  const updateIndicator = useCallback(() => {
-    requestAnimationFrame(() => {
-      const activeButton = buttonsRef.current[activeTab];
-      if (!activeButton) return;
+  const updateIndicator = useCallback(
+    (force?: boolean) => {
+      requestAnimationFrame(() => {
+        const activeButton = buttonsRef.current[activeTab];
+        if (!activeButton || !activeButton.parentElement) return;
 
-      const rect = activeButton.getBoundingClientRect();
-      const parentRect = activeButton.parentElement!.getBoundingClientRect();
+        const container = activeButton.parentElement;
+        const cardRect = container.getBoundingClientRect();
+        const btnRect = activeButton.getBoundingClientRect();
+        // const btnRect = {
+        //   left: activeButton.offsetLeft,
+        //   width: activeButton.offsetWidth,
+        // };
 
-      setIndicatorStyle({
-        left: rect.left - parentRect.left - 6,
-        width: rect.width + 10,
-        bottom: 0,
+        setIndicatorStyle({
+          left: btnRect.left - cardRect.left - 6 * (1 - scrollProgress),
+          width: btnRect.width + 10,
+        });
+        if (force) {
+          indicatorSpring.left.set(
+            btnRect.left - cardRect.left - 6 * (1 - scrollProgress),
+          );
+          indicatorSpring.width.set(btnRect.width + 10);
+        }
+
+        console.log("updateIndicator", 6 * (1 - scrollProgress));
       });
-    });
-  }, [activeTab]);
-
-  const debouncedUpdate = useDebounce(updateIndicator, 40);
+    },
+    [activeTab, indicatorSpring, scrollProgress],
+  );
 
   useLayoutEffect(() => {
-    updateIndicator();
+    const func = () => updateIndicator();
 
-    window.addEventListener("resize", updateIndicator);
-    window.addEventListener("orientationchange", updateIndicator);
-    window.addEventListener("scroll", updateIndicator);
+    func();
+
+    window.addEventListener("resize", func);
+    window.addEventListener("orientationchange", func);
+    window.addEventListener("scroll", func);
 
     return () => {
-      window.removeEventListener("resize", updateIndicator);
-      window.removeEventListener("orientationchange", updateIndicator);
-      window.removeEventListener("scroll", updateIndicator);
+      window.removeEventListener("resize", func);
+      window.removeEventListener("orientationchange", func);
+      window.removeEventListener("scroll", func);
     };
-  }, [updateIndicator, debouncedUpdate]);
+  }, [updateIndicator]);
 
   if (!profile) return null;
 
@@ -264,11 +266,11 @@ const AppNavbar = () => {
             />
           ))}
 
-          <div
-            className="absolute top-1/2 -translate-y-1/2 h-[calc(100%-6px)] rounded-full bg-black/5 dark:bg-white/10 transition-all duration-300 ease-out"
+          <a.div
+            className="absolute top-1/2 -translate-y-1/2 h-[calc(100%-6px)] rounded-full bg-black/5 dark:bg-white/10"
             style={{
-              left: indicatorStyle.left,
-              width: indicatorStyle.width,
+              left: indicatorSpring.left,
+              width: indicatorSpring.width,
             }}
           />
         </AnimatedCard>

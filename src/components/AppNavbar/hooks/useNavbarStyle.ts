@@ -1,7 +1,10 @@
 import { useSpring, type SpringConfig } from "@react-spring/web";
 import { useCallback, useState } from "react";
 
-const useNavbarScrollProgress = (config: SpringConfig) => {
+const useNavbarScrollProgress = (
+  config: SpringConfig,
+  onNavBarStateChange: () => void,
+) => {
   const [rawStyle, setRawStyle] = useState<{
     y: number;
     scale: number;
@@ -15,6 +18,9 @@ const useNavbarScrollProgress = (config: SpringConfig) => {
     y: rawStyle.y,
     scale: rawStyle.scale,
     config: config,
+    onRest: () => {
+      onNavBarStateChange();
+    },
   });
 
   const setStyle = useCallback((progress: number) => {

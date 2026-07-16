@@ -10,12 +10,21 @@ const THRESHOLD = 0.4;
 const SEGMENT = 200;
 const CONFIG = config.stiff;
 
-const useNavbar = ({ isPostFormShown }: { isPostFormShown: boolean }) => {
+const useNavbar = ({
+  isPostFormShown,
+  onNavBarStateChange,
+}: {
+  isPostFormShown: boolean;
+  onNavBarStateChange: () => void;
+}) => {
   const lastY = useRef(0);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [scrollProgress, setScrollProgress] = useState(0);
-  const { style: navStyle, setStyle: setNavStyle } = useNavbarStyle(CONFIG);
+  const { style: navStyle, setStyle: setNavStyle } = useNavbarStyle(
+    CONFIG,
+    onNavBarStateChange,
+  );
   const { style: buttonStyle, setStyle: setButtonStyle } =
     useButtonStyle(CONFIG);
   const { style: navCardStyle, setStyle: setNavCardStyle } =

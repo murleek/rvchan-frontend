@@ -97,7 +97,7 @@ const Post: FC<PostProps> = ({
       }
     : ({} as { to: never });
   return (
-    <Component className={clsx("group/post", parentClassName)} {...props}>
+    <Component className={clsx("group/post")} {...props}>
       <div
         className={clsx(
           "p-2 not-first:border-t animated flex items-start flex-col gap-1 rounded-lg m-1",

@@ -1,14 +1,15 @@
-import ProfileAvatar from "../ProfileAvatar";
+import ProfileAvatar from "../../ProfileAvatar";
 import { type FC } from "react";
 import type { PublicPost, TextEntity } from "@/app/types/post";
 import useRelativeTime from "@/hooks/useRelativeTime";
 import { MessageCircle } from "lucide-react";
 import clsx from "clsx";
-import Loader from "../Loader";
+import Loader from "../../Loader";
 import { Link, useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import { PAGES } from "@/constants";
-import LikeButton from "./components/LikeButton";
+import LikeButton from "../components/LikeButton";
+import PostReply from "../PostReply";
 
 type PostProps = {
   thread: PublicPost;
@@ -75,7 +76,7 @@ function renderTextWithEntities(content: string, entities?: TextEntity[]) {
   return result;
 }
 
-const Post: FC<PostProps> = ({
+const PostOP: FC<PostProps> = ({
   thread,
   className,
   notEntriable,
@@ -157,6 +158,36 @@ const Post: FC<PostProps> = ({
               </span>
             </button>
           </div>
+          {thread.reply && (
+            /*<Link
+              to={PAGES.POST.replaceAll(
+                ":username",
+                thread.reply.user.username,
+              ).replaceAll(":id", String(thread.reply.id))}
+              onClick={(e) => e.stopPropagation()}
+              className="mt-2 ml-1 block border-l-2 border-border pl-3 hover:border-blue-500 animated"
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <ProfileAvatar
+                  className="size-5 rounded-full"
+                  src={thread.reply.user.avatar}
+                  alt={`${thread.reply.user.firstName}'s avatar`}
+                />
+                <span className="text-xs font-semibold text-foreground">
+                  {thread.reply.user.firstName} {thread.reply.user.lastName}
+                </span>
+              </div>
+              <p className="text-sm text-muted-foreground line-clamp-2">
+                {thread.reply.content.length > REPLY_PREVIEW_MAX_LENGTH
+                  ? thread.reply.content.slice(0, REPLY_PREVIEW_MAX_LENGTH) +
+                    "..."
+                  : thread.reply.content}
+              </p>
+            </Link>*/ <PostReply
+              thread={thread.reply}
+              cardClassName="mt-2 ml-1 pl-0! -left-1.5 gap-3.25!"
+            />
+          )}
         </div>
       </div>
       {!noUnderline && (
@@ -179,4 +210,4 @@ const Post: FC<PostProps> = ({
   );
 };
 
-export default Post;
+export default PostOP;

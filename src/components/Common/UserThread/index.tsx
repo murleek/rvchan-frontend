@@ -1,12 +1,12 @@
 import { Card } from "@/components/ui/card";
 import InfiniteScroll from "../InfiniteScroll";
-import Post from "../Post";
 import { useMemo, type FC } from "react";
 import type { User } from "@/app/types/auth";
 import { useGetUserThreadsInfiniteQuery } from "@/app/features/posts/posts.api";
 import Loader from "../Loader";
 import { useTranslation } from "react-i18next";
 import PostForm from "../PostForm";
+import PostFeed from "../Post/PostFeed";
 
 type UserThreadProps = {
   profile: User;
@@ -65,7 +65,7 @@ const UserThread: FC<UserThreadProps> = ({ profile }) => {
           className="flex flex-col gap-0"
         >
           {threads.map((thread) => (
-            <Post
+            <PostFeed
               key={thread.id}
               thread={thread}
               notEntriable={!thread.createdAt}

@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import ProfileAvatar from "../ProfileAvatar";
 import { Card } from "@/components/ui/card";
-import PostReply from "../PostReply";
+import PostReply from "../Post/PostReply";
 import useModal from "@/hooks/common/useModal";
 import { usePostCacheUpdater } from "@/hooks/usePostCacheUpdater";
 

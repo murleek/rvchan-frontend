@@ -11,6 +11,7 @@ export type PublicPost = {
   parents?: PublicPost[];
   entities?: TextEntity[];
   isLiked: boolean;
+  reply?: PublicPost;
 };
 
 interface EntityBase {

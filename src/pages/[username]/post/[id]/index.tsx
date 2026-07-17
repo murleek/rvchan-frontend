@@ -1,10 +1,10 @@
 import { useGetPostInfiniteQuery } from "@/app/features/posts/posts.api";
 import InfiniteScroll from "@/components/Common/InfiniteScroll";
 import Loader from "@/components/Common/Loader";
-import Post from "@/components/Common/Post";
+import Post from "@/components/Common/Post/PostOP";
 import PostForm from "@/components/Common/PostForm";
 import type { PostFormModalDetails } from "@/components/Common/PostFormModal";
-import PostReply from "@/components/Common/PostReply";
+import PostReply from "@/components/Common/Post/PostReply";
 import { Card } from "@/components/ui/card";
 import { useHeader } from "@/hooks/common/useHeader";
 import useModal from "@/hooks/common/useModal";

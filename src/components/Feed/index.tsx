@@ -1,13 +1,13 @@
 import { useGetFeedInfiniteQuery } from "@/app/features/posts/posts.api";
 import { Card } from "../ui/card";
 import InfiniteScroll from "../Common/InfiniteScroll";
-import Post from "../Common/Post";
 import { useTranslation } from "react-i18next";
 import Loader from "../Common/Loader";
 import PostForm from "../Common/PostForm";
 import useAuth from "@/hooks/useAuth";
 import type { PostFormModalDetails } from "../Common/PostFormModal";
 import useModal from "@/hooks/common/useModal";
+import PostFeed from "../Common/Post/PostFeed";
 
 const Feed = () => {
   const { t } = useTranslation("home");
@@ -77,7 +77,7 @@ const Feed = () => {
         className="flex flex-col gap-0"
       >
         {threads.map((thread, i) => (
-          <Post key={i} thread={thread} notEntriable={!thread.createdAt} />
+          <PostFeed key={i} thread={thread} notEntriable={!thread.createdAt} />
         ))}
       </InfiniteScroll>
     </Card>

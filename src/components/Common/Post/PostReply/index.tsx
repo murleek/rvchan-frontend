@@ -1,13 +1,13 @@
-import ProfileAvatar from "../ProfileAvatar";
+import ProfileAvatar from "../../ProfileAvatar";
 import { type FC, type HTMLAttributes } from "react";
 import type { PublicPost, TextEntity } from "@/app/types/post";
 import useRelativeTime from "@/hooks/useRelativeTime";
 import { MessageCircle } from "lucide-react";
 import clsx from "clsx";
-import Loader from "../Loader";
+import Loader from "../../Loader";
 import { Link, useNavigate } from "react-router";
 import { PAGES } from "@/constants";
-import LikeButton from "../Post/components/LikeButton";
+import LikeButton from "../components/LikeButton";
 
 type PostReplyProps = {
   thread: PublicPost;

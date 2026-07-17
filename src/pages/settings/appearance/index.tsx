@@ -1,4 +1,4 @@
-import Post from "@/components/Common/Post";
+import Post from "@/components/Common/Post/PostOP";
 import BigHeader from "@/components/Header/components/BigHeader";
 import { Card } from "@/components/ui/card";
 import {

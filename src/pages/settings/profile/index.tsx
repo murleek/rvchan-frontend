@@ -170,6 +170,8 @@ const ProfileSettings = () => {
         onOpenChange={(x) => setImage(x ? image : null)}
         image={image}
         onSave={handleSaveAvatar}
+        aspectRatio={1}
+        hideAspectRatioSelector
       />
       <form
         onSubmit={(e) => {

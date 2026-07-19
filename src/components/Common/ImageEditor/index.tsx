@@ -233,78 +233,73 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
     }
   }, []);
 
-  const zoomGridToHorizontalBounds = useCallback(
-    (rect: Rect) => {
-      const cs = csRef.current;
-      const availableWidth = cs.w - GRID_HORIZONTAL_GAP * 2;
-      if (rect.width <= 0 || availableWidth <= 0) return;
+  const zoomGridToHorizontalBounds = useCallback((rect: Rect) => {
+    console.log("ZOOM GRID");
+    const cs = csRef.current;
+    const availableWidth = cs.w - GRID_HORIZONTAL_GAP * 2;
+    if (rect.width <= 0 || availableWidth <= 0) return;
 
-      // Zoom the complete editor around the grid centre. The grid reaches the
-      // horizontal bounds with a small gap, while the image keeps its position
-      // relative to the grid instead of being moved underneath it.
-      const zoom = availableWidth / rect.width;
-      const gridCenter = {
-        x: rect.x + rect.width / 2,
-        y: rect.y + rect.height / 2,
-      };
-      const imageCenter = {
-        x: cs.w / 2 + posRef.current.x,
-        y: cs.h / 2 + posRef.current.y,
-      };
-      const newScale = scaleRef.current * zoom;
-      const newPos = {
-        x: (imageCenter.x - gridCenter.x) * zoom,
-        y: (imageCenter.y - gridCenter.y) * zoom,
-      };
-      const newRect = {
-        x: GRID_HORIZONTAL_GAP,
-        y: Math.round((cs.h - rect.height * zoom) / 2),
-        width: availableWidth,
-        height: Math.round(rect.height * zoom),
-      };
-      const startScale = scaleRef.current;
-      const startPos = { ...posRef.current };
-      const startRect = { ...cropRectRef.current };
-      const startedAt = performance.now();
+    // Zoom the complete editor around the grid centre. The grid reaches the
+    // horizontal bounds with a small gap, while the image keeps its position
+    // relative to the grid instead of being moved underneath it.
+    const zoom = availableWidth / rect.width;
+    const gridCenter = {
+      x: rect.x + rect.width / 2,
+      y: rect.y + rect.height / 2,
+    };
+    const imageCenter = {
+      x: cs.w / 2 + posRef.current.x,
+      y: cs.h / 2 + posRef.current.y,
+    };
+    const newScale = scaleRef.current * zoom;
+    const newPos = {
+      x: (imageCenter.x - gridCenter.x) * zoom,
+      y: (imageCenter.y - gridCenter.y) * zoom,
+    };
+    const newRect = {
+      x: GRID_HORIZONTAL_GAP,
+      y: Math.round((cs.h - rect.height * zoom) / 2),
+      width: availableWidth,
+      height: Math.round(rect.height * zoom),
+    };
+    const startScale = scaleRef.current;
+    const startPos = { ...posRef.current };
+    const startRect = { ...cropRectRef.current };
+    const startedAt = performance.now();
 
-      const animate = (now: number) => {
-        const progress = Math.min((now - startedAt) / GRID_ZOOM_TRANSITION_MS, 1);
-        const eased = 1 - (1 - progress) ** 3;
-        const nextScale = startScale + (newScale - startScale) * eased;
-        const nextPos = {
-          x: startPos.x + (newPos.x - startPos.x) * eased,
-          y: startPos.y + (newPos.y - startPos.y) * eased,
-        };
-        const nextRect = {
-          x: startRect.x + (newRect.x - startRect.x) * eased,
-          y: startRect.y + (newRect.y - startRect.y) * eased,
-          width: startRect.width + (newRect.width - startRect.width) * eased,
-          height: startRect.height + (newRect.height - startRect.height) * eased,
-        };
-
-        scaleRef.current = nextScale;
-        posRef.current = nextPos;
-        cropRectRef.current = nextRect;
-        setScale(nextScale);
-        setPos(nextPos);
-        setCropRect(nextRect);
-
-        if (progress < 1) {
-          gridAnimationFrameRef.current = requestAnimationFrame(animate);
-        } else {
-          gridAnimationFrameRef.current = null;
-        }
+    const animate = (now: number) => {
+      const progress = Math.min((now - startedAt) / GRID_ZOOM_TRANSITION_MS, 1);
+      const eased = 1 - (1 - progress) ** 3;
+      const nextScale = startScale + (newScale - startScale) * eased;
+      const nextPos = {
+        x: startPos.x + (newPos.x - startPos.x) * eased,
+        y: startPos.y + (newPos.y - startPos.y) * eased,
+      };
+      const nextRect = {
+        x: startRect.x + (newRect.x - startRect.x) * eased,
+        y: startRect.y + (newRect.y - startRect.y) * eased,
+        width: startRect.width + (newRect.width - startRect.width) * eased,
+        height: startRect.height + (newRect.height - startRect.height) * eased,
       };
 
-      gridAnimationFrameRef.current = requestAnimationFrame(animate);
-    },
-    [],
-  );
+      scaleRef.current = nextScale;
+      posRef.current = nextPos;
+      cropRectRef.current = nextRect;
+      setScale(nextScale);
+      setPos(nextPos);
+      setCropRect(nextRect);
 
-  useEffect(
-    () => () => clearResizeCompleteTimer(),
-    [clearResizeCompleteTimer],
-  );
+      if (progress < 1) {
+        gridAnimationFrameRef.current = requestAnimationFrame(animate);
+      } else {
+        gridAnimationFrameRef.current = null;
+      }
+    };
+
+    gridAnimationFrameRef.current = requestAnimationFrame(animate);
+  }, []);
+
+  useEffect(() => () => clearResizeCompleteTimer(), [clearResizeCompleteTimer]);
 
   const constrainRectToRatio = useCallback(
     (rect: Rect, ratio: number, cs: Size): Rect => {
@@ -588,8 +583,6 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
     return () => obs.disconnect();
   }, [draw, getCanvasSize, aspectRatio, constrainRectToRatio]);
 
-  // =============== Pointer handling ===============
-
   const getCanvasPoint = (clientX: number, clientY: number): Point => {
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return { x: clientX, y: clientY };
@@ -865,13 +858,13 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
   };
 
   const onPointerUp = () => {
-    if (isResizing) {
-      clearResizeCompleteTimer();
-      resizeCompleteTimerRef.current = setTimeout(() => {
-        zoomGridToHorizontalBounds(cropRectRef.current);
-        resizeCompleteTimerRef.current = null;
-      }, 500);
-    }
+    // if (isResizing) {
+    clearResizeCompleteTimer();
+    resizeCompleteTimerRef.current = setTimeout(() => {
+      zoomGridToHorizontalBounds(cropRectRef.current);
+      resizeCompleteTimerRef.current = null;
+    }, 500);
+    // }
 
     setIsDragging(false);
     setIsResizing(false);

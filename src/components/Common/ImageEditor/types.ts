@@ -3,11 +3,9 @@ export type AspectRatio = {
   value: number; // width / height
 };
 
-export const ASPECT_RATIOS: AspectRatio[] = [
-  { label: "1:1", value: 1 },
-  { label: "4:3", value: 4 / 3 },
-  { label: "3:2", value: 3 / 2 },
-  { label: "16:9", value: 16 / 9 },
-  { label: "9:16", value: 9 / 16 },
-  { label: "Свободно", value: 0 },
-];
+export type CropShape = "circle" | "rect";
+export type Point = { x: number; y: number };
+export type Rect = { x: number; y: number; width: number; height: number };
+export type Size = { w: number; h: number };
+
+export type Handle = "tl" | "tr" | "bl" | "br" | "tm" | "bm" | "lm" | "rm";

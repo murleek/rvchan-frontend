@@ -237,12 +237,22 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
     console.log("ZOOM GRID");
     const cs = csRef.current;
     const availableWidth = cs.w - GRID_HORIZONTAL_GAP * 2;
-    if (rect.width <= 0 || availableWidth <= 0) return;
+    const availableHeight = cs.h - GRID_HORIZONTAL_GAP * 2;
+    if (
+      rect.width <= 0 ||
+      rect.height <= 0 ||
+      availableWidth <= 0 ||
+      availableHeight <= 0
+    )
+      return;
 
     // Zoom the complete editor around the grid centre. The grid reaches the
     // horizontal bounds with a small gap, while the image keeps its position
     // relative to the grid instead of being moved underneath it.
-    const zoom = availableWidth / rect.width;
+    const zoom = Math.min(
+      availableWidth / rect.width,
+      availableHeight / rect.height,
+    );
     const gridCenter = {
       x: rect.x + rect.width / 2,
       y: rect.y + rect.height / 2,
@@ -257,9 +267,9 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
       y: (imageCenter.y - gridCenter.y) * zoom,
     };
     const newRect = {
-      x: GRID_HORIZONTAL_GAP,
+      x: Math.round((cs.w - rect.width * zoom) / 2),
       y: Math.round((cs.h - rect.height * zoom) / 2),
-      width: availableWidth,
+      width: Math.round(rect.width * zoom),
       height: Math.round(rect.height * zoom),
     };
     const startScale = scaleRef.current;

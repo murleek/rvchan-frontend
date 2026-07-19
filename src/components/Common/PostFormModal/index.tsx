@@ -92,6 +92,7 @@ const PostFormModal: FC<PostFormModalProps> = ({ onSubmit }) => {
       <DialogContent
         className="p-0 gap-0 overflow-hidden max-md:h-full"
         aria-describedby={undefined}
+        onClose={() => closeModal()}
       >
         <form
           onSubmit={(e) => {

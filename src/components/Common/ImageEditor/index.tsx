@@ -234,7 +234,10 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
       if (!img) return;
 
       const crop = cropRectRef.current;
-      const minScale = Math.max(crop.width / img.width, crop.height / img.height);
+      const minScale = Math.max(
+        crop.width / img.width,
+        crop.height / img.height,
+      );
       const nextScale = clamp(
         requestedScale,
         minScale,
@@ -1001,10 +1004,7 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
         1,
       );
       const eased = 1 - (1 - progress) ** 3;
-      zoomImageAt(
-        startScale + (targetScale - startScale) * eased,
-        focalPoint,
-      );
+      zoomImageAt(startScale + (targetScale - startScale) * eased, focalPoint);
 
       if (progress < 1) {
         wheelAnimationFrameRef.current = requestAnimationFrame(animate);
@@ -1142,6 +1142,7 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
       <DialogContent
         overlayClassName="bg-black backdrop-blur-sm"
         className="p-6 bg-transparent h-full max-h-none! w-full! max-w-none!"
+        onClose={() => onOpenChange(false)}
       >
         <div className="flex flex-col h-full">
           <div className="flex-1 flex items-center justify-center min-h-0">

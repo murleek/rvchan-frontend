@@ -19,8 +19,9 @@ type Point = { x: number; y: number };
 type Rect = { x: number; y: number; width: number; height: number };
 type Size = { w: number; h: number };
 
-const HANDLE_RADIUS = 4;
-const HANDLE_HIT_AREA = 16;
+const HANDLE_SIZE = 12;
+const HANDLE_HIT_AREA = 24;
+const HANDLE_STROKE = 1.5;
 const MIN_CROP_SIZE = 30;
 const GRID_HORIZONTAL_GAP = 20;
 const GRID_ZOOM_TRANSITION_MS = 250;
@@ -465,17 +466,17 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
     ctx.lineWidth = 1.5;
     ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
 
-    if (aspectRatio > 0) {
-      ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-      ctx.font = "11px sans-serif";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "bottom";
-      ctx.fillText(
-        `${Math.round((rect.width / rect.height) * 100) / 100}`,
-        rect.x + rect.width / 2,
-        rect.y + rect.height - 4,
-      );
-    }
+    // if (aspectRatio > 0) {
+    //   ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+    //   ctx.font = "11px sans-serif";
+    //   ctx.textAlign = "center";
+    //   ctx.textBaseline = "bottom";
+    //   ctx.fillText(
+    //     `${Math.round((rect.width / rect.height) * 100) / 100}`,
+    //     rect.x + rect.width / 2,
+    //     rect.y + rect.height - 4,
+    //   );
+    // }
 
     ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
     ctx.lineWidth = 0.5;
@@ -492,23 +493,65 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
       ctx.stroke();
     }
 
-    const handles: { key: string; cx: number; cy: number }[] = [
-      { key: "tl", cx: rect.x, cy: rect.y },
-      { key: "tr", cx: rect.x + rect.width, cy: rect.y },
-      { key: "bl", cx: rect.x, cy: rect.y + rect.height },
-      { key: "br", cx: rect.x + rect.width, cy: rect.y + rect.height },
-      { key: "tm", cx: rect.x + rect.width / 2, cy: rect.y },
-      { key: "bm", cx: rect.x + rect.width / 2, cy: rect.y + rect.height },
-      { key: "lm", cx: rect.x, cy: rect.y + rect.height / 2 },
-      { key: "rm", cx: rect.x + rect.width, cy: rect.y + rect.height / 2 },
+    const handles: {
+      key: string;
+      cx: number;
+      cy: number;
+      posx: number;
+      posy: number;
+    }[] = [
+      { key: "tl", cx: rect.x, cy: rect.y, posx: 1, posy: 1 },
+      { key: "tr", cx: rect.x + rect.width, cy: rect.y, posx: -1, posy: 1 },
+      { key: "bl", cx: rect.x, cy: rect.y + rect.height, posx: 1, posy: -1 },
+      {
+        key: "br",
+        cx: rect.x + rect.width,
+        cy: rect.y + rect.height,
+        posx: -1,
+        posy: -1,
+      },
+      { key: "tm", cx: rect.x + rect.width / 2, cy: rect.y, posx: 0, posy: 1 },
+      {
+        key: "bm",
+        cx: rect.x + rect.width / 2,
+        cy: rect.y + rect.height,
+        posx: 0,
+        posy: -1,
+      },
+      { key: "lm", cx: rect.x, cy: rect.y + rect.height / 2, posx: 1, posy: 0 },
+      {
+        key: "rm",
+        cx: rect.x + rect.width,
+        cy: rect.y + rect.height / 2,
+        posx: -1,
+        posy: 0,
+      },
     ];
     for (const h of handles) {
       ctx.beginPath();
-      ctx.arc(h.cx, h.cy, HANDLE_RADIUS, 0, Math.PI * 2);
+      // ctx.arc(h.cx, h.cy, HANDLE_RADIUS, 0, Math.PI * 2);
+      if (h.posx !== 0)
+        ctx.rect(
+          h.cx - HANDLE_STROKE * h.posx,
+          h.cy -
+            (!h.posy ? HANDLE_STROKE + HANDLE_SIZE : HANDLE_STROKE) *
+              (h.posy || 0.83333333),
+          2 * HANDLE_STROKE * (h.posx || 1),
+          HANDLE_SIZE * 2 * (h.posy || 1),
+        );
+      if (h.posy !== 0)
+        ctx.rect(
+          h.cx -
+            (!h.posx ? HANDLE_STROKE + HANDLE_SIZE : HANDLE_STROKE) *
+              (h.posx || 0.83333333),
+          h.cy - HANDLE_STROKE * (h.posy || 0.5),
+          HANDLE_SIZE * 2 * (h.posx || 1),
+          2 * HANDLE_STROKE * (h.posy || 1),
+        );
       ctx.fillStyle = "white";
       ctx.fill();
-      ctx.strokeStyle = "#666";
-      ctx.lineWidth = 1;
+      // ctx.strokeStyle = "#666";
+      // ctx.lineWidth = 1;
       ctx.stroke();
     }
   }, [

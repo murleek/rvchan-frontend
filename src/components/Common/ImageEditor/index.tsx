@@ -2,6 +2,7 @@ import { type FC, useEffect, useRef, useState, useCallback } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ASPECT_RATIOS } from "./types";
 import { Button } from "@/components/ui/button";
+import { ChevronLeft } from "lucide-react";
 
 export type CropShape = "circle" | "rect";
 
@@ -554,15 +555,7 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
       // ctx.lineWidth = 1;
       ctx.stroke();
     }
-  }, [
-    pos,
-    scale,
-    getScaledSize,
-    cropRect,
-    aspectRatio,
-    getCanvasSize,
-    cropShape,
-  ]);
+  }, [pos, scale, getScaledSize, cropRect, getCanvasSize, cropShape]);
 
   // Load image
   useEffect(() => {
@@ -1184,12 +1177,12 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         overlayClassName="bg-black backdrop-blur-sm"
-        className="p-6 bg-transparent h-full max-h-none! w-full! max-w-none!"
+        className="p-6 bg-transparent h-full max-h-none! w-full! max-w-none! dark bg-background"
         onClose={() => onOpenChange(false)}
       >
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full gap-3">
           <div className="flex-1 flex items-center justify-center min-h-0">
-            <div className="relative overflow-hidden w-full h-full max-w-full max-h-full">
+            <div className="relative overflow-hidden w-full h-full max-w-full max-h-full rounded-xl">
               <canvas
                 ref={canvasRef}
                 onMouseDown={onPointerDown}
@@ -1234,18 +1227,24 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
             )}
 
             <div className="flex gap-3 w-full">
-              <button
-                onClick={() => onOpenChange(false)}
-                className="flex-1 py-2.5 text-sm font-medium border rounded-lg hover:bg-muted bg-card"
-              >
-                Отмена
-              </button>
-              <button
+              {/* <Button
                 onClick={handleSave}
                 className="flex-1 py-2.5 text-sm font-medium bg-primary text-primary-foreground rounded-lg hover:bg-primary/90"
               >
                 Сохранить
-              </button>
+              </Button> */}
+              <Button
+                className="rounded-full size-12 p-1! font-black bg-white text-black hover:bg-white text-md z-10 active:scale-125 active:brightness-125 backdrop-filter-[brightness()] cursor-pointer"
+                onClick={() => onOpenChange(false)}
+              >
+                <ChevronLeft className="size-8" />
+              </Button>
+              <Button
+                className="rounded-full h-12 font-black text-md flex-1 z-10 cursor-pointer"
+                onClick={handleSave}
+              >
+                Сохранить
+              </Button>
             </div>
           </div>
         </div>

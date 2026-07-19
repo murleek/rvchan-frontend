@@ -1,4 +1,4 @@
-import { Rect } from "../types";
+import type { Rect } from "../types";
 
 export function drawGrid(ctx: CanvasRenderingContext2D, rect: Rect) {
   const thirdW = rect.width / 3;

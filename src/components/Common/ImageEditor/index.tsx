@@ -548,7 +548,7 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
     draw();
   }, [draw]);
 
-  // Resize handling: re-fit image AND scale crop rect proportionally
+  // Keep the image and crop grid aligned when the canvas changes size.
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -565,33 +565,43 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
       const img = imgRef.current;
       if (!img) return;
 
-      // Re-fit image
-      const newScale = Math.min(cs.w / img.width, cs.h / img.height);
+      const resizeFactor = Math.min(cs.w / prev.w, cs.h / prev.h);
+      const newScale = scaleRef.current * resizeFactor;
+      const newPos = {
+        x: posRef.current.x * resizeFactor,
+        y: posRef.current.y * resizeFactor,
+      };
+      const oldRect = cropRectRef.current;
+      const oldCenter = {
+        x: oldRect.x + oldRect.width / 2,
+        y: oldRect.y + oldRect.height / 2,
+      };
+      const newWidth = oldRect.width * resizeFactor;
+      const newHeight = oldRect.height * resizeFactor;
+      const newRect = {
+        x: Math.round(
+          cs.w / 2 + (oldCenter.x - prev.w / 2) * resizeFactor - newWidth / 2,
+        ),
+        y: Math.round(
+          cs.h / 2 + (oldCenter.y - prev.h / 2) * resizeFactor - newHeight / 2,
+        ),
+        width: Math.round(newWidth),
+        height: Math.round(newHeight),
+      };
+
+      csRef.current = cs;
+      scaleRef.current = newScale;
+      posRef.current = newPos;
+      cropRectRef.current = newRect;
       setScale(newScale);
-      setPos({ x: 0, y: 0 });
-
-      // Scale crop rect proportionally
-      const sx = cs.w / prev.w;
-      const sy = cs.h / prev.h;
-      setCropRect((prevRect) => {
-        const nr = {
-          x: Math.round(prevRect.x * sx),
-          y: Math.round(prevRect.y * sy),
-          width: Math.round(prevRect.width * sx),
-          height: Math.round(prevRect.height * sy),
-        };
-        // Re-constrain to aspect ratio if set
-        if (aspectRatio > 0) {
-          return constrainRectToRatio(nr, aspectRatio, cs);
-        }
-        return nr;
-      });
-
-      draw();
+      setPos(newPos);
+      setCropRect(newRect);
+      clearResizeCompleteTimer();
+      zoomGridToHorizontalBounds(newRect);
     });
     obs.observe(parent);
     return () => obs.disconnect();
-  }, [draw, getCanvasSize, aspectRatio, constrainRectToRatio]);
+  }, [clearResizeCompleteTimer, getCanvasSize, zoomGridToHorizontalBounds]);
 
   const getCanvasPoint = (clientX: number, clientY: number): Point => {
     const rect = canvasRef.current?.getBoundingClientRect();

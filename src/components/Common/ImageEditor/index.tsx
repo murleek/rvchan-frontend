@@ -23,6 +23,7 @@ const HANDLE_RADIUS = 4;
 const HANDLE_HIT_AREA = 16;
 const MIN_CROP_SIZE = 30;
 const GRID_HORIZONTAL_GAP = 20;
+const GRID_ZOOM_TRANSITION_MS = 250;
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
@@ -74,6 +75,7 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
   const resizeCompleteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
     null,
   );
+  const gridAnimationFrameRef = useRef<number | null>(null);
   const isTouchDevice = useRef(false);
 
   useEffect(() => {
@@ -225,6 +227,10 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
       clearTimeout(resizeCompleteTimerRef.current);
       resizeCompleteTimerRef.current = null;
     }
+    if (gridAnimationFrameRef.current !== null) {
+      cancelAnimationFrame(gridAnimationFrameRef.current);
+      gridAnimationFrameRef.current = null;
+    }
   }, []);
 
   const zoomGridToHorizontalBounds = useCallback(
@@ -256,13 +262,41 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
         width: availableWidth,
         height: Math.round(rect.height * zoom),
       };
+      const startScale = scaleRef.current;
+      const startPos = { ...posRef.current };
+      const startRect = { ...cropRectRef.current };
+      const startedAt = performance.now();
 
-      scaleRef.current = newScale;
-      posRef.current = newPos;
-      cropRectRef.current = newRect;
-      setScale(newScale);
-      setPos(newPos);
-      setCropRect(newRect);
+      const animate = (now: number) => {
+        const progress = Math.min((now - startedAt) / GRID_ZOOM_TRANSITION_MS, 1);
+        const eased = 1 - (1 - progress) ** 3;
+        const nextScale = startScale + (newScale - startScale) * eased;
+        const nextPos = {
+          x: startPos.x + (newPos.x - startPos.x) * eased,
+          y: startPos.y + (newPos.y - startPos.y) * eased,
+        };
+        const nextRect = {
+          x: startRect.x + (newRect.x - startRect.x) * eased,
+          y: startRect.y + (newRect.y - startRect.y) * eased,
+          width: startRect.width + (newRect.width - startRect.width) * eased,
+          height: startRect.height + (newRect.height - startRect.height) * eased,
+        };
+
+        scaleRef.current = nextScale;
+        posRef.current = nextPos;
+        cropRectRef.current = nextRect;
+        setScale(nextScale);
+        setPos(nextPos);
+        setCropRect(nextRect);
+
+        if (progress < 1) {
+          gridAnimationFrameRef.current = requestAnimationFrame(animate);
+        } else {
+          gridAnimationFrameRef.current = null;
+        }
+      };
+
+      gridAnimationFrameRef.current = requestAnimationFrame(animate);
     },
     [],
   );

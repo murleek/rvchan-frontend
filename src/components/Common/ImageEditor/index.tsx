@@ -24,6 +24,8 @@ const HANDLE_HIT_AREA = 16;
 const MIN_CROP_SIZE = 30;
 const GRID_HORIZONTAL_GAP = 20;
 const GRID_ZOOM_TRANSITION_MS = 250;
+const MAX_IMAGE_ZOOM = 10;
+const WHEEL_ZOOM_TRANSITION_MS = 120;
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
@@ -76,6 +78,10 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
     null,
   );
   const gridAnimationFrameRef = useRef<number | null>(null);
+  const wheelAnimationFrameRef = useRef<number | null>(null);
+  const wheelTargetScaleRef = useRef<number | null>(null);
+  const wheelFocalPointRef = useRef<Point>({ x: 0, y: 0 });
+  const pinchRef = useRef<{ distance: number } | null>(null);
   const isTouchDevice = useRef(false);
 
   useEffect(() => {
@@ -222,6 +228,46 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
     [getScaledSize],
   );
 
+  const zoomImageAt = useCallback(
+    (requestedScale: number, focalPoint: Point) => {
+      const img = imgRef.current;
+      if (!img) return;
+
+      const crop = cropRectRef.current;
+      const minScale = Math.max(crop.width / img.width, crop.height / img.height);
+      const nextScale = clamp(
+        requestedScale,
+        minScale,
+        minScale * MAX_IMAGE_ZOOM,
+      );
+      const currentScale = scaleRef.current;
+      if (nextScale === currentScale) return;
+
+      const zoomFactor = nextScale / currentScale;
+      const cs = csRef.current;
+      const nextPosition = getCropBoundedPosition(
+        img,
+        {
+          x:
+            focalPoint.x -
+            cs.w / 2 -
+            (focalPoint.x - cs.w / 2 - posRef.current.x) * zoomFactor,
+          y:
+            focalPoint.y -
+            cs.h / 2 -
+            (focalPoint.y - cs.h / 2 - posRef.current.y) * zoomFactor,
+        },
+        nextScale,
+      );
+
+      scaleRef.current = nextScale;
+      posRef.current = nextPosition;
+      setScale(nextScale);
+      setPos(nextPosition);
+    },
+    [getCropBoundedPosition],
+  );
+
   const clearResizeCompleteTimer = useCallback(() => {
     if (resizeCompleteTimerRef.current !== null) {
       clearTimeout(resizeCompleteTimerRef.current);
@@ -231,6 +277,15 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
       cancelAnimationFrame(gridAnimationFrameRef.current);
       gridAnimationFrameRef.current = null;
     }
+  }, []);
+
+  const clearWheelZoom = useCallback(() => {
+    if (wheelAnimationFrameRef.current !== null) {
+      cancelAnimationFrame(wheelAnimationFrameRef.current);
+      wheelAnimationFrameRef.current = null;
+    }
+    wheelTargetScaleRef.current = null;
+    wheelFocalPointRef.current = { x: 0, y: 0 };
   }, []);
 
   const zoomGridToHorizontalBounds = useCallback((rect: Rect) => {
@@ -309,7 +364,13 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
     gridAnimationFrameRef.current = requestAnimationFrame(animate);
   }, []);
 
-  useEffect(() => () => clearResizeCompleteTimer(), [clearResizeCompleteTimer]);
+  useEffect(
+    () => () => {
+      clearResizeCompleteTimer();
+      clearWheelZoom();
+    },
+    [clearResizeCompleteTimer, clearWheelZoom],
+  );
 
   const constrainRectToRatio = useCallback(
     (rect: Rect, ratio: number, cs: Size): Rect => {
@@ -816,6 +877,19 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
   };
 
   const onPointerDown = (e: React.MouseEvent | React.TouchEvent) => {
+    clearWheelZoom();
+    if ("touches" in e && e.touches.length === 2) {
+      const firstTouch = e.touches[0];
+      const secondTouch = e.touches[1];
+      const dx = secondTouch.clientX - firstTouch.clientX;
+      const dy = secondTouch.clientY - firstTouch.clientY;
+      pinchRef.current = { distance: Math.hypot(dx, dy) };
+      setIsDragging(false);
+      setIsResizing(false);
+      setActiveHandle(null);
+      return;
+    }
+
     const point = getPointerPosition(e);
     lastPointer.current = point;
     clearResizeCompleteTimer();
@@ -830,6 +904,28 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
   };
 
   const onPointerMove = (e: React.MouseEvent | React.TouchEvent) => {
+    if ("touches" in e && e.touches.length === 2) {
+      e.preventDefault();
+      const firstTouch = e.touches[0];
+      const secondTouch = e.touches[1];
+      const dx = secondTouch.clientX - firstTouch.clientX;
+      const dy = secondTouch.clientY - firstTouch.clientY;
+      const distance = Math.hypot(dx, dy);
+      const center = getCanvasPoint(
+        (firstTouch.clientX + secondTouch.clientX) / 2,
+        (firstTouch.clientY + secondTouch.clientY) / 2,
+      );
+
+      if (pinchRef.current && pinchRef.current.distance > 0) {
+        zoomImageAt(
+          scaleRef.current * (distance / pinchRef.current.distance),
+          center,
+        );
+      }
+      pinchRef.current = { distance };
+      return;
+    }
+
     const point = getPointerPosition(e);
 
     if (isResizing && activeHandle) {
@@ -877,7 +973,52 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
     }
   };
 
+  const onWheel = (e: React.WheelEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    const img = imgRef.current;
+    if (!img) return;
+
+    const crop = cropRectRef.current;
+    const minScale = Math.max(crop.width / img.width, crop.height / img.height);
+    const currentTarget = wheelTargetScaleRef.current ?? scaleRef.current;
+    const targetScale = clamp(
+      currentTarget * Math.exp(-e.deltaY * 0.001),
+      minScale,
+      minScale * MAX_IMAGE_ZOOM,
+    );
+    const focalPoint = getCanvasPoint(e.clientX, e.clientY);
+    const startScale = scaleRef.current;
+    const startedAt = performance.now();
+
+    if (wheelAnimationFrameRef.current !== null) {
+      cancelAnimationFrame(wheelAnimationFrameRef.current);
+    }
+    wheelTargetScaleRef.current = targetScale;
+
+    const animate = (now: number) => {
+      const progress = Math.min(
+        (now - startedAt) / WHEEL_ZOOM_TRANSITION_MS,
+        1,
+      );
+      const eased = 1 - (1 - progress) ** 3;
+      zoomImageAt(
+        startScale + (targetScale - startScale) * eased,
+        focalPoint,
+      );
+
+      if (progress < 1) {
+        wheelAnimationFrameRef.current = requestAnimationFrame(animate);
+      } else {
+        wheelAnimationFrameRef.current = null;
+        wheelTargetScaleRef.current = null;
+      }
+    };
+
+    wheelAnimationFrameRef.current = requestAnimationFrame(animate);
+  };
+
   const onPointerUp = () => {
+    pinchRef.current = null;
     // if (isResizing) {
     clearResizeCompleteTimer();
     resizeCompleteTimerRef.current = setTimeout(() => {
@@ -1011,6 +1152,7 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
                 onMouseMove={onPointerMove}
                 onMouseUp={onPointerUp}
                 onMouseLeave={onPointerUp}
+                onWheel={onWheel}
                 onTouchStart={onPointerDown}
                 onTouchMove={onPointerMove}
                 onTouchEnd={onPointerUp}

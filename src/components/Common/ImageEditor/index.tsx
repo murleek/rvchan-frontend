@@ -22,6 +22,7 @@ type Size = { w: number; h: number };
 const HANDLE_RADIUS = 4;
 const HANDLE_HIT_AREA = 16;
 const MIN_CROP_SIZE = 30;
+const GRID_HORIZONTAL_GAP = 20;
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
@@ -59,7 +60,6 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
     height: 320,
   });
   const [isResizing, setIsResizing] = useState(false);
-  const [isMovingCrop, setIsMovingCrop] = useState(false);
   const [activeHandle, setActiveHandle] = useState<string | null>(null);
 
   const lastPointer = useRef<Point>({ x: 0, y: 0 });
@@ -71,6 +71,9 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
     point: { x: 0, y: 0 },
     rect: { x: 0, y: 0, width: 0, height: 0 },
   });
+  const resizeCompleteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
   const isTouchDevice = useRef(false);
 
   useEffect(() => {
@@ -196,6 +199,77 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
       };
     },
     [getScaledSize],
+  );
+
+  const getCropBoundedPosition = useCallback(
+    (img: HTMLImageElement, position: Point, currentScale: number): Point => {
+      const cs = csRef.current;
+      const crop = cropRectRef.current;
+      const { width, height } = getScaledSize(img, currentScale);
+
+      const minX = crop.x + crop.width - width / 2 - cs.w / 2;
+      const maxX = crop.x + width / 2 - cs.w / 2;
+      const minY = crop.y + crop.height - height / 2 - cs.h / 2;
+      const maxY = crop.y + height / 2 - cs.h / 2;
+
+      return {
+        x: clamp(position.x, Math.min(minX, maxX), Math.max(minX, maxX)),
+        y: clamp(position.y, Math.min(minY, maxY), Math.max(minY, maxY)),
+      };
+    },
+    [getScaledSize],
+  );
+
+  const clearResizeCompleteTimer = useCallback(() => {
+    if (resizeCompleteTimerRef.current !== null) {
+      clearTimeout(resizeCompleteTimerRef.current);
+      resizeCompleteTimerRef.current = null;
+    }
+  }, []);
+
+  const zoomGridToHorizontalBounds = useCallback(
+    (rect: Rect) => {
+      const cs = csRef.current;
+      const availableWidth = cs.w - GRID_HORIZONTAL_GAP * 2;
+      if (rect.width <= 0 || availableWidth <= 0) return;
+
+      // Zoom the complete editor around the grid centre. The grid reaches the
+      // horizontal bounds with a small gap, while the image keeps its position
+      // relative to the grid instead of being moved underneath it.
+      const zoom = availableWidth / rect.width;
+      const gridCenter = {
+        x: rect.x + rect.width / 2,
+        y: rect.y + rect.height / 2,
+      };
+      const imageCenter = {
+        x: cs.w / 2 + posRef.current.x,
+        y: cs.h / 2 + posRef.current.y,
+      };
+      const newScale = scaleRef.current * zoom;
+      const newPos = {
+        x: (imageCenter.x - gridCenter.x) * zoom,
+        y: (imageCenter.y - gridCenter.y) * zoom,
+      };
+      const newRect = {
+        x: GRID_HORIZONTAL_GAP,
+        y: Math.round((cs.h - rect.height * zoom) / 2),
+        width: availableWidth,
+        height: Math.round(rect.height * zoom),
+      };
+
+      scaleRef.current = newScale;
+      posRef.current = newPos;
+      cropRectRef.current = newRect;
+      setScale(newScale);
+      setPos(newPos);
+      setCropRect(newRect);
+    },
+    [],
+  );
+
+  useEffect(
+    () => () => clearResizeCompleteTimer(),
+    [clearResizeCompleteTimer],
   );
 
   const constrainRectToRatio = useCallback(
@@ -521,16 +595,6 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
     return null;
   };
 
-  const isInsideCrop = (point: Point): boolean => {
-    const rect = cropRectRef.current;
-    return (
-      point.x >= rect.x + HANDLE_HIT_AREA &&
-      point.x <= rect.x + rect.width - HANDLE_HIT_AREA &&
-      point.y >= rect.y + HANDLE_HIT_AREA &&
-      point.y <= rect.y + rect.height - HANDLE_HIT_AREA
-    );
-  };
-
   const handleResize = (
     handle: string,
     startRect: Rect,
@@ -705,15 +769,11 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
   const onPointerDown = (e: React.MouseEvent | React.TouchEvent) => {
     const point = getPointerPosition(e);
     lastPointer.current = point;
+    clearResizeCompleteTimer();
     const handle = getHandleAt(point);
     if (handle) {
       setIsResizing(true);
       setActiveHandle(handle);
-      dragStartRef.current = { point, rect: { ...cropRectRef.current } };
-      return;
-    }
-    if (isInsideCrop(point)) {
-      setIsMovingCrop(true);
       dragStartRef.current = { point, rect: { ...cropRectRef.current } };
       return;
     }
@@ -734,31 +794,12 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
       return;
     }
 
-    if (isMovingCrop) {
-      const dx = point.x - dragStartRef.current.point.x;
-      const dy = point.y - dragStartRef.current.point.y;
-      const startRect = dragStartRef.current.rect;
-      const bounds = getImageBounds();
-      let newX = startRect.x + dx,
-        newY = startRect.y + dy;
-      if (bounds) {
-        newX = clamp(newX, bounds.x, bounds.x + bounds.width - startRect.width);
-        newY = clamp(
-          newY,
-          bounds.y,
-          bounds.y + bounds.height - startRect.height,
-        );
-      }
-      setCropRect({ ...startRect, x: newX, y: newY });
-      return;
-    }
-
     if (isDragging && imgRef.current) {
       const dx = point.x - lastPointer.current.x;
       const dy = point.y - lastPointer.current.y;
       lastPointer.current = point;
       setPos((prev) =>
-        getBoundedPosition(
+        getCropBoundedPosition(
           imgRef.current!,
           { x: prev.x + dx, y: prev.y + dy },
           scale,
@@ -782,8 +823,6 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
         rm: "ew-resize",
       };
       canvas.style.cursor = cursors[handle] || "default";
-    } else if (isInsideCrop(point)) {
-      canvas.style.cursor = "move";
     } else {
       canvas.style.cursor = "grab";
     }
@@ -791,17 +830,31 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
 
   const onPointerUp = () => {
     if (isResizing && aspectRatio > 0 && activeHandle) {
-      setCropRect((prev) =>
-        clampRectToImage(
+      setCropRect((prev) => {
+        const rect = clampRectToImage(
           constrainRectToRatio(prev, aspectRatio, csRef.current),
-        ),
-      );
-    } else if (isResizing || isMovingCrop) {
-      setCropRect((prev) => clampRectToImage(prev));
+        );
+        cropRectRef.current = rect;
+        return rect;
+      });
+    } else if (isResizing) {
+      setCropRect((prev) => {
+        const rect = clampRectToImage(prev);
+        cropRectRef.current = rect;
+        return rect;
+      });
     }
+
+    if (isResizing) {
+      clearResizeCompleteTimer();
+      resizeCompleteTimerRef.current = setTimeout(() => {
+        zoomGridToHorizontalBounds(cropRectRef.current);
+        resizeCompleteTimerRef.current = null;
+      }, 500);
+    }
+
     setIsDragging(false);
     setIsResizing(false);
-    setIsMovingCrop(false);
     setActiveHandle(null);
   };
 

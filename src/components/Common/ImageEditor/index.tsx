@@ -343,12 +343,14 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
     if (cs.w <= 0 || cs.h <= 0) return;
     csRef.current = cs;
 
-    canvas.width = cs.w;
-    canvas.height = cs.h;
+    const pixelRatio = window.devicePixelRatio || 1;
+    canvas.width = Math.round(cs.w * pixelRatio);
+    canvas.height = Math.round(cs.h * pixelRatio);
 
     const ctx = canvas.getContext("2d", { alpha: false });
     if (!ctx) return;
 
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
 
@@ -863,22 +865,6 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
   };
 
   const onPointerUp = () => {
-    if (isResizing && aspectRatio > 0 && activeHandle) {
-      setCropRect((prev) => {
-        const rect = clampRectToImage(
-          constrainRectToRatio(prev, aspectRatio, csRef.current),
-        );
-        cropRectRef.current = rect;
-        return rect;
-      });
-    } else if (isResizing) {
-      setCropRect((prev) => {
-        const rect = clampRectToImage(prev);
-        cropRectRef.current = rect;
-        return rect;
-      });
-    }
-
     if (isResizing) {
       clearResizeCompleteTimer();
       resizeCompleteTimerRef.current = setTimeout(() => {

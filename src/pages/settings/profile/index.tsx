@@ -171,6 +171,7 @@ const ProfileSettings = () => {
         image={image}
         onSave={handleSaveAvatar}
         aspectRatio={1}
+        cropShape="circle"
         hideAspectRatioSelector
       />
       <form

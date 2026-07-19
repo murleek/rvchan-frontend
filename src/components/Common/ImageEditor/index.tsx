@@ -3,6 +3,8 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ASPECT_RATIOS } from "./types";
 import { Button } from "@/components/ui/button";
 
+export type CropShape = "circle" | "rect";
+
 export type ImageEditorModalProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -10,14 +12,13 @@ export type ImageEditorModalProps = {
   onSave: (result: File) => void;
   aspectRatio?: number;
   hideAspectRatioSelector?: boolean;
+  cropShape?: CropShape;
 };
 
 type Point = { x: number; y: number };
 type Rect = { x: number; y: number; width: number; height: number };
 type Size = { w: number; h: number };
 
-const MIN_SCALE = 1;
-const MAX_SCALE = 5;
 const HANDLE_RADIUS = 4;
 const HANDLE_HIT_AREA = 16;
 const MIN_CROP_SIZE = 30;
@@ -32,6 +33,7 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
   onSave,
   aspectRatio: initialAspectRatio,
   hideAspectRatioSelector = false,
+  cropShape = "rect",
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
@@ -43,8 +45,6 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
   }, []);
 
   const [scale, setScale] = useState(1);
-  const [minScale, setMinScale] = useState(MIN_SCALE);
-  const [maxScale, setMaxScale] = useState(MAX_SCALE);
   const [pos, setPos] = useState<Point>({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
 
@@ -251,17 +251,37 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
 
     const rect = cropRect;
 
-    ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-    ctx.fillRect(0, 0, cs.w, rect.y);
-    ctx.fillRect(0, rect.y + rect.height, cs.w, cs.h - rect.y - rect.height);
-    ctx.fillRect(0, rect.y, rect.x, rect.height);
-    ctx.fillRect(
-      rect.x + rect.width,
-      rect.y,
-      cs.w - rect.x - rect.width,
-      rect.height,
-    );
+    if (cropShape === "circle") {
+      // Draw full semi-transparent overlay
+      ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+      ctx.fillRect(0, 0, cs.w, cs.h);
 
+      // Cut out a circle using composite
+      ctx.save();
+      ctx.beginPath();
+      const cx = rect.x + rect.width / 2;
+      const cy = rect.y + rect.height / 2;
+      const radius = Math.min(rect.width, rect.height) / 2;
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.clearRect(0, 0, cs.w, cs.h);
+      // Redraw image inside the circle
+      ctx.drawImage(img, imgX, imgY, width, height);
+      ctx.restore();
+    } else {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+      ctx.fillRect(0, 0, cs.w, rect.y);
+      ctx.fillRect(0, rect.y + rect.height, cs.w, cs.h - rect.y - rect.height);
+      ctx.fillRect(0, rect.y, rect.x, rect.height);
+      ctx.fillRect(
+        rect.x + rect.width,
+        rect.y,
+        cs.w - rect.x - rect.width,
+        rect.height,
+      );
+    }
+
+    // Always draw square outline
     ctx.strokeStyle = "white";
     ctx.lineWidth = 1.5;
     ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
@@ -312,7 +332,15 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
       ctx.lineWidth = 1;
       ctx.stroke();
     }
-  }, [pos, scale, getScaledSize, cropRect, aspectRatio, getCanvasSize]);
+  }, [
+    pos,
+    scale,
+    getScaledSize,
+    cropRect,
+    aspectRatio,
+    getCanvasSize,
+    cropShape,
+  ]);
 
   // Load image
   useEffect(() => {
@@ -332,8 +360,6 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
           initialScale,
         );
 
-        setMinScale(initialScale);
-        setMaxScale(initialScale * MAX_SCALE);
         setScale(initialScale);
         setPos(initialPos);
 
@@ -428,8 +454,6 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
       const newScale = Math.min(cs.w / img.width, cs.h / img.height);
       setScale(newScale);
       setPos({ x: 0, y: 0 });
-      setMinScale(newScale);
-      setMaxScale(newScale * MAX_SCALE);
 
       // Scale crop rect proportionally
       const sx = cs.w / prev.w;
@@ -781,37 +805,6 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
     setActiveHandle(null);
   };
 
-  const handleZoom = (delta: number, clientX?: number, clientY?: number) => {
-    if (!imgRef.current || !canvasRef.current) return;
-    const canvas = canvasRef.current;
-    const rect = canvas.getBoundingClientRect();
-    const cs = csRef.current;
-    const mouseX = clientX ? clientX - rect.left : cs.w / 2;
-    const mouseY = clientY ? clientY - rect.top : cs.h / 2;
-
-    setScale((prevScale) => {
-      const newScale = clamp(prevScale - delta * 0.008, minScale, maxScale);
-      if (prevScale !== newScale) {
-        const factor = newScale / prevScale;
-        setPos((prevPos) => {
-          const newX = mouseX - (mouseX - (cs.w / 2 + prevPos.x)) * factor;
-          const newY = mouseY - (mouseY - (cs.h / 2 + prevPos.y)) * factor;
-          return getBoundedPosition(
-            imgRef.current!,
-            { x: newX, y: newY },
-            newScale,
-          );
-        });
-      }
-      return newScale;
-    });
-  };
-
-  const onWheel = (e: React.WheelEvent) => {
-    e.preventDefault();
-    handleZoom(e.deltaY, e.clientX, e.clientY);
-  };
-
   const reset = () => {
     if (!imgRef.current) return;
     const img = imgRef.current;
@@ -935,7 +928,6 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
                 onTouchStart={onPointerDown}
                 onTouchMove={onPointerMove}
                 onTouchEnd={onPointerUp}
-                onWheel={onWheel}
                 className="touch-none absolute inset-0 w-full h-full"
               />
             </div>

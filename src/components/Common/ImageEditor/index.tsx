@@ -32,6 +32,19 @@ const WHEEL_ZOOM_TRANSITION_MS = 120;
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
 
+function fitSize(
+  width: number,
+  height: number,
+  maxSize: { width: number; height: number },
+) {
+  const scale = Math.min(maxSize.width / width, maxSize.height / height, 1);
+
+  return {
+    width: Math.round(width * scale),
+    height: Math.round(height * scale),
+  };
+}
+
 const ImageEditorModal: FC<ImageEditorModalProps> = ({
   open,
   onOpenChange,
@@ -1151,12 +1164,56 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
     const outCtx = outCanvas.getContext("2d");
     if (!outCtx) return;
 
-    outCtx.drawImage(img, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
+    const outputSize = fitSize(cropW, cropH, { width: 1080, height: 2160 });
+
+    outCanvas.width = outputSize.width;
+    outCanvas.height = outputSize.height;
+
+    outCtx.drawImage(
+      img,
+      cropX,
+      cropY,
+      cropW,
+      cropH,
+      0,
+      0,
+      outputSize.width,
+      outputSize.height,
+    );
 
     outCanvas.toBlob(
-      (blob) => {
+      async (blob) => {
         if (!blob) return;
         const file = new File([blob], "avatar.png", { type: "image/png" });
+
+        console.log("Saving file:", file);
+        const dim = await new Promise((resolve, reject) => {
+          // 1. Create a temporary URL representing the blob
+          const objectURL = URL.createObjectURL(blob);
+
+          // 2. Initialize a new HTML Image element
+          const img = new Image();
+
+          // 3. Set up the success handler
+          img.onload = () => {
+            // Clean up the memory immediately after reading dimensions
+            URL.revokeObjectURL(objectURL);
+
+            // Resolve with the native dimensions
+            resolve({ width: img.naturalWidth, height: img.naturalHeight });
+          };
+
+          // 4. Set up the error handler
+          img.onerror = () => {
+            URL.revokeObjectURL(objectURL);
+            reject(new Error("Failed to load image from Blob."));
+          };
+
+          // 5. Trigger the image download by setting the source
+          img.src = objectURL;
+        });
+
+        console.log("Image dimensions promise:", dim);
         onSave(file);
         onOpenChange(false);
       },

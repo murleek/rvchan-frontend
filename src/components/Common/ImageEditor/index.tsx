@@ -1176,9 +1176,10 @@ const ImageEditorModal: FC<ImageEditorModalProps> = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        overlayClassName="bg-black backdrop-blur-sm"
-        className="p-6 bg-transparent h-full max-h-none! w-full! max-w-none! dark bg-background"
+        overlayClassName="bg-black"
+        className="p-6 h-full max-h-none! w-full! max-w-none! bg-transparent"
         onClose={() => onOpenChange(false)}
+        showCloseButton={false}
       >
         <div className="flex flex-col h-full gap-3">
           <div className="flex-1 flex items-center justify-center min-h-0">

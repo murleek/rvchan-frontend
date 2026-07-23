@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { useCallback, useMemo } from "react";
 import { a, useTransition } from "@react-spring/web";
 import useAuth from "@/hooks/useAuth";
-import { Check, ChevronLeft, Settings } from "lucide-react";
+import { Check, ChevronLeft, Download, Settings } from "lucide-react";
 import HeaderButton from "./components/HeaderButton";
 import useNav from "@/hooks/common/useNav";
 import { PAGES } from "@/constants";
@@ -11,6 +11,8 @@ import { useSelector } from "react-redux";
 import type { RootState } from "@/app/store";
 import useScrollHidden from "./hooks/useScrollHidden";
 import { onClickRef } from "@/hooks/common/useHeader";
+import useModal from "@/hooks/common/useModal";
+import { usePwaInstall } from "@/hooks/usePwaInstall";
 
 const Header = () => {
   const { title, hideTitle, isClickable, hasClick } = useSelector(
@@ -22,6 +24,9 @@ const Header = () => {
   const location = useLocation();
   const { back, canGoBack } = useNav();
 
+  const { canInstall } = usePwaInstall();
+  const { openModal } = useModal("install");
+
   const isTitleHidden = useScrollHidden(hideTitle);
 
   const isProfilePage = useMemo(
@@ -29,6 +34,11 @@ const Header = () => {
       !!profile?.username &&
       location.pathname === PAGES.USER.replace(":username", profile.username),
     [profile, location.pathname],
+  );
+
+  const isHomePage = useMemo(
+    () => location.pathname === PAGES.HOME,
+    [location.pathname],
   );
 
   const t = useTransition(hideTitle && isTitleHidden, {
@@ -45,7 +55,7 @@ const Header = () => {
   const handleCheck = () => onClickRef.current?.();
 
   return (
-    <header className="gap-3 h-16 flex-none shrink-0 items-center sticky top-0 z-10 md:rounded-t-xl">
+    <header className="gap-3 h-16 flex-none shrink-0 items-center sticky top-0 z-100 md:rounded-t-xl">
       <div className="md:rounded-t-xl backdrop-blur-xs mask-b-from-40% mask-b-to-100% absolute left-0 top-0 bottom-0 pointer-events-none z-1 w-full h-20" />
       <div className="md:rounded-t-xl mask-b-from-10% mask-b-to-80% bg-background absolute left-0 top-0 bottom-0 pointer-events-none z-1 w-full h-8 animated transition-colors" />
       <div className="px-4 max-w-2xl w-full mx-auto h-full relative flex items-center gap-2 z-2">
@@ -88,6 +98,13 @@ const Header = () => {
           position="right"
           disabled={!isClickable}
           activeColor="fuchsia"
+        />
+        <HeaderButton
+          icon={Download}
+          onClick={() => openModal()}
+          show={isHomePage && canInstall}
+          position="right"
+          activeColor="gray"
         />
       </div>
     </header>

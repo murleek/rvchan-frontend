@@ -69,7 +69,7 @@ const HeaderButton = ({
             "top-1.5",
             isActive && "scale-125! brightness-125 shadow-xl!",
             !isActive && "bg-card",
-            "active:brightness-125 backdrop-filter-[brightness()]",
+            "active:brightness-125 backdrop-filter-[brightness()] z-100",
           )}
           style={{
             opacity: style.opacity,

@@ -100,7 +100,7 @@ const PostOP: FC<PostProps> = ({
       }
     : ({} as { to: never });
   return (
-    <Component className={clsx("group/post")} {...props}>
+    <Component className={clsx("group/post touch-action-none")} {...props}>
       <div
         className={clsx(
           "p-2 not-first:border-t animated flex items-start flex-col gap-1 rounded-lg m-1 relative z-1 ring-1 ring-transparent",

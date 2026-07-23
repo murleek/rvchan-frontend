@@ -68,6 +68,11 @@
   @apply duration-300 ease-in-out;
 }
 
+@utility touch-action-none {
+  -webkit-touch-callout: none;
+  touch-action: none;
+}
+
 .h-calcauto {
   height: 0;
   overflow-y: hidden;

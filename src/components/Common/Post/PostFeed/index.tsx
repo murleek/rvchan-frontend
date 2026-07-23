@@ -103,7 +103,7 @@ const PostFeed: FC<PostReplyProps & HTMLAttributes<HTMLDivElement>> = ({
             ":username",
             thread.user.username,
           ).replaceAll(":id", String(thread.id)),
-          className,
+          className: clsx("touch-action-none", className),
         }
       : ({ className } as {
           to: never;

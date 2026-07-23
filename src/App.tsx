@@ -11,6 +11,9 @@ import Auth from "./pages/auth|register|verify|init";
 import { SidebarProvider } from "./components/ui/sidebar";
 import { NavigationTracker } from "./components/NavigationTracker";
 import { AuthProvider } from "./providers/AuthProvider";
+import { PwaUpdater } from "./components/PwaUpdater";
+import InstallModal from "./components/InstallModal";
+import { PwaInstallProvider } from "./providers/PwaInstallProvider";
 
 const AuthGuard = lazy(() => import("@/components/Common/AuthProvider"));
 const RootLayout = lazy(() => import("@/pages/layout"));
@@ -45,34 +48,38 @@ const App = () => {
   }, []);
 
   return (
-    <Provider store={store}>
-      <AuthProvider>
-        <TooltipProvider>
-          <BrowserRouter>
-            <NavigationTracker />
-            <Routes>
-              <Route
-                path="*"
-                element={
-                  <ErrorBoundary>
-                    <AuthGuard>
-                      <SidebarProvider open={false}>
-                        <RootLayout />
-                      </SidebarProvider>
-                    </AuthGuard>
-                  </ErrorBoundary>
-                }
-              />
-              <Route path={PAGES.LOGOUT} element={<Logout />} />
-              <Route path={PAGES.LOGIN} element={<Auth />} />
-              <Route path={PAGES.VERIFY} element={<Auth />} />
-              <Route path={PAGES.REGISTER} element={<Auth />} />
-              <Route path={PAGES.INIT} element={<Auth />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </AuthProvider>
-    </Provider>
+    <PwaInstallProvider>
+      <Provider store={store}>
+        <AuthProvider>
+          <TooltipProvider>
+            <BrowserRouter>
+              <NavigationTracker />
+              <Routes>
+                <Route
+                  path="*"
+                  element={
+                    <ErrorBoundary>
+                      <AuthGuard>
+                        <SidebarProvider open={false}>
+                          <RootLayout />
+                        </SidebarProvider>
+                      </AuthGuard>
+                    </ErrorBoundary>
+                  }
+                />
+                <Route path={PAGES.LOGOUT} element={<Logout />} />
+                <Route path={PAGES.LOGIN} element={<Auth />} />
+                <Route path={PAGES.VERIFY} element={<Auth />} />
+                <Route path={PAGES.REGISTER} element={<Auth />} />
+                <Route path={PAGES.INIT} element={<Auth />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+          <PwaUpdater />
+          <InstallModal />
+        </AuthProvider>
+      </Provider>
+    </PwaInstallProvider>
   );
 };
 

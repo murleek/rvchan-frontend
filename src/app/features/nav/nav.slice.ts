@@ -4,6 +4,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 export type TabKey = "home" | "profile" | "notifications" | "search";
 export const ModalKey = {
   POST: "post",
+  INSTALL: "install",
 } as const;
 
 export type ModalKey = (typeof ModalKey)[keyof typeof ModalKey];
@@ -76,6 +77,7 @@ const initialState: NavState = {
   },
   modals: {
     post: { isOpen: false },
+    install: { isOpen: false },
   },
   scrollY: 0,
 };

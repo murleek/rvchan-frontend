@@ -35,7 +35,7 @@ const ErrorView: FC<ErrorViewProps> = ({
   return (
     <div
       className={clsx(
-        "flex min-h-full flex-col items-center justify-center px-2 text-center text-red-800 dark:text-red-100 animated transition-colors",
+        "flex min-h-full w-full flex-col items-center justify-center px-2 text-center text-red-800 dark:text-red-100 animated transition-colors",
         color,
       )}
     >

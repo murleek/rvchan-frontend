@@ -48,8 +48,8 @@ const App = () => {
   }, []);
 
   return (
-    <PwaInstallProvider>
-      <Provider store={store}>
+    <Provider store={store}>
+      <PwaInstallProvider>
         <AuthProvider>
           <TooltipProvider>
             <BrowserRouter>
@@ -78,8 +78,8 @@ const App = () => {
           <PwaUpdater />
           <InstallModal />
         </AuthProvider>
-      </Provider>
-    </PwaInstallProvider>
+      </PwaInstallProvider>
+    </Provider>
   );
 };
 

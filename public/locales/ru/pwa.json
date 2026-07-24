@@ -1,0 +1,25 @@
+{
+  "title": "Установить rvchan",
+  "subtitle": "Добавьте на главный экран для быстрого доступа",
+  "safari": {
+    "howToInstall": "Как установить на iPhone/iPad:",
+    "instructions": {
+      "1": "Нажмите на <iconContainer><icon /></iconContainer>",
+      "2": "Нажмите на кнопку <iconContainer><icon />{{share}}</iconContainer> в меню",
+      "3": "Прокрутите вниз и нажмите <iconContainer><icon />{{addToHomeScreen}}</iconContainer>",
+      "4": "Подтвердите нажатием <iconContainer>{{add}}</iconContainer>"
+    },
+    "buttons": {
+      "share": "Поделиться",
+      "addToHomeScreen": "Добавить на экран \"Домой\"",
+      "add": "Добавить"
+    },
+    "ok": "Понятно"
+  },
+  "before": {
+    "cancel": "Не сейчас",
+    "install": "Установить",
+    "installed": "Установлено",
+    "cantInstall": "Невозможно установить"
+  }
+}

@@ -6,6 +6,7 @@ import {
   type ReactNode,
 } from "react";
 import { PwaInstallContext } from "./context";
+import useModal from "@/hooks/common/useModal";
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
@@ -26,6 +27,7 @@ export function PwaInstallProvider({ children }: { children: ReactNode }) {
   const [installPrompt, setInstallPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
   const [isStandalone, setIsStandalone] = useState(false);
+  const { openModal, closeModal } = useModal("install");
 
   const isIOS = useMemo(() => {
     return /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -47,12 +49,14 @@ export function PwaInstallProvider({ children }: { children: ReactNode }) {
     const handleBeforeInstallPrompt = (e: BeforeInstallPromptEvent) => {
       e.preventDefault();
       setInstallPrompt(e);
+      openModal();
       console.log("beforeinstallprompt event captured:", e);
     };
 
     const handleAppInstalled = () => {
       setIsStandalone(true);
       setInstallPrompt(null);
+      closeModal();
       console.log("PWA installed successfully.");
     };
 
@@ -70,7 +74,7 @@ export function PwaInstallProvider({ children }: { children: ReactNode }) {
       window.removeEventListener("appinstalled", handleAppInstalled);
       mq.removeEventListener("change", checkStandalone);
     };
-  }, []);
+  }, [openModal, closeModal]);
 
   const installPWA = useCallback(async () => {
     if (!installPrompt) return;

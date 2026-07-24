@@ -80,12 +80,12 @@ const HeaderButton = ({
             aria-label={ariaLabel}
             className={clsx(
               "size-12 rounded-full flex items-center justify-center",
-              " md:border cursor-pointer",
-              " dark:inset-shadow-white/20 inset-shadow-glow",
+              "cursor-pointer [clip-path:inset(0_round_24px)]",
+              "highlight",
               "animated transition-[background,color,box-shadow,border] will-change-[filter,background,color,box-shadow]",
               "disabled:cursor-default disabled:bg-muted! disabled:text-muted-foreground!",
               activeColor === "fuchsia" &&
-                "bg-fuchsia-500 inset-shadow-fuchsia-300 text-white active:bg-fuchsia-500 hover:bg-fuchsia-400",
+                "bg-fuchsia-500 text-white active:bg-fuchsia-500 hover:bg-fuchsia-400 ",
               activeColor === "gray" &&
                 "bg-card hover:bg-gray-100 dark:hover:bg-zinc-800",
               className,

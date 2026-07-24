@@ -1,0 +1,25 @@
+{
+  "title": "Install rvchan",
+  "subtitle": "Add to your home screen for quick access",
+  "safari": {
+    "howToInstall": "How to install on iPhone/iPad:",
+    "instructions": {
+      "1": "Tap the <iconContainer><icon /></iconContainer>",
+      "2": "Tap the <iconContainer><icon />{{share}}</iconContainer> button in the menu",
+      "3": "Scroll down and tap <iconContainer><icon />{{addToHomeScreen}}</iconContainer>",
+      "4": "Confirm by tapping <iconContainer>{{add}}</iconContainer>"
+    },
+    "buttons": {
+      "share": "Share",
+      "addToHomeScreen": "Add to Home Screen",
+      "add": "Add"
+    },
+    "ok": "Got it"
+  },
+  "before": {
+    "cancel": "Not now",
+    "install": "Install",
+    "installed": "Installed",
+    "cantInstall": "Cannot install"
+  }
+}

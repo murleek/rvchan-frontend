@@ -72,10 +72,10 @@ function DialogContent({
         {showCloseButton && (
           <DialogPrimitive.Close
             data-slot="dialog-close"
-            className="absolute top-2 left-3 hover:opacity-100 focus:scale-110 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 z-50 p-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 active:brightness-110 backdrop-filter-[brightness()] active:scale-125 animated transition-[background,color,scale,opacity] duration-300 inset-shadow inset-shadow-glow dark:inset-shadow-white/20"
+            className="absolute top-2 right-3 hover:opacity-100 focus:scale-110 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 z-50 p-2 rounded-full  text-foreground active:brightness-110 backdrop-filter-[brightness()] active:scale-125 animated transition-[background,color,scale,opacity] duration-300 inset-shadow inset-shadow-glow dark:inset-shadow-white/20 bg-card hover:bg-gray-100 dark:hover:bg-zinc-800 shadow-lg highlight [clip-path:inset(0_round_22px)]"
             // onContextMenu={(e) => e.preventDefault()}
             onClick={(e) => {
-              e.stopPropagation();
+              // e.stopPropagation();
               onClose?.();
             }}
           >

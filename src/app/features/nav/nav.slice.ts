@@ -1,9 +1,11 @@
 import type { Profile } from "@/app/types/auth";
+import { PAGES } from "@/constants";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 export type TabKey = "home" | "profile" | "notifications" | "search";
 export const ModalKey = {
   POST: "post",
+  INSTALL: "install",
 } as const;
 
 export type ModalKey = (typeof ModalKey)[keyof typeof ModalKey];
@@ -25,20 +27,20 @@ type NavState = {
 
 export const detectTab = (path: string, user: Profile | null): TabKey => {
   if (path === "/") return "home";
-  if (path.startsWith("/home")) return "home";
-  if (path.startsWith("/notifications")) return "notifications";
+  if (path.startsWith(PAGES.HOME)) return "home";
+  if (path.startsWith(PAGES.NOTIFICATIONS)) return "notifications";
   if (user && path.startsWith(`/${user.username}`)) return "profile";
-  if (path.startsWith("/settings")) return "profile";
+  if (path.startsWith(PAGES.SETTINGS)) return "profile";
   return "search";
 };
 
 export const buildRoots = (
   profile: Profile | null,
 ): Record<TabKey, string> => ({
-  home: "/home",
+  home: PAGES.HOME,
   profile: profile ? `/${profile.username}` : "/404",
-  notifications: "/notifications",
-  search: "/search",
+  notifications: PAGES.NOTIFICATIONS,
+  search: PAGES.SEARCH,
 });
 
 export const makeInitialStacks = (
@@ -69,13 +71,14 @@ export const makeInitialStacks = (
 const initialState: NavState = {
   activeTab: "search",
   stacks: {
-    home: [{ path: "/home", scroll: 0 }],
+    home: [{ path: PAGES.HOME, scroll: 0 }],
     profile: [{ path: "/404", scroll: 0 }],
-    notifications: [{ path: "/notifications", scroll: 0 }],
-    search: [{ path: "/search", scroll: 0 }],
+    notifications: [{ path: PAGES.NOTIFICATIONS, scroll: 0 }],
+    search: [{ path: PAGES.SEARCH, scroll: 0 }],
   },
   modals: {
     post: { isOpen: false },
+    install: { isOpen: false },
   },
   scrollY: 0,
 };

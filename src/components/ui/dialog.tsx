@@ -37,7 +37,7 @@ function DialogOverlay({
     <DialogPrimitive.Overlay
       data-slot="dialog-overlay"
       className={cn(
-        "fixed inset-0 z-50 bg-black/50 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
+        "fixed inset-0 z-200 bg-black/50 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
         className,
       )}
       {...props}
@@ -63,7 +63,7 @@ function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "fixed md:top-[50%] max-md:bottom-0 md:left-[50%] z-50 grid w-full md:max-w-2xl max-md:max-h-[calc(100dvh-4rem)] md:max-h-[calc(50dvh)] md:translate-x-[-50%] md:translate-y-[-50%] gap-4 max-md:rounded-t-4xl md:rounded-4xl bg-background p-6 shadow-lg duration-300 outline-none data-[state=closed]:animate-out data-[state=closed]:max-md:slide-out-to-bottom data-[state=open]:animate-in data-[state=open]:max-md:slide-in-from-bottom data-[state=open]:md:zoom-in-95 data-[state=closed]:md:zoom-out-95 data-[state=open]:md:fade-in-0 data-[state=closed]:md:fade-out-0",
+          "fixed md:top-[50%] max-md:bottom-0 md:left-[50%] z-200 grid w-full md:max-w-2xl max-md:max-h-[calc(100dvh-4rem)] md:max-h-[calc(50dvh)] md:translate-x-[-50%] md:translate-y-[-50%] gap-4 max-md:rounded-t-4xl md:rounded-4xl bg-background p-6 shadow-lg duration-300 outline-none data-[state=closed]:animate-out data-[state=closed]:max-md:slide-out-to-bottom data-[state=open]:animate-in data-[state=open]:max-md:slide-in-from-bottom data-[state=open]:md:zoom-in-95 data-[state=closed]:md:zoom-out-95 data-[state=open]:md:fade-in-0 data-[state=closed]:md:fade-out-0",
           className,
         )}
         {...props}
@@ -72,10 +72,10 @@ function DialogContent({
         {showCloseButton && (
           <DialogPrimitive.Close
             data-slot="dialog-close"
-            className="absolute top-2 left-3 hover:opacity-100 focus:scale-110 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 z-50 p-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 active:brightness-110 backdrop-filter-[brightness()] active:scale-125 animated transition-[background,color,scale,opacity] duration-300 inset-shadow inset-shadow-glow dark:inset-shadow-white/20"
+            className="absolute top-2 right-3 hover:opacity-100 focus:scale-110 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 z-50 p-2 rounded-full  text-foreground active:brightness-110 backdrop-filter-[brightness()] active:scale-125 animated transition-[background,color,scale,opacity] duration-300 inset-shadow inset-shadow-glow dark:inset-shadow-white/20 bg-card hover:bg-gray-100 dark:hover:bg-zinc-800 shadow-lg highlight [clip-path:inset(0_round_22px)]"
             // onContextMenu={(e) => e.preventDefault()}
             onClick={(e) => {
-              e.stopPropagation();
+              // e.stopPropagation();
               onClose?.();
             }}
           >

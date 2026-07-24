@@ -48,6 +48,14 @@ export function ThemeProvider({
     }
 
     root.classList.add(theme);
+
+    const color = window
+      .getComputedStyle(document.documentElement)
+      .getPropertyValue("--color-background");
+
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute("content", color);
   }, [theme]);
 
   useEffect(() => {
@@ -63,6 +71,42 @@ export function ThemeProvider({
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleSystemThemeChange = (e: MediaQueryListEvent) => {
+      if (theme === "system") {
+        const newTheme = e.matches ? "dark" : "light";
+        document.documentElement.classList.remove("light", "dark");
+        document.documentElement.classList.add(newTheme);
+      }
+    };
+
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    mediaQuery.addEventListener("change", handleSystemThemeChange);
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleSystemThemeChange);
+    };
+  }, [theme]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const styles = window.getComputedStyle(document.documentElement);
+      // const breakpoint = styles.getPropertyValue("--breakpoint-md");
+      const color = styles.getPropertyValue(
+        window.innerWidth < 48 * 16 ? "--background" : "--sidebar",
+      );
+
+      document
+        .querySelector('meta[name="theme-color"]')
+        ?.setAttribute("content", color);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 

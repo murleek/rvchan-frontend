@@ -102,7 +102,7 @@ const PostReply: FC<PostReplyProps & HTMLAttributes<HTMLDivElement>> = ({
             ":username",
             thread.user.username,
           ).replaceAll(":id", String(thread.id)),
-          className,
+          className: clsx("touch-callout-none", className),
         }
       : ({ className } as {
           to: never;

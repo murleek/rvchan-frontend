@@ -3,12 +3,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarHeader as _SidebarHeader,
-  useSidebar,
+  // useSidebar,
 } from "@/components/ui/sidebar";
-import clsx from "clsx";
+import Logo from "@/assets/logo.svg?react";
 
 const SidebarHeader = () => {
-  const { state } = useSidebar();
+  // const { state } = useSidebar();
 
   return (
     <_SidebarHeader>
@@ -31,7 +31,7 @@ const SidebarHeader = () => {
                 asChild
               >
                 <div className="bg-transparent!  overflow-hidden h-auto! hover:bg-transparent! cursor-pointer">
-                  <div
+                  {/* <div
                     className={clsx(
                       "bg-fuchsia-500 z-1 flex-none size-9 animated flex items-center justify-center select-none rounded-md",
                       state === "collapsed" && "size-9!",
@@ -40,7 +40,8 @@ const SidebarHeader = () => {
                     <span className="text-3xl/8 pb-1 align-middle font-black inline-block text-white">
                       &raquo;
                     </span>
-                  </div>
+                  </div> */}
+                  <Logo className="size-full" />
                   <div className="flex gap-2 items-center justify-between w-full overflow-auto! relative h-auto!">
                     <span className="text-lg font-bold">rvchan</span>
                   </div>

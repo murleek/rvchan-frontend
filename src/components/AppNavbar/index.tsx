@@ -187,17 +187,13 @@ const AppNavbar = () => {
         const cardRect = container.getBoundingClientRect();
         const btnRect = activeButton.getBoundingClientRect();
 
-        // The nav has a scale transform: scale = 1 - scrollProgress * 0.15
-        // getBoundingClientRect() returns visual (post-transform) coordinates,
-        // but CSS `left` is in the card's local (pre-transform) space.
-        // We need to divide by scale to convert visual coords to local coords.
         const scale = 1 - scrollProgress * 0.15;
         const relativeLeft = (btnRect.left - cardRect.left) / scale;
         const relativeWidth = btnRect.width / scale;
 
         const styles = {
-          left: relativeLeft - 6 * (1 - scrollProgress),
-          width: relativeWidth - 2 + 12 * (1 - scrollProgress),
+          left: relativeLeft - 5,
+          width: relativeWidth + 10,
         };
 
         if (force) {
@@ -207,21 +203,6 @@ const AppNavbar = () => {
           left.start(styles.left);
           width.start(styles.width);
         }
-        // if (
-        //   styles.left === indicatorStyle.left &&
-        //   styles.width === indicatorStyle.width
-        // ) {
-        //   return;
-        // }
-
-        // setIndicatorStyle(styles);
-        // if (force) {
-        //   api.start({
-        //     left: relativeLeft - 6 * (1 - scrollProgress),
-        //     width: relativeWidth - 2 + 12 * (1 - scrollProgress),
-        //     immediate: true,
-        //   });
-        // }
       });
     },
     [activeTab, scrollProgress, left, width],
@@ -250,13 +231,13 @@ const AppNavbar = () => {
       <div className="px-5 w-full max-w-2xl">
         <a.div
           className={clsx(
-            "w-full pointer-events-auto backdrop-blur-sm backdrop-saturate-70 backdrop-grayscale-80 bg-card/80 rounded-[29px]",
+            "w-full pointer-events-auto backdrop-blur-sm backdrop-saturate-70 backdrop-grayscale-80 bg-card/80 rounded-[28px] clip-path:inset(0_round_28px) highlight shadow-lg",
             !isPostFormShown && "pointer-events-none",
           )}
           style={postFormStyle}
         >
           <PostForm
-            className="relative w-full bg-transparent"
+            className="relative w-full bg-transparent border-0! shadow-none!"
             formClassName="scrollbar-bg-white"
             username={
               payload?.reply ? payload.reply.user.username : profile.username
@@ -267,35 +248,37 @@ const AppNavbar = () => {
       </div>
       <a.nav
         className={clsx(
-          "w-full md:hidden z-50 pointer-events-none pb-2 px-2 flex items-center justify-center gap-2",
+          "w-full md:hidden z-50 pointer-events-none pb-2 px-2 flex items-center justify-center gap-2 mb-safe",
         )}
         style={navStyle}
       >
         <AnimatedCard
-          className="transition-none overflow-hidden py-0.5 px-2 w-fit border-border! backdrop-blur-sm backdrop-saturate-70 backdrop-grayscale-80 bg-card/80 mb-safe rounded-full flex flex-row gap-0 pointer-events-auto z-10"
+          className="transition-none overflow-hidden w-fit backdrop-blur-sm backdrop-saturate-70 backdrop-grayscale-80 bg-card/80 rounded-full pointer-events-auto z-10 shadow-lg border-0! p-0! active:brightness-110 animated transition-[filter,background-color,box-shadow] "
           style={navCardStyle}
         >
-          {triggers.map((trigger) => (
-            <NavbarButton
-              key={trigger.id}
-              trigger={trigger}
-              active={activeTab === trigger.id}
-              onClick={() => handleClick(trigger.id, trigger.url)}
-              textStyle={navButtonTextStyle}
-              buttonsRef={buttonsRef}
-            />
-          ))}
+          <div className="highlight [clip-path:inset(0_round_31px)] flex flex-row gap-0 py-0.5 px-2 w-full relative rounded-full pointer-events-auto z-10">
+            {triggers.map((trigger) => (
+              <NavbarButton
+                key={trigger.id}
+                trigger={trigger}
+                active={activeTab === trigger.id}
+                onClick={() => handleClick(trigger.id, trigger.url)}
+                textStyle={navButtonTextStyle}
+                buttonsRef={buttonsRef}
+              />
+            ))}
 
-          <a.div
-            className="absolute top-1/2 -translate-y-1/2 h-[calc(100%-6px)] rounded-full bg-black/5 dark:bg-white/10"
-            style={{
-              left,
-              width,
-            }}
-          />
+            <a.div
+              className="absolute top-1/2 -translate-y-1/2 h-[calc(100%-6px)] rounded-full bg-black/5 dark:bg-white/10"
+              style={{
+                left,
+                width,
+              }}
+            />
+          </div>
         </AnimatedCard>
         <a.button
-          className="z-2 overflow-hidden py-0.5 px-2 border-border! backdrop-blur-md bg-card/70! rounded-full flex flex-none gap-0.2 size-15.5 border animated transition-colors pointer-events-auto items-center justify-center active:brightness-110 hover:bg-card/80 cursor-pointer"
+          className="z-2 overflow-hidden py-0.5 px-2 border-border! backdrop-blur-md bg-card/70! rounded-full flex flex-none gap-0.2 size-15.5 animated transition-[background-color,color,filter] pointer-events-auto items-center justify-center active:brightness-110 hover:bg-card/80 cursor-pointer highlight shadow-lg [clip-path:inset(0_round_31px)]"
           onClick={() => openModal()}
           style={buttonStyle}
         >
